@@ -613,20 +613,24 @@ async function doSignIn() {
     const data = await response.json();
     alert(data.message);
 
-    if (response.ok) {
-      localStorage.setItem("lawyer", JSON.stringify(data.lawyer));
+   if (response.ok) {
 
-      // Switch to dashboard page
-      document.getElementById("p-signin").classList.remove("show");
-      document.getElementById("p-dash").classList.add("show");
+  // Save to localStorage
+  localStorage.setItem("lawyer", JSON.stringify(data.lawyer));
 
-      // Set lawyer name in sidebar + dashboard
-      document.getElementById("sb-name").innerText =
-        data.lawyer.firstName + " " + data.lawyer.lastName;
+  // Fill LAWYER object (this was missing!)
+  LAWYER.fn = data.lawyer.firstName;
+  LAWYER.ln = data.lawyer.lastName;
+  LAWYER.email = data.lawyer.email;
+  LAWYER.verified = data.lawyer.verificationStatus === "approved";
 
-      document.getElementById("dash-gname").innerText =
-        data.lawyer.firstName;
-    }
+  // Switch page
+  document.getElementById("p-signin").classList.remove("show");
+  document.getElementById("p-dash").classList.add("show");
+
+  // Initialize dashboard properly
+  initDash();
+}
 
   } catch (error) {
     console.error(error);
@@ -977,35 +981,35 @@ document.addEventListener('DOMContentLoaded',()=>{
   const siId=document.getElementById('si-id');if(siId) siId.addEventListener('input',clearSignInErr);
   const upEm=document.getElementById('up-em');if(upEm) upEm.addEventListener('input',clearEmailErr);
 });
-  window.onload = async function () {
+window.onload = async function () {
 
-  const lawyer = JSON.parse(localStorage.getItem("lawyer"));
-
-  if (!lawyer) return;
+  const storedLawyer = JSON.parse(localStorage.getItem("lawyer"));
+  if (!storedLawyer) return;
 
   try {
 
-    const response = await fetch(`/api/lawyer/me/${lawyer.id}`);
+    const response = await fetch(`/api/lawyer/me/${storedLawyer.id}`);
     const data = await response.json();
 
-    if (response.ok) {
+    if (!response.ok) return;
 
-      localStorage.setItem("lawyer", JSON.stringify(data));
+    // Update local storage
+    localStorage.setItem("lawyer", JSON.stringify(data));
 
-      document.getElementById("p-signin").classList.remove("show");
+    // Fill LAWYER object
+    LAWYER.fn = data.firstName;
+    LAWYER.ln = data.lastName;
+    LAWYER.email = data.email;
 
-      if (data.verificationStatus === "approved") {
-        document.getElementById("p-dash").classList.add("show");
-      } else {
-        document.getElementById("p-verify").classList.add("show");
-      }
+    // THIS IS IMPORTANT
+    LAWYER.verified = data.verificationStatus === "approved";
 
-      document.getElementById("sb-name").innerText =
-        data.firstName + " " + data.lastName;
+    // Show dashboard
+    document.getElementById("p-signin").classList.remove("show");
+    document.getElementById("p-dash").classList.add("show");
 
-      document.getElementById("dash-gname").innerText =
-        data.firstName;
-    }
+    // Initialize dashboard
+    initDash();
 
   } catch (error) {
     console.log("Error fetching latest status");
