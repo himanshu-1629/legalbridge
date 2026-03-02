@@ -1910,7 +1910,38 @@ function setGreeting() {
 
 // ─── VALIDATION HELPERS ──────────────────────────────────
 function isValidEmail(v) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+  v = v.trim().toLowerCase();
+  var parts = v.split('@');
+  if (parts.length !== 2) return false;
+  var local = parts[0], domain = parts[1];
+  if (!local || local.length < 1) return false;
+  if (domain.indexOf('.') === -1) return false;
+
+  var allowedDomains = [
+    'gmail.com','googlemail.com',
+    'yahoo.com','yahoo.in','yahoo.co.in','yahoo.co.uk','yahoo.com.au','ymail.com','rocketmail.com',
+    'outlook.com','outlook.in','hotmail.com','hotmail.in','hotmail.co.uk','live.com','live.in','msn.com',
+    'icloud.com','me.com','mac.com',
+    'rediffmail.com','sify.com','indiatimes.com','in.com','dataone.in','bsnl.in','bsnl.co.in','mtnl.net.in',
+    'protonmail.com','proton.me','tutanota.com','tutamail.com',
+    'zoho.com','zohomail.com',
+    'aol.com','aim.com',
+    'mail.com','email.com','inbox.com','usa.com',
+    'gmx.com','gmx.net','gmx.de',
+    'fastmail.com','fastmail.fm',
+    'hey.com','pm.me'
+  ];
+
+  var allowedSuffixes = [
+    '.edu','.ac.in','.edu.in','.gov.in','.gov','.nic.in',
+    '.org','.net','.co.in','.co.uk','.co.au','.com.au','.com.sg','.com.br'
+  ];
+
+  if (allowedDomains.indexOf(domain) !== -1) return true;
+  for (var i = 0; i < allowedSuffixes.length; i++) {
+    if (domain.slice(-allowedSuffixes[i].length) === allowedSuffixes[i]) return true;
+  }
+  return false;
 }
 
 function isValidPhone(v) {
