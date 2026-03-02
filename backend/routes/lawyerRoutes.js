@@ -165,7 +165,7 @@ router.put("/approve/:id", async (req, res) => {
       return res.status(404).json({ message: "Lawyer not found" });
     }
 
-    lawyer.verificationStatus = "approved";
+    lawyer.verificationStatus = "verified";
 
     await lawyer.save();
 
@@ -178,25 +178,7 @@ router.put("/approve/:id", async (req, res) => {
 
 
 // ================= ADMIN REJECT =================
-router.put("/reject/:id", async (req, res) => {
-  try {
 
-    const lawyer = await Lawyer.findById(req.params.id);
-
-    if (!lawyer) {
-      return res.status(404).json({ message: "Lawyer not found" });
-    }
-
-    lawyer.verificationStatus = "rejected";
-
-    await lawyer.save();
-
-    res.json({ message: "Lawyer rejected successfully" });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
 
 // ================= GET LAWYER BY ID =================
