@@ -713,28 +713,61 @@ function verifyUpload(zone,out,fname,fsize,docNum){
   }
 }
 
-function submitVerification(){
-  // Validate professional details
-  const bar=document.getElementById('ps-bar').value.trim();
-  const exp=document.getElementById('ps-exp').value.trim();
-  const spec=document.getElementById('ps-spec').value;
-  const courts=document.getElementById('ps-courts').value.trim();
-  const qual=document.getElementById('ps-qual').value.trim();
-  const bio=document.getElementById('ps-bio').value.trim();
-  const fee=document.getElementById('ps-fee').value.trim();
-  if(!bar||!exp||!spec||!courts||!qual||!bio||!fee){toast('Please fill all professional details in Step 1','⚠️');vStep(1);return;}
-  // Validate documents
-  if(!vDocsUploaded[1]||!vDocsUploaded[2]||!vDocsUploaded[3]){toast('Please upload all 3 documents in Step 2','⚠️');vStep(2);return;}
-  // Save professional details to LAWYER object
-  LAWYER.bar=bar;LAWYER.exp=parseInt(exp)||LAWYER.exp;LAWYER.spec=spec;LAWYER.courts=courts;LAWYER.qual=qual;LAWYER.bio=bio;LAWYER.fee=parseInt(fee)||LAWYER.fee;LAWYER.lang=document.getElementById('ps-lang').value.trim()||LAWYER.lang;
-  // Save optional info if toggled
-  if(optOn){LAWYER.ach=document.getElementById('op-ach').value||LAWYER.ach;LAWYER.total=parseInt(document.getElementById('op-tot').value)||LAWYER.total;LAWYER.won=parseInt(document.getElementById('op-won').value)||LAWYER.won;LAWYER.sr=parseInt(document.getElementById('op-rate').value)||LAWYER.sr;LAWYER.chips=Array.from(document.querySelectorAll('#exp-chips .chip.sel')).map(c=>c.textContent)}
-  LAWYER.verified=true;
-  toast('✅ Verification complete! Cases & Requests unlocked.');
-  updateVerificationUI();renderProfile();
-  // Show verified state
-  document.getElementById('unverified-state').style.display='none';
-  document.getElementById('verified-state').style.display='block';
+async function submitVerification(){
+
+  const bar = document.getElementById('ps-bar').value.trim();
+  const exp = document.getElementById('ps-exp').value.trim();
+  const spec = document.getElementById('ps-spec').value;
+  const courts = document.getElementById('ps-courts').value.trim();
+  const qual = document.getElementById('ps-qual').value.trim();
+  const bio = document.getElementById('ps-bio').value.trim();
+  const fee = document.getElementById('ps-fee').value.trim();
+  const languages = document.getElementById('ps-lang').value.trim();
+
+  if(!bar||!exp||!spec||!courts||!qual||!bio||!fee){
+    toast('Please fill all professional details','⚠️');
+    return;
+  }
+
+  if(!vDocsUploaded[1]||!vDocsUploaded[2]||!vDocsUploaded[3]){
+    toast('Please upload all 3 documents','⚠️');
+    return;
+  }
+
+  try {
+
+    const storedLawyer = JSON.parse(localStorage.getItem("lawyer"));
+
+    const response = await fetch("/api/lawyer/verify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: storedLawyer.email,
+        barId: bar,
+        experience: exp,
+        specialization: spec,
+        courts,
+        qualifications: qual,
+        bio,
+        consultationFee: fee,
+        languages
+      })
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    if(response.ok){
+      LAWYER.verified = false;   // still not approved
+      toast("Verification submitted. Waiting for admin approval ⏳");
+    }
+
+  } catch(error){
+    console.log(error);
+    alert("Server error");
+  }
 }
 
 function updateVerificationUI(){
