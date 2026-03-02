@@ -416,6 +416,8 @@
 
   /* ─── LAWYER CARDS ─── */
   .lawyer-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px; }
+  .lawyer-tab-btn { transition: color 0.2s, border-color 0.2s; }
+  .lawyer-tab-btn:hover { color: var(--navy) !important; }
   .lawyer-card {
     background:var(--white); border-radius:var(--radius-lg);
     border:1px solid var(--border); overflow:hidden;
@@ -444,11 +446,6 @@
   .fee-amount { font-size:16px; font-weight:700; color:var(--navy); }
   .lawyer-strategy { font-size:13px; color:var(--text-secondary); line-height:1.5; margin:12px 0; font-style:italic; border-left:3px solid var(--gold); padding-left:12px; }
   .lawyer-actions { display:flex; gap:8px; }
-  .compare-checkbox {
-    display:flex; align-items:center; gap:6px; font-size:12px;
-    color:var(--text-muted); cursor:pointer; margin-bottom:8px;
-  }
-  .compare-checkbox input { accent-color:var(--gold); }
 
   /* ─── ACTIVE CASE DETAIL ─── */
   .case-detail-grid { display:grid; grid-template-columns:2fr 1fr; gap:32px; }
@@ -600,11 +597,7 @@
   .modal-close { float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-muted); }
 
   /* ─── COMPARE TABLE ─── */
-  .compare-table { width:100%; border-collapse:collapse; font-size:13px; }
-  .compare-table th { background:var(--navy); color:white; padding:12px 16px; text-align:center; }
-  .compare-table td { padding:10px 16px; text-align:center; border-bottom:1px solid var(--border); }
-  .compare-table tr:hover td { background:rgba(245,240,232,0.6); }
-  .compare-table td:first-child { text-align:left; font-weight:600; color:var(--text-secondary); background:var(--cream); }
+
 
   /* ─── DOCUMENT VAULT ─── */
   .doc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:16px; }
@@ -799,12 +792,8 @@
       </div>
       <div class="nav-section-title" style="margin-top:8px;">Case Management</div>
       <div class="nav-item" onclick="showPage('page-proposals', this)">
-        <span class="nav-icon">⚖️</span> Lawyer Proposals
+        <span class="nav-icon">🔍</span> Find a Lawyer
         <span class="nav-badge">5</span>
-      </div>
-      <div class="nav-item" onclick="showPage('page-chat', this)">
-        <span class="nav-icon">💬</span> Messages
-        <span class="nav-badge">1</span>
       </div>
       <div class="nav-item" onclick="showPage('page-history', this)">
         <span class="nav-icon">🕐</span> Case History
@@ -1086,8 +1075,8 @@
           <p style="color:var(--text-muted);font-size:15px;margin-bottom:32px;">Your case is now live. Expect lawyer proposals within 24 hours.</p>
           <span class="badge badge-waiting" style="font-size:13px;padding:8px 20px;">⏳ Waiting for Lawyer Proposals</span>
           <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;">
-            <button class="btn btn-navy" onclick="showPage('page-proposals',document.querySelector('[onclick*=page-proposals]'))">View Proposals</button>
-            <button class="btn btn-ghost" onclick="showPage('page-dashboard',document.querySelector('[onclick*=page-dashboard]'))">Back to Dashboard</button>
+            <button class="btn btn-navy" onclick="showPage('page-active-cases',document.querySelector('[onclick*=page-active-cases]'))">📋 View My Cases</button>
+            <button class="btn btn-ghost" onclick="showPage('page-proposals',document.querySelector('[onclick*=page-proposals]'))">Find a Lawyer</button>
           </div>
         </div>
       </div>
@@ -1102,175 +1091,68 @@
         </div>
         <button class="btn btn-gold" onclick="showPage('page-post-case',document.querySelector('[onclick*=page-post-case]'))">+ New Case</button>
       </div>
-      <div class="cases-grid">
-        <div class="case-card" onclick="openCase(0)">
-          <div class="case-card-header">
-            <div>
-              <div class="case-title-text">Property Dispute — 200 sq yd Plot</div>
-              <div class="case-meta">
-                <span class="case-meta-item">📂 Property</span>
-                <span class="case-meta-item">📍 New Delhi</span>
-              </div>
-            </div>
-            <span class="badge badge-ongoing">Ongoing</span>
-          </div>
-          <div class="progress-bar-container" style="margin-top:12px;">
-            <div class="progress-label"><span>Progress</span><span>65%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--text-muted);">
-            <span>👨‍⚖️ Adv. Priya Mehta</span>
-            <span>📅 Next: Mar 15, 2025</span>
-          </div>
-        </div>
-        <div class="case-card" onclick="openCase(1)">
-          <div class="case-card-header">
-            <div>
-              <div class="case-title-text">Family — Divorce Settlement</div>
-              <div class="case-meta">
-                <span class="case-meta-item">👨‍👩‍👧 Family</span>
-                <span class="case-meta-item">📍 Mumbai</span>
-              </div>
-            </div>
-            <span class="badge badge-waiting">Waiting</span>
-          </div>
-          <div class="progress-bar-container" style="margin-top:12px;">
-            <div class="progress-label"><span>Progress</span><span>20%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:20%"></div></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--text-muted);">
-            <span>👨‍⚖️ No lawyer assigned yet</span>
-            <span>5 proposals pending</span>
-          </div>
-        </div>
-        <div class="case-card" onclick="openCase(2)">
-          <div class="case-card-header">
-            <div>
-              <div class="case-title-text">Corporate — Contract Breach</div>
-              <div class="case-meta">
-                <span class="case-meta-item">🏢 Corporate</span>
-                <span class="case-meta-item">📍 Bengaluru</span>
-              </div>
-            </div>
-            <span class="badge badge-active">Active</span>
-          </div>
-          <div class="progress-bar-container" style="margin-top:12px;">
-            <div class="progress-label"><span>Progress</span><span>42%</span></div>
-            <div class="progress-bar"><div class="progress-fill" style="width:42%"></div></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--text-muted);">
-            <span>👨‍⚖️ Adv. Rajesh Kumar</span>
-            <span>📅 Next: Apr 2, 2025</span>
-          </div>
-        </div>
+      <div class="cases-grid" id="active-cases-grid">
+        <!-- Rendered dynamically by renderMyCases() -->
       </div>
     </div>
 
     <!-- ══ LAWYER PROPOSALS ══ -->
     <div class="page" id="page-proposals">
-      <div class="page-header header-row">
+      <div class="page-header header-row" style="margin-bottom:24px;">
         <div>
-          <div class="page-title">Lawyer Proposals</div>
-          <div class="page-subtitle">5 lawyers applied to your Property Dispute case</div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn btn-ghost btn-sm" onclick="showCompare()">⚖️ Compare Selected</button>
-          <select class="btn btn-ghost btn-sm" style="cursor:pointer;font-family:inherit;">
-            <option>Sort: Best Match</option>
-            <option>Sort: Fee (Low–High)</option>
-            <option>Sort: Experience</option>
-            <option>Sort: Success Rate</option>
-          </select>
+          <div class="page-title">Find a Lawyer</div>
+          <div class="page-subtitle">Search, review proposals, and manage your appointed lawyers</div>
         </div>
       </div>
 
-      <div class="lawyer-grid" id="lawyer-grid">
-        <!-- Lawyer 1 -->
-        <div class="lawyer-card">
-          <div class="lawyer-card-header">
-            <div class="lawyer-avatar">PM</div>
-            <div class="lawyer-name">Adv. Priya Mehta</div>
-            <div class="lawyer-spec">Property Law · Civil</div>
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:28px;">
+        <div id="tab-search" onclick="switchLawyerTab('search')" style="padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;color:var(--gold);border-bottom:2px solid var(--gold);margin-bottom:-2px;transition:all 0.2s;">🔍 Search Lawyers</div>
+        <div id="tab-proposals" onclick="switchLawyerTab('proposals')" style="padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;">📬 Proposals <span style="background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:4px;">5</span></div>
+        <div id="tab-appointed" onclick="switchLawyerTab('appointed')" style="padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s;">✅ My Lawyers <span style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:4px;">2</span></div>
+      </div>
+
+      <!-- ── TAB: SEARCH ── -->
+      <div id="lawyer-tab-search">
+        <!-- Search & Filter Bar -->
+        <div class="card" style="margin-bottom:24px;padding:20px 24px;">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+            <input id="lawyer-search-input" class="form-input" placeholder="Search by name, specialisation, or city…" oninput="filterLawyers()" style="flex:1;min-width:220px;background:var(--cream);border-color:var(--border);color:var(--text-primary);">
+            <select id="filter-specialty" onchange="filterLawyers()" class="btn btn-ghost" style="font-family:inherit;cursor:pointer;font-size:13px;">
+              <option value="">All Specialisations</option>
+              <option value="Property">Property</option>
+              <option value="Civil">Civil</option>
+              <option value="Family">Family / Divorce</option>
+              <option value="Corporate">Corporate</option>
+              <option value="Criminal">Criminal</option>
+              <option value="Labour">Labour</option>
+              <option value="Consumer">Consumer</option>
+            </select>
+            <select id="filter-sort" onchange="filterLawyers()" class="btn btn-ghost" style="font-family:inherit;cursor:pointer;font-size:13px;">
+              <option value="match">Sort: Best Match</option>
+              <option value="fee-asc">Fee: Low to High</option>
+              <option value="fee-desc">Fee: High to Low</option>
+              <option value="exp">Experience</option>
+              <option value="rating">Rating</option>
+            </select>
+
           </div>
-          <div class="lawyer-card-body">
-            <div class="compare-checkbox"><input type="checkbox" onchange="toggleCompare(this,'Priya Mehta')"> Add to Compare</div>
-            <div class="lawyer-stats">
-              <div class="lawyer-stat"><div class="lawyer-stat-val">14</div><div class="lawyer-stat-label">Yrs Exp</div></div>
-              <div class="lawyer-stat"><div class="lawyer-stat-val">89%</div><div class="lawyer-stat-label">Success</div></div>
-              <div class="lawyer-stat"><div class="lawyer-stat-val">240</div><div class="lawyer-stat-label">Cases Won</div></div>
-            </div>
-            <div class="stars">★★★★★</div> <span style="font-size:12px;color:var(--text-muted);">4.9 (87 reviews)</span>
-            <div class="lawyer-fee">
-              <span class="fee-label">Proposed Fee</span>
-              <span class="fee-amount">₹75,000</span>
-            </div>
-            <div class="lawyer-strategy">"I will challenge the property deed on grounds of forgery and file for an injunction immediately to protect your rights."</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">🏆 Delhi Bar Association Award 2022 · LLM Harvard</div>
-            <div class="lawyer-actions">
-              <button class="btn btn-ghost btn-sm" onclick="showLawyerProfile('Priya Mehta')">View Profile</button>
-              <button class="btn btn-ghost btn-sm" onclick="showPage('page-chat',document.querySelector('[onclick*=page-chat]'))">💬 Chat</button>
-              <button class="btn btn-gold btn-sm" onclick="appointLawyer('Priya Mehta')">✓ Appoint</button>
-            </div>
-          </div>
+          <div id="search-result-count" style="font-size:12px;color:var(--text-muted);margin-top:12px;">Showing 8 lawyers</div>
         </div>
 
-        <!-- Lawyer 2 -->
-        <div class="lawyer-card">
-          <div class="lawyer-card-header" style="background:linear-gradient(135deg,#1a3a2a,#2d6a4f);">
-            <div class="lawyer-avatar" style="background:linear-gradient(135deg,#52b788,#74c69d);">RK</div>
-            <div class="lawyer-name">Adv. Rajesh Kumar</div>
-            <div class="lawyer-spec">Civil · Property · Family</div>
-          </div>
-          <div class="lawyer-card-body">
-            <div class="compare-checkbox"><input type="checkbox" onchange="toggleCompare(this,'Rajesh Kumar')"> Add to Compare</div>
-            <div class="lawyer-stats">
-              <div class="lawyer-stat"><div class="lawyer-stat-val">22</div><div class="lawyer-stat-label">Yrs Exp</div></div>
-              <div class="lawyer-stat"><div class="lawyer-stat-val">94%</div><div class="lawyer-stat-label">Success</div></div>
-              <div class="lawyer-stat"><div class="lawyer-stat-val">410</div><div class="lawyer-stat-label">Cases Won</div></div>
-            </div>
-            <div class="stars">★★★★★</div> <span style="font-size:12px;color:var(--text-muted);">4.8 (132 reviews)</span>
-            <div class="lawyer-fee">
-              <span class="fee-label">Proposed Fee</span>
-              <span class="fee-amount">₹1,20,000</span>
-            </div>
-            <div class="lawyer-strategy">"I'll pursue a two-pronged approach: title verification challenge + civil injunction to halt any transfers."</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">🏆 Supreme Court Advocate · 3× Best Lawyer Award</div>
-            <div class="lawyer-actions">
-              <button class="btn btn-ghost btn-sm" onclick="showLawyerProfile('Rajesh Kumar')">View Profile</button>
-              <button class="btn btn-ghost btn-sm">💬 Chat</button>
-              <button class="btn btn-gold btn-sm" onclick="appointLawyer('Rajesh Kumar')">✓ Appoint</button>
-            </div>
-          </div>
-        </div>
+        <div class="lawyer-grid" id="search-lawyer-grid"></div>
+      </div>
 
-        <!-- Lawyer 3 -->
-        <div class="lawyer-card">
-          <div class="lawyer-card-header" style="background:linear-gradient(135deg,#2d1b69,#553c9a);">
-            <div class="lawyer-avatar" style="background:linear-gradient(135deg,#a78bfa,#c4b5fd);">SA</div>
-            <div class="lawyer-name">Adv. Sneha Agarwal</div>
-            <div class="lawyer-spec">Property · Real Estate</div>
-          </div>
-          <div class="lawyer-card-body">
-            <div class="compare-checkbox"><input type="checkbox" onchange="toggleCompare(this,'Sneha Agarwal')"> Add to Compare</div>
-            <div class="lawyer-stats">
-              <div class="lawyer-stat"><div class="lawyer-stat-val">9</div><div class="lawyer-stat-label">Yrs Exp</div></div>
-              <div class="lawyer-stat"><div class="lawyer-stat-val">82%</div><div class="lawyer-stat-label">Success</div></div>
-              <div class="lawyer-stat"><div class="lawyer-stat-val">118</div><div class="lawyer-stat-label">Cases Won</div></div>
-            </div>
-            <div class="stars">★★★★☆</div> <span style="font-size:12px;color:var(--text-muted);">4.5 (54 reviews)</span>
-            <div class="lawyer-fee">
-              <span class="fee-label">Proposed Fee</span>
-              <span class="fee-amount">₹55,000</span>
-            </div>
-            <div class="lawyer-strategy">"Specialized in real estate frauds. I'll file a criminal complaint alongside the civil case for faster resolution."</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">🏆 Rising Star — Legal 500 India 2023</div>
-            <div class="lawyer-actions">
-              <button class="btn btn-ghost btn-sm" onclick="showLawyerProfile('Sneha Agarwal')">View Profile</button>
-              <button class="btn btn-ghost btn-sm">💬 Chat</button>
-              <button class="btn btn-gold btn-sm" onclick="appointLawyer('Sneha Agarwal')">✓ Appoint</button>
-            </div>
-          </div>
-        </div>
+      <!-- ── TAB: PROPOSALS ── -->
+      <div id="lawyer-tab-proposals" style="display:none;">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">These lawyers have applied to your open cases. Review and appoint one to get started.</div>
+        <div class="lawyer-grid" id="proposals-lawyer-grid"></div>
+      </div>
+
+      <!-- ── TAB: MY LAWYERS ── -->
+      <div id="lawyer-tab-appointed" style="display:none;">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Lawyers currently appointed to your active cases.</div>
+        <div style="display:flex;flex-direction:column;gap:16px;" id="appointed-list"></div>
       </div>
     </div>
 
@@ -1339,110 +1221,6 @@
     </div>
 
     <!-- ══ CHAT ══ -->
-    <div class="page" id="page-chat">
-      <div class="page-header header-row" style="margin-bottom:24px;">
-        <div>
-          <div class="page-title">Messages</div>
-          <div class="page-subtitle">Communicate privately with your lawyers</div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:300px 1fr;gap:0;background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--card-shadow);border:1px solid rgba(0,0,0,0.06);overflow:hidden;height:600px;">
-
-        <!-- Conversation List -->
-        <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;">
-          <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
-            <input class="form-input" placeholder="🔍  Search conversations…" style="background:var(--cream);border-color:var(--border);color:var(--text-primary);font-size:13px;padding:9px 14px;">
-          </div>
-          <div style="overflow-y:auto;flex:1;">
-            <!-- Convo 1 - active -->
-            <div id="convo-1" onclick="switchChat(1)" style="display:flex;gap:12px;padding:16px 20px;cursor:pointer;background:rgba(201,168,76,0.07);border-left:3px solid var(--gold);">
-              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--navy);flex-shrink:0;">PM</div>
-              <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                  <div style="font-size:13px;font-weight:600;color:var(--navy);">Adv. Priya Mehta</div>
-                  <div style="font-size:10px;color:var(--text-muted);">10:45 AM</div>
-                </div>
-                <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">I'll prepare you thoroughly beforehand.</div>
-                <div style="margin-top:4px;"><span style="font-size:10px;background:var(--gold);color:var(--navy);padding:2px 7px;border-radius:100px;font-weight:700;">Property Dispute</span></div>
-              </div>
-            </div>
-            <!-- Convo 2 -->
-            <div id="convo-2" onclick="switchChat(2)" style="display:flex;gap:12px;padding:16px 20px;cursor:pointer;border-left:3px solid transparent;border-bottom:1px solid var(--border);">
-              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--navy-light),var(--navy));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--white);flex-shrink:0;">RK</div>
-              <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                  <div style="font-size:13px;font-weight:600;color:var(--navy);">Adv. Rajesh Kumar</div>
-                  <div style="font-size:10px;color:var(--text-muted);">Yesterday</div>
-                </div>
-                <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Please share the employment contract.</div>
-                <div style="margin-top:4px;"><span style="font-size:10px;background:var(--cream);color:var(--text-secondary);padding:2px 7px;border-radius:100px;font-weight:600;border:1px solid var(--border);">Labour Case</span></div>
-              </div>
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:4px;flex-shrink:0;"></div>
-            </div>
-            <!-- Convo 3 -->
-            <div id="convo-3" onclick="switchChat(3)" style="display:flex;gap:12px;padding:16px 20px;cursor:pointer;border-left:3px solid transparent;">
-              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;flex-shrink:0;">AS</div>
-              <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                  <div style="font-size:13px;font-weight:600;color:var(--navy);">Adv. Anita Singh</div>
-                  <div style="font-size:10px;color:var(--text-muted);">Mar 1</div>
-                </div>
-                <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Case has been successfully closed. ✅</div>
-                <div style="margin-top:4px;"><span style="font-size:10px;background:#ecfdf5;color:#059669;padding:2px 7px;border-radius:100px;font-weight:600;">Closed</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Active Chat Window -->
-        <div style="display:flex;flex-direction:column;" id="chat-window">
-          <!-- Header -->
-          <div style="background:var(--navy);padding:18px 24px;display:flex;align-items:center;gap:14px;flex-shrink:0;">
-            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--navy);" id="chat-hd-avatar">PM</div>
-            <div style="flex:1;">
-              <div style="font-size:15px;font-weight:600;color:white;" id="chat-hd-name">Adv. Priya Mehta</div>
-              <div style="font-size:12px;color:rgba(255,255,255,0.45);" id="chat-hd-case">Property Dispute — 200 sq yd Plot</div>
-            </div>
-            <div style="display:flex;gap:8px;">
-              <button style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">📞 Call</button>
-              <button style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">📅 Schedule</button>
-            </div>
-          </div>
-          <!-- Messages -->
-          <div id="chat-messages-main" style="flex:1;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:16px;background:#fafaf8;">
-            <div style="text-align:center;margin-bottom:8px;"><span style="font-size:11px;color:var(--text-muted);background:var(--border);padding:4px 14px;border-radius:100px;">Today</span></div>
-            <div class="chat-msg received" style="max-width:58%;">
-              <div class="chat-bubble">Hello! I've reviewed your case documents. We have a strong case. The 1995 deed clearly establishes your ownership.</div>
-              <div class="chat-time">10:30 AM</div>
-            </div>
-            <div class="chat-msg sent" style="max-width:58%;">
-              <div class="chat-bubble">Thank you! What documents do I need to bring for the next hearing?</div>
-              <div class="chat-time">10:35 AM</div>
-            </div>
-            <div class="chat-msg received" style="max-width:58%;">
-              <div class="chat-bubble">Please bring the original 1995 deed, any tax receipts from that period, and 2 passport-size photos. I'll handle the rest.</div>
-              <div class="chat-time">10:40 AM</div>
-            </div>
-            <div class="chat-msg sent" style="max-width:58%;">
-              <div class="chat-bubble">Got it. Will I need to testify?</div>
-              <div class="chat-time">10:42 AM</div>
-            </div>
-            <div class="chat-msg received" style="max-width:58%;">
-              <div class="chat-bubble">Most likely yes during the witness examination hearing in April. Don't worry — I'll prepare you thoroughly beforehand.</div>
-              <div class="chat-time">10:45 AM</div>
-            </div>
-          </div>
-          <!-- Input -->
-          <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:center;background:var(--white);flex-shrink:0;">
-            <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" title="Attach file">📎</button>
-            <input class="chat-input" id="chat-input-main" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendMainChat()" style="border-radius:10px;background:var(--cream);border-color:var(--border);color:var(--text-primary);">
-            <button class="chat-send" onclick="sendMainChat()" style="width:42px;height:42px;font-size:18px;">➤</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
     <!-- ══ NOTIFICATIONS ══ -->
     <div class="page" id="page-notifications">
       <div class="page-header header-row">
@@ -1630,58 +1408,60 @@
 
 <!-- ████████████████████████████████████████ MODALS ██ -->
 
-<!-- Compare Modal -->
-<div id="modal-compare" style="display:none;" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
-  <div class="modal-box" style="max-width:700px;">
-    <button class="modal-close" onclick="document.getElementById('modal-compare').style.display='none'">✕</button>
-    <div class="modal-title">⚖️ Lawyer Comparison</div>
-    <div style="overflow-x:auto;">
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th style="text-align:left;">Criteria</th>
-            <th>Adv. Priya Mehta</th>
-            <th>Adv. Rajesh Kumar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Experience</td><td>14 years</td><td>22 years</td></tr>
-          <tr><td>Success Rate</td><td style="color:var(--success);font-weight:600;">89%</td><td style="color:var(--success);font-weight:600;">94%</td></tr>
-          <tr><td>Cases Won</td><td>240</td><td>410</td></tr>
-          <tr><td>Rating</td><td>⭐ 4.9</td><td>⭐ 4.8</td></tr>
-          <tr><td>Proposed Fee</td><td style="color:var(--success);font-weight:600;">₹75,000 ✓ Lower</td><td>₹1,20,000</td></tr>
-          <tr><td>Specialization</td><td>Property, Civil</td><td>Civil, Property, Family</td></tr>
-          <tr><td>Court</td><td>Delhi HC</td><td>Supreme Court</td></tr>
-          <tr><td>Strategy</td><td>Injunction + Title Challenge</td><td>Two-pronged approach</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:20px;">
-      <button class="btn btn-gold btn-block" onclick="appointLawyer('Priya Mehta');document.getElementById('modal-compare').style.display='none'">✓ Appoint Adv. Priya Mehta</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- Lawyer Profile Modal -->
 <div id="modal-lawyer" style="display:none;" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('modal-lawyer').style.display='none'">✕</button>
     <div style="text-align:center;padding:20px 0;">
-      <div class="lawyer-avatar" style="width:88px;height:88px;margin:0 auto 16px;font-size:32px;">PM</div>
+      <div class="lawyer-avatar" style="width:88px;height:88px;margin:0 auto 16px;font-size:32px;" id="modal-lawyer-avatar">PM</div>
       <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--navy);font-weight:700;" id="modal-lawyer-name">Adv. Priya Mehta</div>
-      <div style="color:var(--gold);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Senior Property Lawyer</div>
-      <div class="stars" style="font-size:18px;margin:12px 0;">★★★★★</div>
-      <div style="font-size:13px;color:var(--text-muted);">4.9 / 5.0 from 87 reviews</div>
+      <div style="color:var(--gold);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-top:4px;" id="modal-lawyer-spec">Senior Property Lawyer</div>
+      <div class="stars" style="font-size:18px;margin:12px 0;" id="modal-lawyer-stars">★★★★★</div>
+      <div style="font-size:13px;color:var(--text-muted);" id="modal-lawyer-rating">4.9 / 5.0 from 87 reviews</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;">
-      <div style="text-align:center;background:var(--cream);padding:14px;border-radius:10px;"><div style="font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);">14</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Years Exp.</div></div>
-      <div style="text-align:center;background:var(--cream);padding:14px;border-radius:10px;"><div style="font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);">89%</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Success</div></div>
-      <div style="text-align:center;background:var(--cream);padding:14px;border-radius:10px;"><div style="font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);">240</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Won</div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;" id="modal-lawyer-stats">
+      <div style="text-align:center;background:var(--cream);padding:14px;border-radius:10px;"><div style="font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);" id="modal-stat-exp">14</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Years Exp.</div></div>
+      <div style="text-align:center;background:var(--cream);padding:14px;border-radius:10px;"><div style="font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);" id="modal-stat-success">89%</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Success</div></div>
+      <div style="text-align:center;background:var(--cream);padding:14px;border-radius:10px;"><div style="font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);" id="modal-stat-cases">240</div><div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Won</div></div>
     </div>
-    <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">Adv. Priya Mehta is a Senior Advocate at Delhi High Court specializing in property disputes, civil litigation, and real estate fraud. She has represented clients in over 300 cases and is known for her sharp cross-examination skills.</div>
+    <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;" id="modal-lawyer-bio">Adv. Priya Mehta is a Senior Advocate at Delhi High Court specializing in property disputes, civil litigation, and real estate fraud.</div>
+
+    <!-- Contact Details -->
+    <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+      <div style="font-weight:600;color:var(--navy);margin-bottom:12px;font-size:14px;">📞 Contact Details</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">📱</span>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Mobile</div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy);" id="modal-lawyer-mobile">+91 98765 43210</div>
+            </div>
+          </div>
+          <a id="modal-call-btn" href="tel:+919876543210" style="display:inline-flex;align-items:center;gap:6px;background:var(--navy);color:white;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;">📞 Call</a>
+        </div>
+        <div style="height:1px;background:var(--border);"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">💬</span>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">WhatsApp</div>
+              <div style="font-size:14px;font-weight:600;color:var(--navy);" id="modal-lawyer-whatsapp">+91 98765 43210</div>
+            </div>
+          </div>
+          <a id="modal-whatsapp-btn" href="https://wa.me/919876543210" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:white;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+
     <div style="margin-bottom:16px;">
       <div style="font-weight:600;color:var(--navy);margin-bottom:8px;font-size:14px;">🏆 Achievements</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:12px;">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:12px;" id="modal-lawyer-awards">
         <span style="background:rgba(201,168,76,0.1);color:var(--gold);padding:4px 12px;border-radius:100px;border:1px solid rgba(201,168,76,0.2);">LLM — Harvard Law</span>
         <span style="background:rgba(201,168,76,0.1);color:var(--gold);padding:4px 12px;border-radius:100px;border:1px solid rgba(201,168,76,0.2);">Delhi Bar Assoc. Award 2022</span>
         <span style="background:rgba(201,168,76,0.1);color:var(--gold);padding:4px 12px;border-radius:100px;border:1px solid rgba(201,168,76,0.2);">Top 10 Property Lawyers India</span>
@@ -1689,20 +1469,29 @@
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('modal-lawyer').style.display='none'">Close</button>
-      <button class="btn btn-gold" style="flex:2;" onclick="appointLawyer('Priya Mehta');document.getElementById('modal-lawyer').style.display='none'">✓ Select & Appoint</button>
+      <button class="btn btn-gold" style="flex:2;" id="modal-appoint-btn" onclick="appointLawyer('Priya Mehta');document.getElementById('modal-lawyer').style.display='none'">✓ Select & Appoint</button>
     </div>
   </div>
 </div>
 
 <!-- Appoint Confirm Modal -->
 <div id="modal-appoint" style="display:none;" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
-  <div class="modal-box" style="max-width:420px;text-align:center;">
+  <div class="modal-box" style="max-width:440px;">
     <button class="modal-close" onclick="document.getElementById('modal-appoint').style.display='none'">✕</button>
-    <div style="font-size:56px;margin:16px 0;">⚖️</div>
-    <div class="modal-title" style="text-align:center;" id="appoint-confirm-name">Appoint Adv. Priya Mehta?</div>
-    <p style="font-size:14px;color:var(--text-muted);margin-bottom:24px;">This lawyer will be officially assigned to your case and will gain access to your case documents. You agree to their proposed fee structure.</p>
-    <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:24px;font-size:14px;">
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Agreed Fee</span><strong>₹75,000</strong></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:52px;margin-bottom:12px;">⚖️</div>
+      <div class="modal-title" style="text-align:center;" id="appoint-confirm-name">Appoint Adv. Priya Mehta?</div>
+      <p style="font-size:14px;color:var(--text-muted);margin-top:8px;">This lawyer will be officially assigned to the selected case and will gain access to your case documents.</p>
+    </div>
+    <div class="form-group-light" style="margin-bottom:16px;">
+      <label class="form-label-light">Assign to Case *</label>
+      <select class="form-input-light" id="appoint-case-select" style="cursor:pointer;">
+        <option value="">— Select a case —</option>
+      </select>
+      <div id="appoint-case-error" style="display:none;font-size:12px;color:var(--danger);margin-top:6px;">Please select a case to assign this lawyer to.</div>
+    </div>
+    <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:24px;font-size:14px;" id="appoint-fee-row">
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Agreed Fee</span><strong id="appoint-fee-label">—</strong></div>
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-ghost" style="flex:1;" onclick="document.getElementById('modal-appoint').style.display='none'">Cancel</button>
@@ -1823,15 +1612,165 @@
 <div class="toast-container" id="toast-container"></div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ─── API LAYER ───────────────────────────────────────────
+// Swap BASE_URL to your real backend. All fetch() calls are
+// isolated here — no other code touches the network directly.
+var API = (function() {
+  var BASE_URL = '/api/v1'; // ← change to your backend URL
+
+  // Simulated delay to mimic real async network calls.
+  // DELETE this function and use real fetch() when backend is ready.
+  function _mockFetch(data, ms) {
+    return new Promise(function(resolve) {
+      setTimeout(function() { resolve({ ok: true, json: function() { return Promise.resolve(data); } }); }, ms || 400);
+    });
+  }
+
+  return {
+    /**
+     * POST /api/v1/cases
+     * Payload shape expected by backend:
+     * {
+     *   category: string,
+     *   title: string,
+     *   description: string,
+     *   location: string,
+     *   court: string,
+     *   urgency: "urgent" | "high" | "normal",
+     *   budget: string,
+     *   client_id: string
+     * }
+     * Backend returns: { id, case_number, status, created_at, ...payload }
+     */
+    createCase: function(payload) {
+      // ── REAL (uncomment when backend is ready) ──
+      // return fetch(BASE_URL + '/cases', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+      //   body: JSON.stringify(payload)
+      // });
+
+      // ── MOCK ──
+      var newCase = Object.assign({}, payload, {
+        id: 'case_' + Date.now(),
+        case_number: 'LB-' + new Date().getFullYear() + '-' + String(myCases.length + 1).padStart(3, '0'),
+        status: 'pending',
+        progress: 0,
+        lawyer_id: null,
+        lawyer_name: null,
+        next_hearing: null,
+        created_at: new Date().toISOString()
+      });
+      return _mockFetch(newCase);
+    },
+
+    /**
+     * POST /api/v1/cases/:caseId/lawyer
+     * Payload: { lawyer_id: number }
+     * Backend returns: { case_id, lawyer_id, appointed_at, status }
+     */
+    appointLawyer: function(caseId, lawyerId) {
+      // ── REAL ──
+      // return fetch(BASE_URL + '/cases/' + caseId + '/lawyer', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() },
+      //   body: JSON.stringify({ lawyer_id: lawyerId })
+      // });
+
+      // ── MOCK ──
+      return _mockFetch({
+        case_id: caseId,
+        lawyer_id: lawyerId,
+        appointed_at: new Date().toISOString(),
+        status: 'active'
+      });
+    },
+
+    /**
+     * GET /api/v1/cases  (fetch all cases for current user)
+     * Backend returns: [{ id, case_number, title, category, status, ... }]
+     */
+    getCases: function() {
+      // return fetch(BASE_URL + '/cases', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+      return _mockFetch(myCases.slice());
+    },
+
+    /**
+     * GET /api/v1/lawyers/appointed  (fetch lawyers appointed by current user)
+     * Backend returns: [{ lawyer_id, case_id, lawyer: {...}, appointed_at }]
+     */
+    getAppointedLawyers: function() {
+      // return fetch(BASE_URL + '/lawyers/appointed', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+      return _mockFetch(allLawyers.filter(function(l) { return l.appointed; }));
+    }
+  };
+})();
+
 // ─── STATE ───────────────────────────────────────────────
 var state = {
-  currentUser: { name: 'Rahul Sharma', email: 'rahul@email.com', initials: 'RS', phone: '' },
+  currentUser: { name: 'Rahul Sharma', email: 'rahul@email.com', initials: 'RS', phone: '', id: 'user_001' },
   selectedCategory: null,
   selectedUrgency: null,
   signupStep: 1,
-  compareList: [],
-  pendingAppointLawyer: null
+  pendingAppointLawyer: null  // { id, name, fee, feeLabel }
 };
+
+// ─── LOCAL DATA STORE ─────────────────────────────────────
+// This mirrors what would come from the backend on page load (GET /api/v1/cases).
+// Seed data for demo — in production, replace with an API call on app init.
+var myCases = [
+  {
+    id: 'case_001',
+    case_number: 'LB-2025-001',
+    category: 'Property',
+    title: 'Property Dispute — 200 sq yd Plot',
+    description: 'Dispute over 200 sq yd plot in Dwarka Sector 12.',
+    location: 'New Delhi',
+    court: 'Delhi High Court',
+    urgency: 'urgent',
+    budget: '₹1,00,000',
+    status: 'ongoing',
+    progress: 65,
+    lawyer_id: 1,
+    lawyer_name: 'Adv. Priya Mehta',
+    next_hearing: 'Mar 15, 2025',
+    created_at: '2025-01-10T09:00:00Z'
+  },
+  {
+    id: 'case_002',
+    case_number: 'LB-2025-002',
+    category: 'Family/Divorce',
+    title: 'Family — Divorce Settlement',
+    description: 'Divorce settlement proceedings.',
+    location: 'Mumbai',
+    court: 'Mumbai Family Court',
+    urgency: 'normal',
+    budget: '',
+    status: 'pending',
+    progress: 20,
+    lawyer_id: null,
+    lawyer_name: null,
+    next_hearing: null,
+    created_at: '2025-02-01T11:00:00Z'
+  },
+  {
+    id: 'case_003',
+    case_number: 'LB-2025-003',
+    category: 'Corporate',
+    title: 'Corporate — Contract Breach',
+    description: 'Breach of service contract by vendor.',
+    location: 'Bengaluru',
+    court: 'Karnataka High Court',
+    urgency: 'high',
+    budget: '₹2,00,000',
+    status: 'active',
+    progress: 42,
+    lawyer_id: 2,
+    lawyer_name: 'Adv. Rajesh Kumar',
+    next_hearing: 'Apr 2, 2025',
+    created_at: '2025-01-20T14:00:00Z'
+  }
+];
 
 // ─── SCREEN NAV ──────────────────────────────────────────
 function showScreen(id) {
@@ -1849,6 +1788,9 @@ function showPage(id, navEl) {
     for (var j = 0; j < navItems.length; j++) navItems[j].classList.remove('active');
     navEl.classList.add('active');
   }
+  // Re-render dynamic pages on every navigation
+  if (id === 'page-active-cases') renderMyCases();
+  if (id === 'page-proposals') { switchLawyerTab('search'); }
 }
 
 // ─── GREETING ────────────────────────────────────────────
@@ -2114,13 +2056,57 @@ function populateReview() {
 }
 
 function submitCase() {
-  for (var i = 1; i <= 4; i++) {
-    var el = document.getElementById('case-form-' + i);
-    if (el) el.style.display = 'none';
-  }
-  document.getElementById('case-form-success').style.display = '';
-  document.getElementById('case-stepper').style.opacity = '0.5';
-  showToast('Case submitted successfully!', 'success');
+  // Validate required fields before calling API
+  var titleEl  = document.getElementById('case-title');
+  var descEl   = document.getElementById('case-desc');
+  var title    = titleEl  ? titleEl.value.trim()  : '';
+  var desc     = descEl   ? descEl.value.trim()   : '';
+
+  if (!state.selectedCategory) { showToast('Please select a case category.', 'danger'); caseStepNext(1); return; }
+  if (!title)                  { showToast('Please enter a case title.', 'danger'); caseStepNext(2); return; }
+  if (!state.selectedUrgency)  { showToast('Please select an urgency level.', 'danger'); caseStepNext(2); return; }
+
+  var payload = {
+    client_id:   state.currentUser.id,
+    category:    state.selectedCategory,
+    title:       title,
+    description: desc,
+    location:    (document.getElementById('case-location') || {}).value || '',
+    court:       (document.getElementById('case-court')    || {}).value || '',
+    urgency:     state.selectedUrgency,
+    budget:      (document.getElementById('case-budget')   || {}).value || ''
+  };
+
+  // Disable submit button to prevent double-submit
+  var submitBtn = document.querySelector('[onclick="submitCase()"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
+
+  API.createCase(payload).then(function(res) {
+    return res.json();
+  }).then(function(newCase) {
+    // Add to local store (mirrors backend returning the created resource)
+    myCases.push(newCase);
+
+    // Show success screen
+    for (var i = 1; i <= 4; i++) {
+      var el = document.getElementById('case-form-' + i);
+      if (el) el.style.display = 'none';
+    }
+    document.getElementById('case-form-success').style.display = '';
+    document.getElementById('case-stepper').style.opacity = '0.5';
+
+    // Update dashboard stats + nav badge
+    updateDashboardStats();
+    showToast('Case ' + newCase.case_number + ' submitted!', 'success');
+
+    // Reset form state for next use
+    state.selectedCategory = null;
+    state.selectedUrgency  = null;
+
+  }).catch(function(err) {
+    showToast('Failed to submit case. Please try again.', 'danger');
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = '🚀 Submit Case'; }
+  });
 }
 
 // ─── UPLOAD ──────────────────────────────────────────────
@@ -2144,72 +2130,253 @@ function handleUpload(input, listId) {
   showToast(input.files.length + ' file(s) uploaded', 'success');
 }
 
-// ─── LAWYER ACTIONS ──────────────────────────────────────
-var compareList = [];
-
-function toggleCompare(cb, name) {
-  if (cb.checked) {
-    compareList.push(name);
-  } else {
-    var newList = [];
-    for (var i = 0; i < compareList.length; i++) {
-      if (compareList[i] !== name) newList.push(compareList[i]);
-    }
-    compareList = newList;
-  }
-}
-
-function showCompare() {
-  document.getElementById('modal-compare').style.display = 'flex';
-}
-
 function showLawyerProfile(name) {
+  var lawyer = allLawyers.find(function(l) { return l.name.replace('Adv. ', '') === name; });
+
   document.getElementById('modal-lawyer-name').textContent = 'Adv. ' + name;
+
+  if (lawyer) {
+    // Avatar
+    var avatarEl = document.getElementById('modal-lawyer-avatar');
+    if (avatarEl) { avatarEl.textContent = lawyer.initials; if (lawyer.avatarBg) avatarEl.style.cssText += ';' + lawyer.avatarBg; }
+
+    // Spec / rating
+    var specEl = document.getElementById('modal-lawyer-spec');
+    if (specEl) specEl.textContent = lawyer.spec + ' · ' + lawyer.city;
+
+    var starsEl = document.getElementById('modal-lawyer-stars');
+    if (starsEl) {
+      var full = Math.floor(lawyer.rating);
+      starsEl.textContent = '★'.repeat(full) + '☆'.repeat(5 - full);
+    }
+
+    var ratingEl = document.getElementById('modal-lawyer-rating');
+    if (ratingEl) ratingEl.textContent = lawyer.rating + ' / 5.0 from ' + lawyer.reviews + ' reviews';
+
+    // Stats
+    var expEl = document.getElementById('modal-stat-exp');
+    if (expEl) expEl.textContent = lawyer.exp;
+    var sucEl = document.getElementById('modal-stat-success');
+    if (sucEl) sucEl.textContent = lawyer.success + '%';
+    var casEl = document.getElementById('modal-stat-cases');
+    if (casEl) casEl.textContent = lawyer.cases;
+
+    // Bio
+    var bioEl = document.getElementById('modal-lawyer-bio');
+    if (bioEl) bioEl.textContent = lawyer.bio || '';
+
+    // Contact — mobile
+    var mobileEl = document.getElementById('modal-lawyer-mobile');
+    if (mobileEl) mobileEl.textContent = lawyer.mobile || 'Not provided';
+    var callBtn = document.getElementById('modal-call-btn');
+    if (callBtn) {
+      if (lawyer.mobile) {
+        callBtn.href = 'tel:' + lawyer.mobile.replace(/\s/g, '');
+        callBtn.style.display = 'inline-flex';
+      } else {
+        callBtn.style.display = 'none';
+      }
+    }
+
+    // Contact — WhatsApp
+    var waEl = document.getElementById('modal-lawyer-whatsapp');
+    if (waEl) waEl.textContent = lawyer.mobile || 'Not provided';
+    var waBtn = document.getElementById('modal-whatsapp-btn');
+    if (waBtn) {
+      if (lawyer.whatsapp) {
+        waBtn.href = 'https://wa.me/' + lawyer.whatsapp;
+        waBtn.style.display = 'inline-flex';
+      } else {
+        waBtn.style.display = 'none';
+      }
+    }
+
+    // Achievements
+    var awardsEl = document.getElementById('modal-lawyer-awards');
+    if (awardsEl && lawyer.awards) {
+      awardsEl.innerHTML = lawyer.awards.split(' · ').map(function(a) {
+        return '<span style="background:rgba(201,168,76,0.1);color:var(--gold);padding:4px 12px;border-radius:100px;border:1px solid rgba(201,168,76,0.2);">' + a + '</span>';
+      }).join('');
+    }
+
+    // Appoint button
+    var appointBtn = document.getElementById('modal-appoint-btn');
+    if (appointBtn) appointBtn.setAttribute('onclick', "appointLawyer('" + name + "');document.getElementById('modal-lawyer').style.display='none'");
+  }
+
   document.getElementById('modal-lawyer').style.display = 'flex';
 }
 
 function appointLawyer(name) {
-  state.pendingAppointLawyer = name;
+  // Find the lawyer record to get id and fee
+  var lawyer = allLawyers.find(function(l) { return l.name.replace('Adv. ', '') === name; });
+  if (!lawyer) return;
+
+  state.pendingAppointLawyer = { id: lawyer.id, name: name, fee: lawyer.fee, feeLabel: lawyer.feeLabel };
+
   document.getElementById('appoint-confirm-name').textContent = 'Appoint Adv. ' + name + '?';
+  document.getElementById('appoint-fee-label').textContent = lawyer.feeLabel;
+
+  // Populate case dropdown with cases that don't have a lawyer yet
+  var select = document.getElementById('appoint-case-select');
+  select.innerHTML = '<option value="">— Select a case —</option>';
+  var available = myCases.filter(function(c) { return !c.lawyer_id; });
+  if (!available.length) {
+    select.innerHTML = '<option value="">All cases already have a lawyer</option>';
+  } else {
+    available.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.case_number + ' · ' + c.title;
+      select.appendChild(opt);
+    });
+  }
+
+  document.getElementById('appoint-case-error').style.display = 'none';
   document.getElementById('modal-appoint').style.display = 'flex';
 }
 
 function confirmAppoint() {
-  document.getElementById('modal-appoint').style.display = 'none';
-  document.getElementById('modal-lawyer').style.display  = 'none';
-  showToast('Adv. ' + state.pendingAppointLawyer + ' has been appointed!', 'success');
-  setTimeout(function() {
-    showPage('page-active-cases', document.querySelector('[onclick*=page-active-cases]'));
-  }, 600);
+  var select   = document.getElementById('appoint-case-select');
+  var caseId   = select.value;
+  var errEl    = document.getElementById('appoint-case-error');
+
+  if (!caseId) {
+    errEl.style.display = '';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var lawyer   = state.pendingAppointLawyer;
+  if (!lawyer) return;
+
+  var confirmBtn = document.querySelector('[onclick="confirmAppoint()"]');
+  if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.textContent = 'Appointing…'; }
+
+  API.appointLawyer(caseId, lawyer.id).then(function(res) {
+    return res.json();
+  }).then(function(result) {
+    // Update the local case record
+    var caseRecord = myCases.find(function(c) { return c.id === result.case_id; });
+    if (caseRecord) {
+      caseRecord.lawyer_id   = result.lawyer_id;
+      caseRecord.lawyer_name = 'Adv. ' + lawyer.name;
+      caseRecord.status      = 'active';
+    }
+
+    // Mark lawyer as appointed in allLawyers list
+    var lawyerRecord = allLawyers.find(function(l) { return l.id === result.lawyer_id; });
+    if (lawyerRecord) {
+      lawyerRecord.appointed     = true;
+      lawyerRecord.appointedCase = caseRecord ? caseRecord.title : '';
+    }
+
+    document.getElementById('modal-appoint').style.display = 'none';
+    document.getElementById('modal-lawyer').style.display  = 'none';
+
+    showToast('Adv. ' + lawyer.name + ' appointed successfully!', 'success');
+    updateDashboardStats();
+
+    // Navigate to active cases so user sees the update
+    setTimeout(function() {
+      showPage('page-active-cases', document.querySelector('[onclick*=page-active-cases]'));
+    }, 600);
+
+  }).catch(function(err) {
+    showToast('Appointment failed. Please try again.', 'danger');
+  }).finally(function() {
+    if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.textContent = '✓ Confirm Appointment'; }
+  });
 }
 
-// ─── CHAT ────────────────────────────────────────────────
-function sendChatMsg() {
-  var input = document.getElementById('chat-input');
-  var msg   = input.value.trim();
-  if (!msg) return;
-  var msgs  = document.getElementById('chat-messages');
-  var time  = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  var div   = document.createElement('div');
-  div.className = 'chat-msg sent';
-  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + time + '</div>';
-  msgs.appendChild(div);
-  input.value = '';
-  msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(function() {
-    var rep = document.createElement('div');
-    rep.className = 'chat-msg received';
-    rep.innerHTML = '<div class="chat-bubble">Thank you for the message. I\'ll review and get back to you shortly.</div>'
-                  + '<div class="chat-time">' + time + '</div>';
-    msgs.appendChild(rep);
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 1200);
+// ─── RENDER: MY CASES ─────────────────────────────────────
+var CATEGORY_ICONS = {
+  'Property':'🏠', 'Family/Divorce':'👨‍👩‍👧', 'Corporate':'🏢',
+  'Civil':'📜', 'Criminal':'⚠️', 'Labour':'👷', 'Consumer':'🛒', 'Other':'📋'
+};
+var STATUS_BADGE = {
+  'pending':   'badge-waiting',
+  'active':    'badge-active',
+  'ongoing':   'badge-ongoing',
+  'completed': 'badge-completed',
+  'closed':    'badge-closed',
+  'waiting':   'badge-waiting'
+};
+var STATUS_LABEL = {
+  'pending':'Pending', 'active':'Active', 'ongoing':'Ongoing',
+  'completed':'Completed', 'closed':'Closed', 'waiting':'Waiting'
+};
+
+function renderMyCases() {
+  var grid = document.getElementById('active-cases-grid');
+  if (!grid) return;
+
+  // Update subtitle
+  var subtitle = document.querySelector('#page-active-cases .page-subtitle');
+  if (subtitle) {
+    var active = myCases.filter(function(c){ return c.status !== 'completed' && c.status !== 'closed'; }).length;
+    subtitle.textContent = active + ' case' + (active === 1 ? '' : 's') + ' currently in progress';
+  }
+
+  if (!myCases.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No Cases Yet</div><div class="empty-desc">Post your first case to get started.</div></div>';
+    return;
+  }
+
+  grid.innerHTML = myCases.map(function(c, idx) {
+    var icon       = CATEGORY_ICONS[c.category] || '📋';
+    var badgeClass = STATUS_BADGE[c.status] || 'badge-waiting';
+    var badgeLabel = STATUS_LABEL[c.status] || c.status;
+    var lawyerLine = c.lawyer_name
+      ? '👨‍⚖️ ' + c.lawyer_name
+      : '<span style="color:var(--warning);">👨‍⚖️ No lawyer assigned yet</span>';
+    var hearingLine = c.next_hearing
+      ? '📅 Next: ' + c.next_hearing
+      : '<span style="color:var(--text-muted);">No hearing scheduled</span>';
+
+    return '<div class="case-card" onclick="openCase(' + idx + ')">'
+      + '<div class="case-card-header">'
+      + '<div>'
+      + '<div class="case-title-text">' + c.title + '</div>'
+      + '<div class="case-meta">'
+      + '<span class="case-meta-item">' + icon + ' ' + c.category + '</span>'
+      + (c.location ? '<span class="case-meta-item">📍 ' + c.location + '</span>' : '')
+      + '<span class="case-meta-item" style="color:var(--text-muted);font-size:11px;">' + c.case_number + '</span>'
+      + '</div></div>'
+      + '<span class="badge ' + badgeClass + '">' + badgeLabel + '</span>'
+      + '</div>'
+      + '<div class="progress-bar-container" style="margin-top:12px;">'
+      + '<div class="progress-label"><span>Progress</span><span>' + (c.progress || 0) + '%</span></div>'
+      + '<div class="progress-bar"><div class="progress-fill" style="width:' + (c.progress || 0) + '%"></div></div>'
+      + '</div>'
+      + '<div style="display:flex;justify-content:space-between;margin-top:12px;font-size:12px;">'
+      + '<span>' + lawyerLine + '</span>'
+      + '<span>' + hearingLine + '</span>'
+      + '</div>'
+      + '</div>';
+  }).join('');
 }
 
-function scrollToChat() {
-  var sec = document.getElementById('chat-section');
-  if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+// ─── UPDATE DASHBOARD STATS ───────────────────────────────
+function updateDashboardStats() {
+  var active = myCases.filter(function(c){ return c.status !== 'completed' && c.status !== 'closed'; }).length;
+  var completed = myCases.filter(function(c){ return c.status === 'completed' || c.status === 'closed'; }).length;
+  var appointed = allLawyers.filter(function(l){ return l.appointed; }).length;
+
+  // Stat cards on dashboard
+  var statCards = document.querySelectorAll('.stat-value');
+  if (statCards[0]) statCards[0].textContent = active;
+  if (statCards[3]) statCards[3].textContent = completed;
+
+  // Nav badge for active cases
+  var navBadge = document.querySelector('[onclick*="page-active-cases"] .nav-badge');
+  if (navBadge) navBadge.textContent = active;
+
+  // My Lawyers count badge in tab
+  var lawyerTabBadge = document.querySelector('#tab-appointed span');
+  if (lawyerTabBadge) lawyerTabBadge.textContent = appointed;
 }
+
 
 // ─── REMINDER ────────────────────────────────────────────
 function showReminderModal() {
@@ -2247,219 +2414,142 @@ function saveProfile() {
 }
 
 // ─── CASE DATA & DYNAMIC DASHBOARD ──────────────────────
-var casesData = [
-  {
-    id: 0,
-    title: 'Property Dispute — 200 sq yd Plot',
-    status: 'ongoing',
-    statusLabel: 'Ongoing',
-    statusClass: 'badge-ongoing',
-    category: '📂 Property',
-    location: 'New Delhi · Delhi High Court',
-    progress: 65,
-    lawyer: 'Adv. Priya Mehta',
-    lawyerInitials: 'PM',
-    lawyerSpec: 'Property Law · Civil · 14 yrs exp',
-    nextHearing: 'March 15, 2025',
-    filedDate: 'February 12, 2025',
-    caseId: '#LXB-2025-0042',
-    description: 'Dispute over a 200 sq yard residential plot in Lajpat Nagar, New Delhi. Opposing party claims ownership based on a forged sale deed dated 2018. Client has original purchase documents from 1995.',
+// ─── CASE DETAIL ─────────────────────────────────────────
+// Seed rich detail for the 3 pre-existing demo cases.
+// New cases created at runtime start with empty detail fields
+// and get filled in by the backend over time.
+var caseDetail = {
+  'case_001': {
     timeline: [
-      { status: 'done', date: 'Mar 1, 2025', title: 'Injunction Granted', desc: 'Court granted interim injunction stopping transfer of property' },
-      { status: 'done', date: 'Feb 20, 2025', title: 'Case Filed', desc: 'Plaint filed at Delhi High Court, cause number assigned' },
-      { status: 'active', date: 'Mar 15, 2025 — Upcoming', title: 'Evidence Submission Hearing', desc: 'Both parties to present documentary evidence' },
-      { status: '', date: 'Apr 28, 2025 — Scheduled', title: 'Witness Examination', desc: 'Cross-examination of opposing party\'s witnesses' }
+      { status:'done',   date:'Mar 1, 2025',            title:'Injunction Granted',         desc:'Court granted interim injunction stopping transfer of property' },
+      { status:'done',   date:'Feb 20, 2025',           title:'Case Filed',                 desc:'Plaint filed at Delhi High Court, cause number assigned' },
+      { status:'active', date:'Mar 15, 2025 — Upcoming',title:'Evidence Submission Hearing',desc:'Both parties to present documentary evidence' },
+      { status:'',       date:'Apr 28, 2025 — Scheduled',title:'Witness Examination',       desc:"Cross-examination of opposing party's witnesses" }
     ],
     hearings: [
-      { month: 'MAR', day: '15', title: 'Evidence Submission', time: '10:30 AM · Room 7', badgeClass: 'badge-active', badgeLabel: 'Upcoming', gold: true },
-      { month: 'APR', day: '28', title: 'Witness Exam', time: '11:00 AM · Room 3', badgeClass: 'badge-pending', badgeLabel: 'Scheduled', gold: false },
-      { month: 'JUN', day: '10', title: 'Final Arguments', time: 'TBD', badgeClass: 'badge-closed', badgeLabel: 'Tentative', gold: false }
+      { month:'MAR', day:'15', title:'Evidence Submission', time:'10:30 AM · Room 7', badgeClass:'badge-active',  badgeLabel:'Upcoming',  gold:true  },
+      { month:'APR', day:'28', title:'Witness Exam',        time:'11:00 AM · Room 3', badgeClass:'badge-pending', badgeLabel:'Scheduled', gold:false },
+      { month:'JUN', day:'10', title:'Final Arguments',     time:'TBD',               badgeClass:'badge-closed',  badgeLabel:'Tentative', gold:false }
     ],
     docs: [
-      { icon: '📄', name: 'Original_Deed_1995.pdf', size: '2.1 MB' },
-      { icon: '🪪', name: 'Aadhaar_Card.jpg', size: '0.8 MB' },
-      { icon: '📋', name: 'Court_Order_Feb.pdf', size: '1.4 MB' },
-      { icon: '📷', name: 'Site_Photos.zip', size: '15 MB' }
+      { icon:'📄', name:'Original_Deed_1995.pdf', size:'2.1 MB' },
+      { icon:'🪪', name:'Aadhaar_Card.jpg',       size:'0.8 MB' },
+      { icon:'📋', name:'Court_Order_Feb.pdf',    size:'1.4 MB' },
+      { icon:'📷', name:'Site_Photos.zip',        size:'15 MB'  }
     ],
-    payment: { total: '₹75,000', rows: [
-      { label: 'Retainer (50%)', val: '✓ ₹37,500 Paid', cls: 'pay-status-paid' },
-      { label: 'Milestone 2', val: '⏳ ₹25,000 Due Mar 15', cls: 'pay-status-pending' },
-      { label: 'Final Payment', val: '₹12,500 On Verdict', cls: '' }
+    payment: { total:'₹75,000', rows:[
+      { label:'Retainer (50%)',  val:'✓ ₹37,500 Paid',       cls:'pay-status-paid'    },
+      { label:'Milestone 2',     val:'⏳ ₹25,000 Due Mar 15', cls:'pay-status-pending' },
+      { label:'Final Payment',   val:'₹12,500 On Verdict',    cls:''                   }
     ]},
-    reminders: ['Collect original deed from locker', 'Attend Mar 15 hearing at 10:30 AM'],
+    reminders:   ['Collect original deed from locker', 'Attend Mar 15 hearing at 10:30 AM'],
     suggestions: [
-      { title: '🔹 Bring all original documents to hearing', desc: 'Adv. Mehta recommends original 1995 deed + all tax receipts' },
-      { title: '🔹 Consider mediation', desc: 'Pre-trial mediation could speed up resolution by 3–6 months' },
-      { title: '🔹 Get handwriting expert', desc: 'Forensic analysis of the 2018 deed signature is recommended' }
+      { title:'🔹 Bring all original documents', desc:'Adv. Mehta recommends original 1995 deed + all tax receipts' },
+      { title:'🔹 Consider mediation',           desc:'Pre-trial mediation could speed up resolution by 3–6 months' }
     ]
   },
-  {
-    id: 1,
-    title: 'Family — Divorce Settlement',
-    status: 'waiting',
-    statusLabel: 'Waiting for Lawyer',
-    statusClass: 'badge-waiting',
-    category: '👨‍👩‍👧 Family',
-    location: 'Mumbai',
-    progress: 20,
-    lawyer: null,
-    lawyerInitials: null,
-    lawyerSpec: null,
-    nextHearing: null,
-    filedDate: 'February 28, 2025',
-    caseId: '#LXB-2025-0051',
-    description: 'Divorce and property settlement dispute. 5 lawyer proposals received and under review.',
+  'case_002': {
     timeline: [
-      { status: 'done', date: 'Feb 28, 2025', title: 'Case Posted', desc: 'Case posted on LegalBridge platform' },
-      { status: 'active', date: 'Now', title: 'Awaiting Lawyer Assignment', desc: '5 proposals received — review and appoint a lawyer to proceed' },
-      { status: '', date: 'TBD', title: 'First Hearing', desc: 'Will be scheduled after lawyer appointment' }
+      { status:'done',   date:'Feb 28, 2025', title:'Case Posted',              desc:'Case posted on LegalBridge platform' },
+      { status:'active', date:'Now',          title:'Awaiting Lawyer Assignment', desc:'5 proposals received — review and appoint a lawyer to proceed' },
+      { status:'',       date:'TBD',          title:'First Hearing',             desc:'Will be scheduled after lawyer appointment' }
     ],
-    hearings: [],
-    docs: [],
-    payment: null,
-    reminders: ['Review the 5 lawyer proposals', 'Consult family for final decision'],
+    hearings:    [],
+    docs:        [],
+    payment:     null,
+    reminders:   ['Review the 5 lawyer proposals', 'Consult family for final decision'],
     suggestions: []
   },
-  {
-    id: 2,
-    title: 'Corporate — Contract Breach',
-    status: 'active',
-    statusLabel: 'Active',
-    statusClass: 'badge-active',
-    category: '🏢 Corporate',
-    location: 'Bengaluru',
-    progress: 42,
-    lawyer: 'Adv. Rajesh Kumar',
-    lawyerInitials: 'RK',
-    lawyerSpec: 'Corporate Law · Civil · 22 yrs exp',
-    nextHearing: 'April 2, 2025',
-    filedDate: 'January 20, 2025',
-    caseId: '#LXB-2025-0031',
-    description: 'Contract breach by a software vendor who failed to deliver agreed milestones. Seeking damages of ₹18 lakhs plus penalty clauses.',
+  'case_003': {
     timeline: [
-      { status: 'done', date: 'Jan 20, 2025', title: 'Case Filed', desc: 'Commercial dispute filed at City Civil Court, Bengaluru' },
-      { status: 'done', date: 'Feb 5, 2025', title: 'Lawyer Appointed', desc: 'Adv. Rajesh Kumar appointed and briefed on the case' },
-      { status: 'active', date: 'Apr 2, 2025 — Upcoming', title: 'First Hearing', desc: 'Preliminary hearing for case admission' },
-      { status: '', date: 'TBD', title: 'Evidence & Arguments', desc: 'Scheduled after first hearing outcome' }
+      { status:'done',   date:'Jan 20, 2025',           title:'Case Filed',          desc:'Commercial dispute filed at City Civil Court, Bengaluru' },
+      { status:'done',   date:'Feb 5, 2025',            title:'Lawyer Appointed',    desc:'Adv. Rajesh Kumar appointed and briefed on the case' },
+      { status:'active', date:'Apr 2, 2025 — Upcoming', title:'First Hearing',       desc:'Preliminary hearing for case admission' },
+      { status:'',       date:'TBD',                    title:'Evidence & Arguments', desc:'Scheduled after first hearing outcome' }
     ],
     hearings: [
-      { month: 'APR', day: '2', title: 'Preliminary Hearing', time: '11:00 AM · Court 4', badgeClass: 'badge-active', badgeLabel: 'Upcoming', gold: true }
+      { month:'APR', day:'2', title:'Preliminary Hearing', time:'11:00 AM · Court 4', badgeClass:'badge-active', badgeLabel:'Upcoming', gold:true }
     ],
     docs: [
-      { icon: '📄', name: 'Contract_Agreement.pdf', size: '3.2 MB' },
-      { icon: '📋', name: 'Breach_Notice.pdf', size: '0.5 MB' }
+      { icon:'📄', name:'Contract_Agreement.pdf', size:'3.2 MB' },
+      { icon:'📋', name:'Breach_Notice.pdf',      size:'0.5 MB' }
     ],
-    payment: { total: '₹55,000', rows: [
-      { label: 'Retainer (50%)', val: '✓ ₹27,500 Paid', cls: 'pay-status-paid' },
-      { label: 'Balance', val: '⏳ ₹27,500 Due on Verdict', cls: 'pay-status-pending' }
+    payment: { total:'₹55,000', rows:[
+      { label:'Retainer (50%)', val:'✓ ₹27,500 Paid',          cls:'pay-status-paid'    },
+      { label:'Balance',        val:'⏳ ₹27,500 Due on Verdict', cls:'pay-status-pending' }
     ]},
-    reminders: ['Share vendor emails with Adv. Kumar', 'Attend Apr 2 hearing'],
+    reminders:   ['Share vendor emails with Adv. Kumar', 'Attend Apr 2 hearing'],
     suggestions: [
-      { title: '🔹 Gather all vendor communications', desc: 'Emails, chat logs, and delivery reports will strengthen the case' }
+      { title:'🔹 Gather all vendor communications', desc:'Emails, chat logs, and delivery reports will strengthen the case' }
     ]
   }
-];
+};
 
 function openCase(idx) {
-  var c = casesData[idx];
+  var c = myCases[idx];
+  if (!c) return;
+
   var navEl = document.querySelector('[onclick*="page-active-cases"]');
   showPage('page-case-detail', navEl);
 
-  var isWaiting = c.status === 'waiting';
-  var hasLawyer = !!c.lawyer;
-  var hasHearings = c.hearings && c.hearings.length > 0;
-  var hasDocs = c.docs && c.docs.length > 0;
-  var hasPayment = !!c.payment;
-  var hasSuggestions = c.suggestions && c.suggestions.length > 0;
+  // Merge base case data with any stored rich detail
+  var detail = caseDetail[c.id] || { timeline:[], hearings:[], docs:[], payment:null, reminders:[], suggestions:[] };
 
-  // Build timeline HTML
+  var badgeClass = STATUS_BADGE[c.status]  || 'badge-waiting';
+  var badgeLabel = STATUS_LABEL[c.status]  || c.status;
+  var catIcon    = CATEGORY_ICONS[c.category] || '📋';
+  var hasLawyer  = !!c.lawyer_id;
+  var isNewCase  = !detail.timeline.length;  // freshly submitted case
+
+  // ── Timeline ──
   var timelineHtml = '';
-  for (var i = 0; i < c.timeline.length; i++) {
-    var t = c.timeline[i];
-    var dotClass = t.status === 'done' ? 'done' : t.status === 'active' ? 'active' : '';
-    var dotInner = t.status === 'done' ? '✓' : '';
-    timelineHtml += '<div class="timeline-item">'
-      + '<div class="timeline-dot ' + dotClass + '">' + dotInner + '</div>'
-      + '<div class="timeline-date">' + t.date + '</div>'
-      + '<div class="timeline-title">' + t.title + '</div>'
-      + '<div class="timeline-desc">' + t.desc + '</div>'
+  if (detail.timeline.length) {
+    detail.timeline.forEach(function(t) {
+      var dotClass = t.status === 'done' ? 'done' : t.status === 'active' ? 'active' : '';
+      timelineHtml += '<div class="timeline-item">'
+        + '<div class="timeline-dot ' + dotClass + '">' + (t.status === 'done' ? '✓' : '') + '</div>'
+        + '<div class="timeline-date">' + t.date + '</div>'
+        + '<div class="timeline-title">' + t.title + '</div>'
+        + '<div class="timeline-desc">' + t.desc + '</div>'
+        + '</div>';
+    });
+  } else {
+    // New case — show a starter timeline
+    var createdDate = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) : 'Today';
+    timelineHtml = '<div class="timeline-item">'
+      + '<div class="timeline-dot done">✓</div>'
+      + '<div class="timeline-date">' + createdDate + '</div>'
+      + '<div class="timeline-title">Case Submitted</div>'
+      + '<div class="timeline-desc">Your case ' + c.case_number + ' has been posted on LegalBridge.</div>'
+      + '</div>'
+      + '<div class="timeline-item">'
+      + '<div class="timeline-dot active"></div>'
+      + '<div class="timeline-date">Now</div>'
+      + '<div class="timeline-title">' + (hasLawyer ? 'Lawyer Assigned — Case Active' : 'Awaiting Lawyer Assignment') + '</div>'
+      + '<div class="timeline-desc">' + (hasLawyer ? c.lawyer_name + ' has been assigned to your case.' : 'Your case is live. Lawyers will review and submit proposals shortly.') + '</div>'
+      + '</div>'
+      + '<div class="timeline-item">'
+      + '<div class="timeline-dot"></div>'
+      + '<div class="timeline-date">TBD</div>'
+      + '<div class="timeline-title">First Hearing</div>'
+      + '<div class="timeline-desc">Will be scheduled by your lawyer after reviewing the case.</div>'
       + '</div>';
   }
 
-  // Build hearings HTML
+  // ── Hearings ──
   var hearingsHtml = '';
-  if (hasHearings) {
-    for (var i = 0; i < c.hearings.length; i++) {
-      var h = c.hearings[i];
+  var nextHearingCardHtml = '';
+  if (detail.hearings.length) {
+    detail.hearings.forEach(function(h, i) {
       var bg = h.gold ? 'background:var(--gold);color:var(--navy);' : 'background:var(--cream);color:var(--navy);border:1px solid var(--border);';
       hearingsHtml += '<div style="display:flex;gap:12px;align-items:center;">'
         + '<div style="' + bg + 'border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:12px;min-width:48px;">' + h.month + '<br>' + h.day + '</div>'
-        + '<div><div style="font-size:13px;font-weight:600;color:var(--navy);">' + h.title + '</div><div style="font-size:11px;color:var(--text-muted);">' + h.time + '</div></div>'
-        + '<span class="badge ' + h.badgeClass + '" style="margin-left:auto;font-size:10px;">' + h.badgeLabel + '</span>'
+        + '<div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--navy);">' + h.title + '</div><div style="font-size:11px;color:var(--text-muted);">' + h.time + '</div></div>'
+        + '<span class="badge ' + h.badgeClass + '" style="font-size:10px;">' + h.badgeLabel + '</span>'
         + '</div>';
-    }
-  }
-
-  // Build docs HTML
-  var docsHtml = '';
-  if (hasDocs) {
-    for (var i = 0; i < c.docs.length; i++) {
-      var d = c.docs[i];
-      docsHtml += '<div class="doc-item"><div class="doc-icon">' + d.icon + '</div><div class="doc-name">' + d.name + '</div><div class="doc-size">' + d.size + '</div></div>';
-    }
-  }
-  docsHtml += '<div class="doc-item" style="border-style:dashed;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;" onclick="showToast(\'File upload coming soon\',\'\')">'
-    + '<div class="doc-icon">➕</div><div class="doc-name" style="color:var(--text-muted);">Add Document</div></div>';
-
-  // Build payment HTML
-  var paymentHtml = '';
-  if (hasPayment) {
-    var rowsHtml = '';
-    for (var i = 0; i < c.payment.rows.length; i++) {
-      var r = c.payment.rows[i];
-      rowsHtml += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:' + (i < c.payment.rows.length-1 ? '1px solid var(--border)' : 'none') + ';">'
-        + '<span>' + r.label + '</span><span class="' + r.cls + '">' + r.val + '</span></div>';
-    }
-    paymentHtml = '<div class="card"><div class="card-title">💳 Payment Status</div>'
-      + '<div style="font-size:26px;font-weight:700;font-family:\'Playfair Display\',serif;color:var(--navy);margin-bottom:4px;">' + c.payment.total + '</div>'
-      + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Total agreed fee</div>'
-      + '<div style="display:flex;flex-direction:column;gap:0;font-size:13px;">' + rowsHtml + '</div>'
-      + '<button class="btn btn-gold btn-block" style="margin-top:16px;">💳 Pay Now</button></div>';
-  }
-
-  // Build suggestions HTML
-  var suggestionsHtml = '';
-  if (hasSuggestions) {
-    var items = '';
-    for (var i = 0; i < c.suggestions.length; i++) {
-      var s = c.suggestions[i];
-      items += '<div style="padding:10px 0;' + (i < c.suggestions.length-1 ? 'border-bottom:1px solid var(--border);' : '') + '">'
-        + '<div style="font-weight:600;color:var(--navy);margin-bottom:4px;">' + s.title + '</div>'
-        + '<div style="color:var(--text-secondary);font-size:13px;">' + s.desc + '</div></div>';
-    }
-    suggestionsHtml = '<div class="card"><div class="card-title">💡 Lawyer Suggestions</div>' + items + '</div>';
-  }
-
-  // Build reminders HTML
-  var remindersHtml = '';
-  for (var i = 0; i < c.reminders.length; i++) {
-    remindersHtml += '<div class="reminder-item"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"> <span>' + c.reminders[i] + '</span></div>';
-  }
-
-  // Waiting banner
-  var waitingBanner = isWaiting ? '<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:center;">'
-    + '<span style="font-size:24px;">⏳</span>'
-    + '<div><div style="font-weight:600;color:#92400e;font-size:14px;">Awaiting Lawyer Assignment</div>'
-    + '<div style="font-size:13px;color:#b45309;margin-top:2px;">Review the proposals submitted and appoint a lawyer to get started.</div></div>'
-    + '<button class="btn btn-gold btn-sm" style="margin-left:auto;" onclick="showPage(\'page-proposals\',document.querySelector(\'[onclick*=page-proposals]\'))">View Proposals →</button>'
-    + '</div>' : '';
-
-  // Right column — conditional
-  var rightColHtml = '';
-  if (hasHearings) {
-    var fh = c.hearings[0];
-    var fhBg = fh.gold ? 'var(--gold)' : 'var(--cream)';
-    rightColHtml += '<div class="hearing-card">'
+    });
+    var fh = detail.hearings[0];
+    nextHearingCardHtml = '<div class="hearing-card">'
       + '<div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Next Hearing</div>'
       + '<div class="hearing-date">' + fh.day + '</div>'
       + '<div class="hearing-month">' + fh.month + ' 2025</div>'
@@ -2467,64 +2557,127 @@ function openCase(idx) {
       + '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">' + fh.time + '</div>'
       + '<button class="btn btn-ghost" style="margin-top:12px;width:100%;color:white;border-color:rgba(255,255,255,0.2);">📅 Add to Calendar</button></div>';
   }
-  if (hasHearings && c.hearings.length > 1) {
-    rightColHtml += '<div class="card"><div class="card-title">📅 Hearing Schedule</div>'
-      + '<div style="display:flex;flex-direction:column;gap:12px;">' + hearingsHtml + '</div></div>';
+
+  // ── Docs ──
+  var docsHtml = '';
+  detail.docs.forEach(function(d) {
+    docsHtml += '<div class="doc-item"><div class="doc-icon">' + d.icon + '</div><div class="doc-name">' + d.name + '</div><div class="doc-size">' + d.size + '</div></div>';
+  });
+  docsHtml += '<div class="doc-item" style="border-style:dashed;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;" onclick="showToast(\'File upload coming soon\',\'\')">'
+    + '<div class="doc-icon">➕</div><div class="doc-name" style="color:var(--text-muted);">Add Document</div></div>';
+
+  // ── Payment ──
+  var paymentHtml = '';
+  if (detail.payment) {
+    var rowsHtml = detail.payment.rows.map(function(r, i) {
+      return '<div style="display:flex;justify-content:space-between;padding:8px 0;' + (i < detail.payment.rows.length - 1 ? 'border-bottom:1px solid var(--border);' : '') + '">'
+        + '<span>' + r.label + '</span><span class="' + r.cls + '">' + r.val + '</span></div>';
+    }).join('');
+    paymentHtml = '<div class="card"><div class="card-title">💳 Payment Status</div>'
+      + '<div style="font-size:26px;font-weight:700;font-family:\'Playfair Display\',serif;color:var(--navy);margin-bottom:4px;">' + detail.payment.total + '</div>'
+      + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Total agreed fee</div>'
+      + '<div>' + rowsHtml + '</div>'
+      + '<button class="btn btn-gold btn-block" style="margin-top:16px;">💳 Pay Now</button></div>';
   }
-  if (hasSuggestions) rightColHtml += suggestionsHtml;
-  if (hasPayment) rightColHtml += paymentHtml;
-  rightColHtml += '<div class="card"><div class="card-title">⏰ Reminders</div>'
+
+  // ── Suggestions ──
+  var suggestionsHtml = '';
+  if (detail.suggestions.length) {
+    var items = detail.suggestions.map(function(s, i) {
+      return '<div style="padding:10px 0;' + (i < detail.suggestions.length - 1 ? 'border-bottom:1px solid var(--border);' : '') + '">'
+        + '<div style="font-weight:600;color:var(--navy);margin-bottom:4px;">' + s.title + '</div>'
+        + '<div style="color:var(--text-secondary);font-size:13px;">' + s.desc + '</div></div>';
+    }).join('');
+    suggestionsHtml = '<div class="card"><div class="card-title">💡 Lawyer Suggestions</div>' + items + '</div>';
+  }
+
+  // ── Reminders ──
+  var remindersHtml = (detail.reminders || []).map(function(r) {
+    return '<div class="reminder-item"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"> <span>' + r + '</span></div>';
+  }).join('');
+  var remindersCard = '<div class="card"><div class="card-title">⏰ Reminders</div>'
     + '<div class="reminder-list" id="reminder-list">' + remindersHtml + '</div>'
     + '<button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="showReminderModal()">+ Add Reminder</button></div>';
 
-  // If waiting and no lawyer, show simple "Awaiting" right panel instead
-  if (isWaiting && !hasLawyer) {
-    rightColHtml = '<div class="card" style="text-align:center;padding:32px 24px;">'
-      + '<div style="font-size:40px;margin-bottom:12px;">⚖️</div>'
-      + '<div style="font-size:15px;font-weight:600;color:var(--navy);margin-bottom:8px;">No Lawyer Assigned Yet</div>'
-      + '<div style="font-size:13px;color:var(--text-muted);margin-bottom:20px);">5 proposals are waiting for your review.</div>'
-      + '<button class="btn btn-gold btn-block" onclick="showPage(\'page-proposals\',document.querySelector(\'[onclick*=page-proposals]\'))">View Proposals</button>'
-      + '</div>'
-      + '<div class="card"><div class="card-title">⏰ Reminders</div>'
-      + '<div class="reminder-list">' + remindersHtml + '</div>'
-      + '<button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="showReminderModal()">+ Add Reminder</button></div>';
+  // ── Waiting banner (no lawyer yet) ──
+  var waitingBanner = '';
+  if (!hasLawyer) {
+    waitingBanner = '<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">'
+      + '<span style="font-size:24px;">⏳</span>'
+      + '<div style="flex:1;"><div style="font-weight:600;color:#92400e;font-size:14px;">Awaiting Lawyer Assignment</div>'
+      + '<div style="font-size:13px;color:#b45309;margin-top:2px;">Your case is live. Review any proposals and appoint a lawyer to get started.</div></div>'
+      + '<button class="btn btn-gold btn-sm" onclick="showPage(\'page-proposals\',document.querySelector(\'[onclick*=page-proposals]\'))">View Proposals →</button>'
+      + '</div>';
   }
 
+  // ── Right column ──
+  var rightColHtml = nextHearingCardHtml;
+  if (detail.hearings.length > 1) {
+    rightColHtml += '<div class="card"><div class="card-title">📅 Hearing Schedule</div>'
+      + '<div style="display:flex;flex-direction:column;gap:12px;">' + hearingsHtml + '</div></div>';
+  }
+  if (!hasLawyer) {
+    rightColHtml += '<div class="card" style="text-align:center;padding:28px 20px;">'
+      + '<div style="font-size:36px;margin-bottom:10px;">⚖️</div>'
+      + '<div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px;">No Lawyer Assigned</div>'
+      + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Find and appoint a lawyer to move your case forward.</div>'
+      + '<button class="btn btn-gold btn-block" onclick="showPage(\'page-proposals\',document.querySelector(\'[onclick*=page-proposals]\'))">Find a Lawyer</button>'
+      + '</div>';
+  }
+  if (suggestionsHtml) rightColHtml += suggestionsHtml;
+  if (paymentHtml)     rightColHtml += paymentHtml;
+  rightColHtml += remindersCard;
+
+  // ── Created date display ──
+  var createdStr = c.created_at
+    ? new Date(c.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })
+    : '—';
+
+  // ── Full page HTML ──
   var html = '<div class="page-header header-row" style="margin-bottom:28px;">'
     + '<div>'
     + '<div class="page-title">' + c.title + '</div>'
-    + '<div class="page-subtitle" style="display:flex;align-items:center;gap:10px;margin-top:6px;">'
-    + '<span class="badge ' + c.statusClass + '">' + c.statusLabel + '</span>'
-    + '<span style="color:var(--text-muted);">' + c.category + ' · 📍 ' + c.location + '</span>'
+    + '<div class="page-subtitle" style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">'
+    + '<span class="badge ' + badgeClass + '">' + badgeLabel + '</span>'
+    + '<span style="color:var(--text-muted);">' + catIcon + ' ' + c.category + (c.location ? ' · 📍 ' + c.location : '') + '</span>'
+    + '<span style="color:var(--text-muted);font-size:12px;">' + c.case_number + '</span>'
     + '</div></div>'
-    + '<div style="display:flex;gap:10px;">'
-    + '<button class="btn btn-ghost btn-sm" onclick="showPage(\'page-active-cases\',document.querySelector(\'[onclick*=page-active-cases]\'))">← Back to Cases</button>'
-    + (hasLawyer ? '<button class="btn btn-ghost btn-sm" onclick="showReminderModal()">⏰ Add Reminder</button>' : '')
+    + '<div style="display:flex;gap:10px;flex-wrap:wrap;">'
+    + '<button class="btn btn-ghost btn-sm" onclick="showPage(\'page-active-cases\',document.querySelector(\'[onclick*=page-active-cases]\'))">← My Cases</button>'
+    + '<button class="btn btn-ghost btn-sm" onclick="showReminderModal()">⏰ Reminder</button>'
     + '</div></div>'
+
     + waitingBanner
+
     + '<div class="case-detail-grid">'
     + '<div style="display:flex;flex-direction:column;gap:28px;">'
 
     // Case Overview
     + '<div class="card"><div class="card-title">📋 Case Overview</div>'
-    + '<div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">' + c.description + '</div>'
-    + '<div class="review-row"><span class="review-key">Case ID</span><span class="review-val">' + c.caseId + '</span></div>'
-    + '<div class="review-row"><span class="review-key">Filed Date</span><span class="review-val">' + c.filedDate + '</span></div>'
-    + (hasLawyer ? '<div class="review-row"><span class="review-key">Assigned Lawyer</span><span class="review-val">' + c.lawyer + '</span></div>' : '<div class="review-row"><span class="review-key">Assigned Lawyer</span><span class="review-val" style="color:var(--warning);">Pending Assignment</span></div>')
-    + (c.nextHearing ? '<div class="review-row"><span class="review-key">Next Hearing</span><span class="review-val">' + c.nextHearing + '</span></div>' : '<div class="review-row"><span class="review-key">Next Hearing</span><span class="review-val" style="color:var(--text-muted);">To be scheduled</span></div>')
+    + (c.description ? '<div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">' + c.description + '</div>' : '')
+    + '<div class="review-row"><span class="review-key">Case Number</span><span class="review-val">' + c.case_number + '</span></div>'
+    + '<div class="review-row"><span class="review-key">Category</span><span class="review-val">' + catIcon + ' ' + c.category + '</span></div>'
+    + (c.location ? '<div class="review-row"><span class="review-key">Location</span><span class="review-val">📍 ' + c.location + '</span></div>' : '')
+    + (c.court    ? '<div class="review-row"><span class="review-key">Court</span><span class="review-val">' + c.court + '</span></div>' : '')
+    + '<div class="review-row"><span class="review-key">Urgency</span><span class="review-val">' + (c.urgency === 'urgent' ? '🔴 Urgent' : c.urgency === 'high' ? '🟡 High' : '🟢 Normal') + '</span></div>'
+    + (c.budget   ? '<div class="review-row"><span class="review-key">Budget</span><span class="review-val">' + c.budget + '</span></div>' : '')
+    + '<div class="review-row"><span class="review-key">Filed On</span><span class="review-val">' + createdStr + '</span></div>'
+    + '<div class="review-row"><span class="review-key">Assigned Lawyer</span><span class="review-val">'
+      + (hasLawyer ? '👨‍⚖️ ' + c.lawyer_name : '<span style="color:var(--warning);">Pending Assignment</span>') + '</span></div>'
+    + (c.next_hearing ? '<div class="review-row"><span class="review-key">Next Hearing</span><span class="review-val">📅 ' + c.next_hearing + '</span></div>' : '')
     + '</div>'
 
     // Progress
-    + '<div class="card"><div class="card-title">📈 Progress Updates</div>'
-    + '<div class="progress-bar-container"><div class="progress-label"><span>Overall Progress</span><span>' + c.progress + '%</span></div>'
-    + '<div class="progress-bar"><div class="progress-fill" style="width:' + c.progress + '%"></div></div></div>'
+    + '<div class="card"><div class="card-title">📈 Case Progress</div>'
+    + '<div class="progress-bar-container"><div class="progress-label"><span>Overall Progress</span><span>' + (c.progress || 0) + '%</span></div>'
+    + '<div class="progress-bar"><div class="progress-fill" style="width:' + (c.progress || 0) + '%"></div></div></div>'
     + '<div class="timeline" style="margin-top:20px;">' + timelineHtml + '</div></div>'
 
-    // Docs (only if has docs or ongoing/active)
-    + ((!isWaiting) ? '<div class="card"><div class="card-title">🔒 Secure Document Vault</div>'
-    + '<div class="vault-label"><span class="lock-icon">🔒</span> Documents are encrypted. '
-    + (hasLawyer ? 'Only ' + c.lawyer + ' has authorized access.' : 'Accessible after lawyer is assigned.') + '</div>'
-    + '<div class="doc-grid">' + docsHtml + '</div></div>' : '')
+    // Documents
+    + '<div class="card"><div class="card-title">🔒 Document Vault</div>'
+    + '<div class="vault-label" style="margin-bottom:14px;"><span class="lock-icon">🔒</span> Documents are encrypted. '
+    + (hasLawyer ? 'Only ' + c.lawyer_name + ' has authorized access.' : 'Accessible after lawyer is assigned.') + '</div>'
+    + '<div class="doc-grid">' + docsHtml + '</div></div>'
 
     + '</div>'
     + '<div style="display:flex;flex-direction:column;gap:28px;">' + rightColHtml + '</div>'
@@ -2533,96 +2686,160 @@ function openCase(idx) {
   document.getElementById('case-detail-content').innerHTML = html;
 }
 
-// ─── CHAT PAGE ───────────────────────────────────────────
-var chatData = {
-  1: {
-    avatar: 'PM', name: 'Adv. Priya Mehta', case: 'Property Dispute — 200 sq yd Plot',
-    messages: [
-      { from:'received', text:"Hello! I've reviewed your case documents. We have a strong case. The 1995 deed clearly establishes your ownership.", time:'10:30 AM' },
-      { from:'sent', text:"Thank you! What documents do I need to bring for the next hearing?", time:'10:35 AM' },
-      { from:'received', text:"Please bring the original 1995 deed, any tax receipts from that period, and 2 passport-size photos. I'll handle the rest.", time:'10:40 AM' },
-      { from:'sent', text:"Got it. Will I need to testify?", time:'10:42 AM' },
-      { from:'received', text:"Most likely yes during the witness examination hearing in April. Don't worry — I'll prepare you thoroughly beforehand.", time:'10:45 AM' }
-    ]
-  },
-  2: {
-    avatar: 'RK', name: 'Adv. Rajesh Kumar', case: 'Labour Dispute Case',
-    messages: [
-      { from:'received', text:"I've taken up your labour dispute case. Could you share any written communication from your employer?", time:'Yesterday, 3:10 PM' },
-      { from:'sent', text:"Sure, I'll scan and send the termination letter.", time:'Yesterday, 3:45 PM' },
-      { from:'received', text:"Please also share the employment contract if you have it.", time:'Yesterday, 4:00 PM' }
-    ]
-  },
-  3: {
-    avatar: 'AS', name: 'Adv. Anita Singh', case: 'Consumer Complaint (Closed)',
-    messages: [
-      { from:'received', text:"The consumer forum has ruled in your favour. You'll receive the compensation within 30 days.", time:'Mar 1, 2:00 PM' },
-      { from:'sent', text:"That's great news! Thank you so much for your help.", time:'Mar 1, 2:15 PM' },
-      { from:'received', text:"Case has been successfully closed. ✅ Feel free to reach out if you need anything in future.", time:'Mar 1, 2:20 PM' }
-    ]
-  }
-};
-var activeChat = 1;
 
-function switchChat(id) {
-  activeChat = id;
-  // Update sidebar highlight
-  for (var i = 1; i <= 3; i++) {
-    var el = document.getElementById('convo-' + i);
-    if (!el) continue;
-    if (i === id) {
-      el.style.background = 'rgba(201,168,76,0.07)';
-      el.style.borderLeftColor = 'var(--gold)';
-    } else {
-      el.style.background = '';
-      el.style.borderLeftColor = 'transparent';
-    }
+// ─── FIND A LAWYER ───────────────────────────────────────
+var allLawyers = [
+  { id:1, initials:'PM', name:'Adv. Priya Mehta', spec:'Property · Civil', city:'New Delhi', exp:14, success:89, cases:240, rating:4.9, reviews:87, fee:75000, feeLabel:'₹75,000', awards:'Delhi Bar Association Award 2022 · LLM Harvard', strategy:'I will challenge the property deed on grounds of forgery and file for an injunction immediately to protect your rights.', tags:['Property','Civil'], headerBg:'', avatarBg:'', proposal:true, appointed:true, appointedCase:'Property Dispute — 200 sq yd Plot', mobile:'+91 98100 11201', whatsapp:'919810011201', bio:'Senior Advocate at Delhi High Court specializing in property disputes, civil litigation, and real estate fraud. Represented clients in over 300 cases, known for sharp cross-examination skills.' },
+  { id:2, initials:'RK', name:'Adv. Rajesh Kumar', spec:'Civil · Property · Family', city:'New Delhi', exp:22, success:94, cases:410, rating:4.8, reviews:132, fee:120000, feeLabel:'₹1,20,000', awards:'Supreme Court Advocate · 3× Best Lawyer Award', strategy:"I'll pursue a two-pronged approach: title verification challenge + civil injunction to halt any transfers.", tags:['Civil','Property','Family'], headerBg:'background:linear-gradient(135deg,#1a3a2a,#2d6a4f);', avatarBg:'background:linear-gradient(135deg,#52b788,#74c69d);', proposal:true, appointed:true, appointedCase:'Corporate — Contract Breach', mobile:'+91 98100 22302', whatsapp:'919810022302', bio:'Supreme Court Advocate with 22 years of experience in civil, property, and family law. Handled landmark cases at district, high court, and apex court level.' },
+  { id:3, initials:'SA', name:'Adv. Sneha Agarwal', spec:'Property · Real Estate', city:'Mumbai', exp:9, success:82, cases:118, rating:4.5, reviews:54, fee:55000, feeLabel:'₹55,000', awards:'Rising Star — Legal 500 India 2023', strategy:'Specialized in real estate frauds. I\'ll file a criminal complaint alongside the civil case for faster resolution.', tags:['Property','Civil'], headerBg:'background:linear-gradient(135deg,#2d1b69,#553c9a);', avatarBg:'background:linear-gradient(135deg,#a78bfa,#c4b5fd);', proposal:true, appointed:false, appointedCase:'', mobile:'+91 98200 33403', whatsapp:'919820033403', bio:'Specialist in real estate fraud and property disputes in Mumbai. Known for aggressive litigation combining criminal and civil routes for maximum client advantage.' },
+  { id:4, initials:'VN', name:'Adv. Vikram Nair', spec:'Criminal · Civil', city:'Bengaluru', exp:18, success:91, cases:320, rating:4.7, reviews:98, fee:90000, feeLabel:'₹90,000', awards:'Karnataka Bar Council Member', strategy:'Aggressive litigation strategy focused on early injunctions and strong documentary evidence.', tags:['Criminal','Civil'], headerBg:'background:linear-gradient(135deg,#1e3a5f,#2e6da4);', avatarBg:'background:linear-gradient(135deg,#60a5fa,#93c5fd);', proposal:true, appointed:false, appointedCase:'', mobile:'+91 98440 44504', whatsapp:'919844044504', bio:'Karnataka Bar Council member with a track record in high-stakes criminal and civil litigation. Former Public Prosecutor with deep courtroom expertise.' },
+  { id:5, initials:'MJ', name:'Adv. Meena Joshi', spec:'Family · Divorce', city:'Mumbai', exp:11, success:78, cases:156, rating:4.3, reviews:62, fee:45000, feeLabel:'₹45,000', awards:'Certified Family Mediator', strategy:'I focus on amicable settlements first — faster and less costly. Litigation if needed.', tags:['Family'], headerBg:'background:linear-gradient(135deg,#831843,#be185d);', avatarBg:'background:linear-gradient(135deg,#f9a8d4,#fbcfe8);color:var(--navy);', proposal:false, appointed:false, appointedCase:'', mobile:'+91 98200 55605', whatsapp:'919820055605', bio:'Certified family mediator and litigator with a compassionate approach to divorce, custody, and matrimonial disputes. Prioritises client well-being throughout.' },
+  { id:6, initials:'AK', name:'Adv. Arjun Kapoor', spec:'Corporate · Contract', city:'Bengaluru', exp:16, success:88, cases:275, rating:4.6, reviews:111, fee:100000, feeLabel:'₹1,00,000', awards:'IICA Certified Corporate Lawyer', strategy:'Expert in commercial disputes. I have handled 50+ contract breach cases with favorable outcomes.', tags:['Corporate','Civil'], headerBg:'background:linear-gradient(135deg,#0f3460,#16213e);', avatarBg:'background:linear-gradient(135deg,#4ade80,#86efac);color:var(--navy);', proposal:false, appointed:false, appointedCase:'', mobile:'+91 98440 66706', whatsapp:'919844066706', bio:'IICA certified corporate lawyer with deep expertise in commercial contracts, M&A, and business disputes. Trusted by startups and Fortune 500 companies alike.' },
+  { id:7, initials:'SR', name:'Adv. Sunita Rao', spec:'Consumer · Civil', city:'Hyderabad', exp:8, success:85, cases:140, rating:4.4, reviews:43, fee:35000, feeLabel:'₹35,000', awards:'Consumer Rights Champion 2022', strategy:'Specialised in consumer forum cases with quick resolution timelines.', tags:['Consumer','Civil'], headerBg:'background:linear-gradient(135deg,#064e3b,#065f46);', avatarBg:'background:linear-gradient(135deg,#6ee7b7,#a7f3d0);color:var(--navy);', proposal:false, appointed:false, appointedCase:'', mobile:'+91 98490 77807', whatsapp:'919849077807', bio:'Consumer rights champion with a strong record at Hyderabad consumer forums. Fast resolution focus — most cases settled within 90 days.' },
+  { id:8, initials:'DM', name:'Adv. Deepak Malhotra', spec:'Labour · Employment', city:'Chennai', exp:13, success:80, cases:198, rating:4.2, reviews:77, fee:60000, feeLabel:'₹60,000', awards:'Labour Court Panel Advocate', strategy:'Deep expertise in wrongful termination and workplace disputes. Fast-track resolution focus.', tags:['Labour','Civil'], headerBg:'background:linear-gradient(135deg,#78350f,#92400e);', avatarBg:'background:linear-gradient(135deg,#fcd34d,#fde68a);color:var(--navy);', proposal:false, appointed:false, appointedCase:'', mobile:'+91 98410 88908', whatsapp:'919841088908', bio:'Labour Court panel advocate specialising in wrongful termination, workplace harassment, and employment contract disputes across Tamil Nadu.' },
+  { id:9, initials:'AR', name:'Adv. Arpit Raj', spec:'Civil · Criminal', city:'Patna', exp:7, success:83, cases:95, rating:4.6, reviews:38, fee:40000, feeLabel:'₹40,000', awards:'Bihar Bar Council Rising Star 2023', strategy:'I combine thorough legal research with on-ground court experience to build airtight cases for my clients.', tags:['Civil','Criminal'], headerBg:'background:linear-gradient(135deg,#1c3b5a,#2e6da4);', avatarBg:'background:linear-gradient(135deg,#93c5fd,#bfdbfe);color:var(--navy);', proposal:true, appointed:false, appointedCase:'', mobile:'+91 90310 11797', whatsapp:'919031011797', bio:'Civil and criminal lawyer based in Patna with strong roots in Bihar courts. Known for methodical case preparation and accessible client communication.' }
+];
+
+var appliedLawyers = {}; // track which lawyers user has applied to
+
+function buildLawyerCard(l, mode) {
+  // mode: 'search' | 'proposal' | 'appointed'
+  var stars = '';
+  var full = Math.floor(l.rating); var half = (l.rating % 1) >= 0.5 ? 1 : 0;
+  for (var i=0;i<full;i++) stars += '★';
+  if (half) stars += '★';
+  for (var i=0;i<5-full-half;i++) stars += '☆';
+
+  var actionBtns = '';
+  if (mode === 'appointed') {
+    actionBtns = '<button class="btn btn-ghost btn-sm" onclick="showLawyerProfile(\'' + l.name.replace('Adv. ','') + '\')">View Profile</button>'
+      + '<span class="badge badge-active" style="margin-left:auto;padding:6px 12px;">✓ Appointed</span>';
+  } else if (mode === 'proposal') {
+    actionBtns = '<button class="btn btn-ghost btn-sm" onclick="showLawyerProfile(\'' + l.name.replace('Adv. ','') + '\')">View Profile</button>'
+      + '<button class="btn btn-gold btn-sm" onclick="appointLawyer(\'' + l.name.replace('Adv. ','') + '\')">✓ Appoint</button>';
+  } else {
+    var alreadyApplied = appliedLawyers[l.id];
+    actionBtns = '<button class="btn btn-ghost btn-sm" onclick="showLawyerProfile(\'' + l.name.replace('Adv. ','') + '\')">View Profile</button>'
+      + (alreadyApplied
+          ? '<button class="btn btn-success btn-sm" disabled style="opacity:0.7;cursor:default;">✓ Applied</button>'
+          : '<button class="btn btn-gold btn-sm" onclick="applyToLawyer(' + l.id + ', this)">Apply</button>');
   }
-  var d = chatData[id];
-  if (!d) return;
-  document.getElementById('chat-hd-avatar').textContent = d.avatar;
-  document.getElementById('chat-hd-name').textContent = d.name;
-  document.getElementById('chat-hd-case').textContent = d.case;
-  var box = document.getElementById('chat-messages-main');
-  box.innerHTML = '<div style="text-align:center;margin-bottom:8px;"><span style="font-size:11px;color:var(--text-muted);background:var(--border);padding:4px 14px;border-radius:100px;">Today</span></div>';
-  for (var j = 0; j < d.messages.length; j++) {
-    var m = d.messages[j];
-    var div = document.createElement('div');
-    div.className = 'chat-msg ' + m.from;
-    div.style.maxWidth = '58%';
-    div.innerHTML = '<div class="chat-bubble">' + m.text + '</div><div class="chat-time">' + m.time + '</div>';
-    box.appendChild(div);
-  }
-  box.scrollTop = box.scrollHeight;
+
+  return '<div class="lawyer-card">'
+    + '<div class="lawyer-card-header" style="' + l.headerBg + '">'
+    + '<div class="lawyer-avatar" style="' + l.avatarBg + '">' + l.initials + '</div>'
+    + '<div class="lawyer-name">' + l.name + '</div>'
+    + '<div class="lawyer-spec">' + l.spec + ' · ' + l.city + '</div>'
+    + '</div>'
+    + '<div class="lawyer-card-body">'
+    + ''
+    + '<div class="lawyer-stats">'
+    + '<div class="lawyer-stat"><div class="lawyer-stat-val">' + l.exp + '</div><div class="lawyer-stat-label">Yrs Exp</div></div>'
+    + '<div class="lawyer-stat"><div class="lawyer-stat-val">' + l.success + '%</div><div class="lawyer-stat-label">Success</div></div>'
+    + '<div class="lawyer-stat"><div class="lawyer-stat-val">' + l.cases + '</div><div class="lawyer-stat-label">Cases Won</div></div>'
+    + '</div>'
+    + '<div class="stars">' + stars + '</div> <span style="font-size:12px;color:var(--text-muted);">' + l.rating + ' (' + l.reviews + ' reviews)</span>'
+    + '<div class="lawyer-fee"><span class="fee-label">Consultation Fee</span><span class="fee-amount">' + l.feeLabel + '</span></div>'
+    + '<div class="lawyer-strategy">"' + l.strategy + '"</div>'
+    + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">🏆 ' + l.awards + '</div>'
+    + '<div class="lawyer-actions">' + actionBtns + '</div>'
+    + '</div></div>';
 }
 
-function sendMainChat() {
-  var input = document.getElementById('chat-input-main');
-  var msg = input.value.trim();
-  if (!msg) return;
-  var d = chatData[activeChat];
-  if (!d) return;
-  var time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-  d.messages.push({ from:'sent', text: msg, time: time });
-  input.value = '';
-  var box = document.getElementById('chat-messages-main');
-  var div = document.createElement('div');
-  div.className = 'chat-msg sent';
-  div.style.maxWidth = '58%';
-  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + time + '</div>';
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-  // Auto-reply
-  setTimeout(function() {
-    var reply = document.createElement('div');
-    reply.className = 'chat-msg received';
-    reply.style.maxWidth = '58%';
-    var rt = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-    reply.innerHTML = '<div class="chat-bubble">Thank you for your message. I\'ll review and get back to you shortly.</div><div class="chat-time">' + rt + '</div>';
-    box.appendChild(reply);
-    box.scrollTop = box.scrollHeight;
-  }, 1200);
+function renderSearchGrid(lawyers) {
+  var grid = document.getElementById('search-lawyer-grid');
+  if (!grid) return;
+  if (!lawyers.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-muted);">No lawyers found matching your search.</div>';
+    return;
+  }
+  grid.innerHTML = lawyers.map(function(l){ return buildLawyerCard(l,'search'); }).join('');
+  document.getElementById('search-result-count').textContent = 'Showing ' + lawyers.length + ' lawyer' + (lawyers.length===1?'':'s');
 }
+
+function renderProposalsGrid() {
+  var grid = document.getElementById('proposals-lawyer-grid');
+  if (!grid) return;
+  var proposals = allLawyers.filter(function(l){ return l.proposal; });
+  grid.innerHTML = proposals.map(function(l){ return buildLawyerCard(l,'proposal'); }).join('');
+}
+
+function renderAppointedList() {
+  var list = document.getElementById('appointed-list');
+  if (!list) return;
+  var appointed = allLawyers.filter(function(l){ return l.appointed; });
+  if (!appointed.length) { list.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-muted);">No lawyers appointed yet.</div>'; return; }
+  list.innerHTML = appointed.map(function(l){
+    var stars = '';
+    var full = Math.floor(l.rating);
+    for(var i=0;i<full;i++) stars+='★'; for(var i=0;i<5-full;i++) stars+='☆';
+    return '<div class="card" style="display:flex;gap:20px;align-items:center;padding:20px 24px;">'
+      + '<div style="width:52px;height:52px;border-radius:50%;' + (l.avatarBg||'background:linear-gradient(135deg,var(--gold),var(--gold-light));') + 'display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--navy);flex-shrink:0;">' + l.initials + '</div>'
+      + '<div style="flex:1;">'
+      + '<div style="font-size:15px;font-weight:700;color:var(--navy);">' + l.name + '</div>'
+      + '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">' + l.spec + ' · ' + l.city + '</div>'
+      + '<div style="font-size:12px;color:var(--gold);margin-top:4px;">📂 ' + l.appointedCase + '</div>'
+      + '</div>'
+      + '<div style="text-align:right;flex-shrink:0;">'
+      + '<div style="font-size:13px;color:var(--gold);">' + stars + ' <span style="color:var(--text-muted);">' + l.rating + '</span></div>'
+      + '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">' + l.exp + ' yrs · ' + l.success + '% success</div>'
+      + '<div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end;">'
+      + '<button class="btn btn-ghost btn-sm" onclick="showLawyerProfile(\'' + l.name.replace('Adv. ','') + '\')">View Profile</button>'
+      + '<span class="badge badge-active" style="padding:6px 12px;font-size:11px;">✓ Appointed</span>'
+      + '</div></div></div>';
+  }).join('');
+}
+
+function switchLawyerTab(tab) {
+  var tabs = ['search','proposals','appointed'];
+  tabs.forEach(function(t) {
+    var btn = document.getElementById('tab-' + t);
+    var panel = document.getElementById('lawyer-tab-' + t);
+    if (!btn || !panel) return;
+    var isActive = t === tab;
+    btn.style.color = isActive ? 'var(--gold)' : 'var(--text-muted)';
+    btn.style.borderBottomColor = isActive ? 'var(--gold)' : 'transparent';
+    panel.style.display = isActive ? '' : 'none';
+  });
+  if (tab === 'proposals') renderProposalsGrid();
+  if (tab === 'appointed') renderAppointedList();
+}
+
+function filterLawyers() {
+  var q = (document.getElementById('lawyer-search-input')||{value:''}).value.toLowerCase();
+  var spec = (document.getElementById('filter-specialty')||{value:''}).value;
+  var sort = (document.getElementById('filter-sort')||{value:'match'}).value;
+  var filtered = allLawyers.filter(function(l) {
+    var matchQ = !q || l.name.toLowerCase().includes(q) || l.spec.toLowerCase().includes(q) || l.city.toLowerCase().includes(q);
+    var matchSpec = !spec || l.tags.indexOf(spec) !== -1;
+    return matchQ && matchSpec;
+  });
+  if (sort === 'fee-asc') filtered.sort(function(a,b){ return a.fee - b.fee; });
+  else if (sort === 'fee-desc') filtered.sort(function(a,b){ return b.fee - a.fee; });
+  else if (sort === 'exp') filtered.sort(function(a,b){ return b.exp - a.exp; });
+  else if (sort === 'rating') filtered.sort(function(a,b){ return b.rating - a.rating; });
+  renderSearchGrid(filtered);
+}
+
+function applyToLawyer(id, btn) {
+  appliedLawyers[id] = true;
+  btn.textContent = '✓ Applied';
+  btn.className = 'btn btn-success btn-sm';
+  btn.disabled = true;
+  btn.style.opacity = '0.8';
+  btn.style.cursor = 'default';
+  var l = allLawyers.find(function(x){ return x.id === id; });
+  showToast('Application sent to ' + (l ? l.name : 'lawyer') + '!', 'success');
+}
+
+// Initialize lawyer tab on page load
+(function initLawyerTab() {
+  var orig = window.onload;
+  window.onload = function() {
+    if (orig) orig();
+    renderSearchGrid(allLawyers);
+  };
+})();
 
 // ─── TOAST ───────────────────────────────────────────────
 function showToast(msg, type) {
@@ -2641,6 +2858,9 @@ function showToast(msg, type) {
 window.onload = function() {
   setGreeting();
   updateUserUI();
+  renderSearchGrid(allLawyers);
+  renderMyCases();
+  updateDashboardStats();
 };
 </script>
 </body>
