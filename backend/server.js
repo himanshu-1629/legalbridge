@@ -12,8 +12,13 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-// Serve static files (from current folder)
-app.use(express.static(__dirname));
+// Serve static files
+app.use(express.static(path.join(__dirname)));
+
+// Force load index.html on root
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // API Routes
 const lawyerRoutes = require("./routes/lawyerRoutes");
