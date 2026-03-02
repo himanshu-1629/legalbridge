@@ -55,14 +55,47 @@ router.post("/login", async (req, res) => {
     }
 
     res.json({
-      message: "Login successful",
-      lawyer: {
-        id: lawyer._id,
-        firstName: lawyer.firstName,
-        lastName: lawyer.lastName,
-        email: lawyer.email
-      }
-    });
+  message: "Login successful",
+  lawyer: {
+    id: lawyer._id,
+    firstName: lawyer.firstName,
+    lastName: lawyer.lastName,
+    email: lawyer.email,
+    verificationStatus: lawyer.verificationStatus
+  }
+});
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+// ================= SUBMIT VERIFICATION =================
+router.post("/verify", async (req, res) => {
+  try {
+    const { email, barId, experience, specialization, courts, qualifications, bio, consultationFee, languages } = req.body;
+
+    const lawyer = await Lawyer.findOne({ email });
+
+    if (!lawyer) {
+      return res.status(404).json({ message: "Lawyer not found" });
+    }
+
+    lawyer.professionalDetails = {
+      barId,
+      experience,
+      specialization,
+      courts,
+      qualifications,
+      bio,
+      consultationFee,
+      languages
+    };
+
+    lawyer.verificationStatus = "submitted";
+
+    await lawyer.save();
+
+    res.json({ message: "Verification submitted successfully" });
 
   } catch (error) {
     res.status(500).json({ message: error.message });
