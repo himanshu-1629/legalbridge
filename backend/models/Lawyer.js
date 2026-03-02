@@ -26,7 +26,12 @@ const lawyerSchema = new mongoose.Schema({
     bio: String,
     consultationFee: Number,
     languages: String
-  }
+  },
+  documents: {
+  idProof: String,
+  enrollmentCert: String,
+  practiceCert: String
+},
 
 }, { timestamps: true });
 
