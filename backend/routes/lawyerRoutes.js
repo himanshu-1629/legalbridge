@@ -141,7 +141,7 @@ router.post(
         practiceCert: req.files.practiceCert[0].filename
       };
 
-      lawyer.verificationStatus = "submitted";
+      lawyer.verificationStatus = "verified";
 
       await lawyer.save();
 
