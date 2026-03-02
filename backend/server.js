@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const connectDB = require("./config/db");
 
 const app = express();
@@ -12,8 +13,13 @@ connectDB();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// ✅ Serve static frontend files
+app.use(express.static(__dirname));
+
+// ✅ Load index.html on root
 app.get("/", (req, res) => {
-  res.send("LegalBridge API is running 🚀");
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // Routes
