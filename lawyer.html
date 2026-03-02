@@ -704,7 +704,7 @@ function pickVId(el){
   el.classList.add('sel');
 }
 
-async function submitVerification(){
+async function submitVerification() {
 
   const bar = document.getElementById('ps-bar').value.trim();
   const exp = document.getElementById('ps-exp').value.trim();
@@ -715,50 +715,48 @@ async function submitVerification(){
   const fee = document.getElementById('ps-fee').value.trim();
   const languages = document.getElementById('ps-lang').value.trim();
 
-  if(!bar||!exp||!spec||!courts||!qual||!bio||!fee){
+  if(!bar || !exp || !spec || !courts || !qual || !bio || !fee){
     toast('Please fill all professional details','⚠️');
     return;
   }
 
   if (
-  !document.getElementById("file1").files.length ||
-  !document.getElementById("file2").files.length ||
-  !document.getElementById("file3").files.length
-) {
-  toast('Please upload all 3 documents','⚠️');
-  return;
-}
+    !document.getElementById("file1").files.length ||
+    !document.getElementById("file2").files.length ||
+    !document.getElementById("file3").files.length
+  ) {
+    toast('Please upload all 3 documents','⚠️');
+    return;
+  }
 
   try {
 
     const storedLawyer = JSON.parse(localStorage.getItem("lawyer"));
 
     const formData = new FormData();
+    formData.append("email", storedLawyer.email);
+    formData.append("barId", bar);
+    formData.append("experience", exp);
+    formData.append("specialization", spec);
+    formData.append("courts", courts);
+    formData.append("qualifications", qual);
+    formData.append("bio", bio);
+    formData.append("consultationFee", fee);
+    formData.append("languages", languages);
 
-formData.append("email", storedLawyer.email);
-formData.append("barId", bar);
-formData.append("experience", exp);
-formData.append("specialization", spec);
-formData.append("courts", courts);
-formData.append("qualifications", qual);
-formData.append("bio", bio);
-formData.append("consultationFee", fee);
-formData.append("languages", languages);
+    formData.append("idProof", document.getElementById("file1").files[0]);
+    formData.append("enrollmentCert", document.getElementById("file2").files[0]);
+    formData.append("practiceCert", document.getElementById("file3").files[0]);
 
-formData.append("idProof", document.getElementById("file1").files[0]);
-formData.append("enrollmentCert", document.getElementById("file2").files[0]);
-formData.append("practiceCert", document.getElementById("file3").files[0]);
-
-const response = await fetch("/api/lawyer/verify", {
-  method: "POST",
-  body: formData
-});
+    const response = await fetch("/api/lawyer/verify", {
+      method: "POST",
+      body: formData
+    });
 
     const data = await response.json();
     alert(data.message);
 
     if(response.ok){
-      LAWYER.verified = false;   // still not approved
       toast("Verification submitted. Waiting for admin approval ⏳");
     }
 
