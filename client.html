@@ -2205,8 +2205,9 @@ async function completeSignup() {
     showToast('Welcome to LegalBridge! Account created.', 'success');
 
   } catch (err) {
-    showErr('err-step2', 'Server error. Try again.');
-  }
+  console.log("FETCH ERROR:", err);
+  showErr('err-step2', err.message);
+}
 }
 
 async function doLogin() {
