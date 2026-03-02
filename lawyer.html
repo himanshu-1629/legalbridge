@@ -1,1 +1,1592 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LegalBridge — Lawyer Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070a;
+  --bg2:#0e0d13;
+  --bg3:#15141c;
+  --bg4:#1c1b26;
+  --bg5:#232232;
+  --gold:#d4a843;
+  --gold2:#f0c96a;
+  --gold3:#8a6520;
+  --goldfaint:rgba(212,168,67,0.12);
+  --goldborder:rgba(212,168,67,0.22);
+  --goldbright:rgba(212,168,67,0.5);
+  --cream:#f2ece0;
+  --muted:rgba(242,236,224,0.45);
+  --faint:rgba(242,236,224,0.18);
+  --green:#22c55e;
+  --red:#ef4444;
+  --blue:#3b82f6;
+  --amber:#f59e0b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh}
+
+/* ─── SCREEN CONTROLLER ─── */
+.pg{display:none;min-height:100vh}
+.pg.show{display:flex}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--gold3);border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 1 — SIGN IN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#p-signin{
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 80% 60% at 50% -5%,rgba(212,168,67,0.07),transparent 65%),
+             var(--bg);
+  padding:24px 16px;position:relative;overflow:hidden;
+}
+
+/* subtle grid */
+#p-signin::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(212,168,67,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(212,168,67,0.03) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);
+}
+
+.si-wrap{width:100%;max-width:420px;position:relative;z-index:2}
+
+.logo-row{display:flex;align-items:center;gap:12px;margin-bottom:36px;justify-content:center}
+.logo-box{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,var(--gold3),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  box-shadow:0 0 40px rgba(212,168,67,0.3),inset 0 1px 0 rgba(255,255,255,0.18);
+}
+.logo-text{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:900;color:var(--gold);letter-spacing:0.12em}
+
+.si-card{
+  background:var(--bg3);
+  border:1px solid var(--goldborder);
+  border-radius:20px;padding:36px 32px;
+  position:relative;overflow:hidden;
+}
+.si-card::before{
+  content:'';position:absolute;top:0;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.si-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--goldfaint);border:1px solid var(--goldborder);
+  border-radius:20px;padding:4px 13px;font-size:0.7rem;
+  color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:18px;
+}
+.si-h{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--cream);margin-bottom:5px}
+.si-sub{font-size:0.82rem;color:var(--muted);margin-bottom:26px}
+
+/* Tabs */
+.tabs{display:flex;background:rgba(255,255,255,0.04);border-radius:10px;padding:4px;margin-bottom:24px}
+.t{flex:1;padding:9px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;border-radius:8px;transition:all 0.22s}
+.t.on{background:var(--gold);color:var(--bg);font-weight:600}
+
+/* Form */
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(212,168,67,0.65);margin-bottom:7px}
+.fg input,.fg select,.fg textarea{
+  width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);
+  border-radius:10px;padding:11px 14px;color:var(--cream);
+  font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;transition:all 0.2s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--gold);background:rgba(212,168,67,0.05);
+  box-shadow:0 0 0 3px rgba(212,168,67,0.1);
+}
+.fg select option{background:var(--bg3)}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.5}
+.fg-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg-ph{position:relative}
+.fg-ph .pfx{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gold);font-size:0.84rem;padding-right:9px;border-right:1px solid rgba(255,255,255,0.1)}
+.fg-ph input{padding-left:55px}
+
+.btn-g{
+  width:100%;padding:13px;margin-top:6px;
+  background:linear-gradient(135deg,var(--gold3) 0%,var(--gold) 55%,var(--gold2) 100%);
+  border:none;border-radius:10px;color:var(--bg);
+  font-family:'Cinzel',serif;font-size:0.82rem;font-weight:600;letter-spacing:0.1em;
+  cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;
+}
+.btn-g::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.12),transparent);border-radius:10px}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(212,168,67,0.35)}
+.btn-g:active{transform:none}
+.btn-o{
+  background:transparent;border:1.5px solid var(--goldborder);color:var(--gold);
+  border-radius:10px;padding:10px 22px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;
+}
+.btn-o:hover{border-color:var(--goldbright);background:var(--goldfaint)}
+
+/* ─── OTP screen ─── */
+.otp-row{display:flex;gap:9px;justify-content:center;margin:18px 0}
+.otp-row input{
+  width:50px;height:56px;text-align:center;
+  font-size:1.5rem;font-weight:700;font-family:'Cinzel',serif;
+  border-radius:12px;border-color:rgba(255,255,255,0.1);
+}
+.otp-row input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,67,0.15)}
+.resend-row{text-align:center;font-size:0.78rem;color:var(--muted);margin-top:10px}
+.resend-row span{color:var(--gold);cursor:pointer}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 2 — PROFILE SETUP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#p-profile{
+  flex-direction:column;align-items:center;justify-content:flex-start;
+  background:var(--bg2);padding:32px 16px 60px;overflow-y:auto;
+}
+.prof-wrap{width:100%;max-width:560px}
+.setup-head{margin-bottom:28px}
+.setup-eyebrow{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.setup-h{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--cream)}
+.setup-sub{font-size:0.82rem;color:var(--muted);margin-top:5px}
+
+/* Step dots */
+.step-dots{display:flex;gap:7px;margin-bottom:28px}
+.sdot{height:4px;border-radius:2px;flex:1;background:rgba(255,255,255,0.08);transition:background 0.4s}
+.sdot.done{background:var(--gold)}
+.sdot.now{background:rgba(212,168,67,0.5)}
+
+.setup-card{
+  background:var(--bg3);border:1px solid var(--goldborder);
+  border-radius:18px;padding:30px 28px;margin-bottom:16px;
+  position:relative;overflow:hidden;
+}
+.setup-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.card-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--cream);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+
+/* Upload zone */
+.upzone{
+  border:2px dashed rgba(212,168,67,0.22);border-radius:12px;padding:28px 18px;
+  text-align:center;cursor:pointer;transition:all 0.22s;position:relative;margin-bottom:12px;
+}
+.upzone:hover{border-color:var(--gold);background:rgba(212,168,67,0.03)}
+.upzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upz-icon{font-size:2rem;margin-bottom:8px}
+.upz-t{font-size:0.86rem;color:var(--cream);margin-bottom:3px}
+.upz-s{font-size:0.73rem;color:var(--muted)}
+.file-done{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);
+  border-radius:10px;padding:11px 14px;margin-bottom:10px;
+  animation:popIn 0.3s ease both;
+}
+.file-done .fd-name{flex:1;font-size:0.82rem;color:var(--cream)}
+.file-done .fd-sz{font-size:0.7rem;color:var(--muted)}
+
+/* Optional section */
+.opt-banner{
+  background:linear-gradient(135deg,rgba(212,168,67,0.08),rgba(212,168,67,0.03));
+  border:1px solid var(--goldborder);border-radius:14px;padding:18px 20px;
+  display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;cursor:pointer;
+  transition:all 0.2s;
+}
+.opt-banner:hover{border-color:var(--goldbright)}
+.opt-banner-icon{font-size:1.8rem;flex-shrink:0}
+.opt-toggle{
+  margin-left:auto;width:44px;height:24px;border-radius:12px;
+  background:var(--bg5);border:1px solid rgba(255,255,255,0.1);
+  position:relative;transition:background 0.25s;cursor:pointer;flex-shrink:0;
+}
+.opt-toggle.on{background:var(--gold)}
+.opt-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:16px;height:16px;border-radius:50%;background:#fff;
+  transition:transform 0.25s;
+}
+.opt-toggle.on::after{transform:translateX(20px)}
+
+/* Star rating input */
+.star-pick{display:flex;gap:6px;margin-top:6px}
+.star-pick span{font-size:1.5rem;cursor:pointer;transition:transform 0.15s;color:rgba(255,255,255,0.15)}
+.star-pick span.lit{color:var(--gold)}
+.star-pick span:hover{transform:scale(1.2)}
+
+/* Chips */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{
+  padding:6px 14px;border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1);background:transparent;
+  color:var(--muted);font-size:0.76rem;cursor:pointer;transition:all 0.2s;
+}
+.chip.sel{border-color:var(--gold);color:var(--gold);background:var(--goldfaint)}
+
+/* Progress bar */
+.prog-bar{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold3),var(--gold));transition:width 0.6s ease}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE 3 — DASHBOARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#p-dash{flex-direction:row;background:var(--bg);min-height:100vh}
+
+/* Sidebar */
+.sb{
+  width:240px;min-height:100vh;position:fixed;top:0;left:0;bottom:0;
+  background:var(--bg2);border-right:1px solid var(--goldborder);
+  display:flex;flex-direction:column;z-index:200;transition:transform 0.3s;
+}
+.sb-brand{padding:20px 18px 16px;border-bottom:1px solid var(--goldborder)}
+.sb-logo{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:900;color:var(--gold);letter-spacing:0.08em}
+.sb-role{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(212,168,67,0.35);margin-top:2px}
+
+.sb-nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nl{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);padding:9px 10px 3px}
+.ni{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;
+  cursor:pointer;color:var(--muted);font-size:0.82rem;transition:all 0.18s;
+  position:relative;margin-bottom:2px;
+}
+.ni:hover{background:var(--goldfaint);color:rgba(242,236,224,0.8)}
+.ni.on{background:rgba(212,168,67,0.13);color:var(--gold);font-weight:500}
+.ni.on::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:3px;background:var(--gold);border-radius:0 3px 3px 0}
+.ni-ic{font-size:1rem;width:19px;text-align:center}
+.ni-badge{margin-left:auto;background:#ef4444;color:#fff;font-size:0.58rem;padding:2px 6px;border-radius:8px;font-weight:700}
+.ni-new{margin-left:auto;background:rgba(212,168,67,0.2);color:var(--gold);font-size:0.58rem;padding:2px 6px;border-radius:8px}
+
+.sb-user{
+  padding:13px 14px;border-top:1px solid var(--goldborder);
+  display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.2s;
+}
+.sb-user:hover{background:var(--goldfaint)}
+.u-av{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold3),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:0.85rem;color:var(--bg);font-weight:700;
+}
+.u-n{font-size:0.8rem;color:var(--cream);font-weight:500}
+.u-s{font-size:0.66rem;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:1px}
+.u-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* Main area */
+.dm{margin-left:240px;flex:1;padding:26px 28px;min-height:100vh;overflow-y:auto}
+
+/* Top bar */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.tb-l h1{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--cream)}
+.tb-l h1 em{color:var(--gold);font-style:normal}
+.tb-sub{font-size:0.76rem;color:var(--muted);margin-top:2px}
+.tb-r{display:flex;align-items:center;gap:9px}
+.ib{
+  width:38px;height:38px;background:var(--bg3);border:1px solid var(--goldborder);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;transition:all 0.18s;position:relative;
+}
+.ib:hover{border-color:var(--goldbright)}
+.ib .dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:#ef4444;border-radius:50%;border:2px solid var(--bg3)}
+
+/* Sections */
+.sec{display:none}
+.sec.on{display:block;animation:fadeUp 0.3s ease both}
+
+/* Stat cards */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:22px}
+.sc{
+  background:var(--bg3);border:1px solid var(--goldborder);
+  border-radius:14px;padding:18px 16px;transition:border-color 0.2s;position:relative;overflow:hidden;
+}
+.sc:hover{border-color:var(--goldbright)}
+.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.sc.sg::after{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.sc.sv::after{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.sc.sb::after{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.sc.sr::after{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:11px}
+.sc-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.sg .sc-ico{background:var(--goldfaint)}
+.sv .sc-ico{background:rgba(34,197,94,0.1)}
+.sb .sc-ico{background:rgba(59,130,246,0.1)}
+.sr .sc-ico{background:rgba(245,158,11,0.1)}
+.sc-trend{font-size:0.68rem;padding:2px 7px;border-radius:8px}
+.t-up{background:rgba(34,197,94,0.1);color:var(--green)}
+.t-nu{background:var(--goldfaint);color:var(--gold)}
+.sc-val{font-family:'Playfair Display',serif;font-size:1.85rem;color:var(--cream);line-height:1}
+.sc-lbl{font-size:0.71rem;color:var(--muted);margin-top:4px}
+
+/* Info / detail panels */
+.panel{background:var(--bg3);border:1px solid var(--goldborder);border-radius:14px;padding:20px 22px;margin-bottom:16px}
+.panel-title{font-family:'Playfair Display',serif;font-size:0.98rem;color:var(--cream);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.panel-title::before{content:'';display:block;width:3px;height:16px;background:var(--gold);border-radius:2px}
+
+/* Case cards */
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:12px}
+.cc{
+  background:var(--bg3);border:1px solid rgba(255,255,255,0.06);
+  border-radius:13px;padding:17px;cursor:pointer;
+  transition:all 0.22s;position:relative;overflow:hidden;
+}
+.cc:hover{border-color:var(--goldborder);transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.45)}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px}
+.cc.tp::before{background:#e67e22}.cc.tc::before{background:var(--blue)}
+.cc.tk::before{background:#ef4444}.cc.td::before{background:#8b5cf6}
+.cc.to::before{background:var(--gold)}
+
+.cc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.cc-badge{font-size:0.63rem;letter-spacing:0.09em;text-transform:uppercase;padding:3px 8px;border-radius:8px;font-weight:600}
+.tp .cc-badge{background:rgba(230,126,34,0.15);color:#e67e22}
+.tc .cc-badge{background:rgba(59,130,246,0.13);color:var(--blue)}
+.tk .cc-badge{background:rgba(239,68,68,0.13);color:#ef4444}
+.td .cc-badge{background:rgba(139,92,246,0.13);color:#8b5cf6}
+.to .cc-badge{background:var(--goldfaint);color:var(--gold)}
+
+.cc-dot{width:7px;height:7px;border-radius:50%}
+.st-on{background:var(--green);box-shadow:0 0 7px var(--green)}
+.st-pend{background:var(--gold)}
+.st-done{background:rgba(255,255,255,0.2)}
+
+.cc-title{font-size:0.86rem;color:var(--cream);font-weight:500;margin-bottom:7px;line-height:1.35}
+.cc-meta{font-size:0.71rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px}
+.cc-prog{margin-top:12px}
+.cp-row{font-size:0.68rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:4px}
+.cp-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.cp-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold3),var(--gold))}
+
+/* Request cards (accept/decline) */
+.rq-card{
+  background:var(--bg3);border:1px solid rgba(255,255,255,0.06);
+  border-radius:13px;padding:18px;margin-bottom:12px;transition:border-color 0.2s;
+}
+.rq-card:hover{border-color:var(--goldborder)}
+.rq-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rq-title{font-size:0.88rem;color:var(--cream);font-weight:500;margin-bottom:6px}
+.rq-desc{font-size:0.78rem;color:var(--muted);line-height:1.5;margin-bottom:10px;background:rgba(255,255,255,0.02);border-radius:8px;padding:9px 11px}
+.rq-actions{display:flex;gap:8px}
+.btn-acc{flex:1;padding:9px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);border-radius:8px;color:var(--green);font-family:'DM Sans',sans-serif;font-size:0.77rem;cursor:pointer;transition:all 0.2s}
+.btn-acc:hover{background:rgba(34,197,94,0.2)}
+.btn-dec{padding:9px 14px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.18);border-radius:8px;color:#ef4444;font-family:'DM Sans',sans-serif;font-size:0.77rem;cursor:pointer;transition:all 0.2s}
+.btn-dec:hover{background:rgba(239,68,68,0.15)}
+
+/* Profile info rows */
+.ir{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.ir:last-child{border-bottom:none}
+.ir-l{font-size:0.72rem;color:var(--muted);flex-shrink:0}
+.ir-v{font-size:0.82rem;color:var(--cream);text-align:right;max-width:65%;line-height:1.4}
+.ir-v.gv{color:var(--gold)}
+.ir-v.grn{color:var(--green)}
+
+/* Success ring */
+.ring-wrap{position:relative;width:130px;height:130px;flex-shrink:0}
+.ring-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.r-bg{fill:none;stroke:rgba(255,255,255,0.05);stroke-width:10}
+.r-fg{fill:none;stroke:url(#rg);stroke-width:10;stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:339.3;transition:stroke-dashoffset 1.4s cubic-bezier(0.22,1,0.36,1)}
+.ring-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--cream);line-height:1}
+.ring-lbl{font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+
+/* Skill chips display */
+.dchip{display:inline-block;padding:4px 12px;border-radius:20px;background:var(--goldfaint);border:1px solid var(--goldborder);font-size:0.74rem;color:var(--gold);margin:3px}
+
+/* Hearings list */
+.hearing-item{
+  display:flex;align-items:center;gap:14px;padding:13px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.hearing-item:last-child{border-bottom:none}
+.hi-date{
+  width:44px;height:44px;background:var(--goldfaint);border:1px solid var(--goldborder);
+  border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;
+}
+.hi-day{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);line-height:1;font-weight:700}
+.hi-mon{font-size:0.55rem;color:rgba(212,168,67,0.5);letter-spacing:0.1em;text-transform:uppercase}
+.hi-info{flex:1}
+.hi-name{font-size:0.85rem;color:var(--cream);font-weight:500}
+.hi-court{font-size:0.72rem;color:var(--muted);margin-top:2px}
+.hi-tag{font-size:0.68rem;padding:3px 9px;border-radius:8px;white-space:nowrap}
+.urgent{background:rgba(239,68,68,0.1);color:#ef4444}
+.soon{background:var(--goldfaint);color:var(--gold)}
+.normal{background:rgba(34,197,94,0.1);color:var(--green)}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CHAT PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.chat-layout{display:flex;height:calc(100vh - 52px);margin-top:0}
+
+/* Clients list */
+.chat-list{
+  width:280px;flex-shrink:0;border-right:1px solid var(--goldborder);
+  display:flex;flex-direction:column;background:var(--bg2);
+}
+.cl-head{padding:16px 16px 12px;border-bottom:1px solid var(--goldborder)}
+.cl-head-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--cream);margin-bottom:8px}
+.cl-search{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:8px 12px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.8rem;outline:none}
+.cl-search:focus{border-color:var(--goldborder)}
+.cl-scroll{flex:1;overflow-y:auto}
+
+.cl-item{
+  display:flex;align-items:center;gap:11px;padding:13px 15px;cursor:pointer;
+  transition:background 0.15s;border-bottom:1px solid rgba(255,255,255,0.03);
+  position:relative;
+}
+.cl-item:hover{background:var(--goldfaint)}
+.cl-item.active{background:rgba(212,168,67,0.1);border-left:3px solid var(--gold)}
+.cl-av{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:0.85rem;color:var(--bg);font-weight:700;
+}
+.cl-info{flex:1;overflow:hidden}
+.cl-name{font-size:0.83rem;color:var(--cream);font-weight:500}
+.cl-preview{font-size:0.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.cl-time{font-size:0.65rem;color:var(--faint);position:absolute;top:13px;right:12px}
+.cl-unread{
+  width:18px;height:18px;background:#ef4444;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.6rem;color:#fff;font-weight:700;margin-left:auto;flex-shrink:0;
+}
+
+/* Chat area */
+.chat-area{flex:1;display:flex;flex-direction:column;background:var(--bg)}
+
+.ca-head{
+  padding:14px 20px;border-bottom:1px solid var(--goldborder);
+  display:flex;align-items:center;gap:13px;background:var(--bg2);
+}
+.ca-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.85rem;color:var(--bg);font-weight:700;flex-shrink:0}
+.ca-name{font-size:0.9rem;color:var(--cream);font-weight:500}
+.ca-case{font-size:0.72rem;color:var(--gold);margin-top:2px}
+.ca-actions{margin-left:auto;display:flex;gap:8px}
+.ca-btn{padding:6px 14px;border-radius:8px;background:var(--goldfaint);border:1px solid var(--goldborder);color:var(--gold);font-size:0.74rem;cursor:pointer;transition:all 0.18s}
+.ca-btn:hover{background:rgba(212,168,67,0.18)}
+
+/* Case info strip */
+.case-strip{
+  background:linear-gradient(135deg,rgba(212,168,67,0.07),rgba(212,168,67,0.02));
+  border-bottom:1px solid var(--goldborder);
+  padding:9px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.cs-item{display:flex;align-items:center;gap:5px;font-size:0.72rem;color:var(--muted)}
+.cs-item strong{color:var(--cream)}
+
+/* Messages */
+.msgs{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.msg-group{display:flex;flex-direction:column;gap:4px}
+.msg{
+  max-width:72%;padding:10px 14px;
+  border-radius:14px;font-size:0.82rem;line-height:1.5;
+  position:relative;
+}
+.msg.in{background:var(--bg3);color:rgba(242,236,224,0.85);align-self:flex-start;border-bottom-left-radius:3px}
+.msg.out{background:rgba(212,168,67,0.13);color:var(--cream);align-self:flex-end;border:1px solid var(--goldborder);border-bottom-right-radius:3px}
+.msg-t{font-size:0.62rem;color:var(--faint);margin-top:4px;display:block}
+.msg-doc{
+  display:flex;align-items:center;gap:9px;
+  background:rgba(255,255,255,0.04);border-radius:9px;padding:9px 12px;
+  border:1px solid rgba(255,255,255,0.07);max-width:240px;cursor:pointer;
+  transition:border-color 0.18s;
+}
+.msg-doc:hover{border-color:var(--goldborder)}
+.msg-doc .doc-name{font-size:0.78rem;color:var(--cream)}
+.msg-doc .doc-sz{font-size:0.68rem;color:var(--muted)}
+.day-sep{text-align:center;font-size:0.7rem;color:var(--faint);padding:4px 0;letter-spacing:0.08em}
+
+/* Input row */
+.chat-inp-row{
+  padding:12px 16px;border-top:1px solid var(--goldborder);background:var(--bg2);
+  display:flex;align-items:flex-end;gap:9px;
+}
+.ci{
+  flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;padding:10px 14px;color:var(--cream);
+  font-family:'DM Sans',sans-serif;font-size:0.83rem;outline:none;resize:none;
+  max-height:120px;min-height:42px;transition:border-color 0.18s;line-height:1.4;
+}
+.ci:focus{border-color:var(--goldborder)}
+.ci-actions{display:flex;gap:7px;align-items:flex-end}
+.ci-icon{width:38px;height:38px;background:var(--bg3);border:1px solid rgba(255,255,255,0.08);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;cursor:pointer;transition:all 0.18s}
+.ci-icon:hover{border-color:var(--goldborder)}
+.ci-send{width:38px;height:38px;background:var(--gold);border:none;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:all 0.18s}
+.ci-send:hover{transform:scale(1.08);box-shadow:0 4px 16px rgba(212,168,67,0.3)}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:26px;left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--bg4);border:1px solid var(--goldbright);
+  border-radius:12px;padding:12px 22px;
+  display:flex;align-items:center;gap:10px;
+  font-size:0.83rem;color:var(--cream);z-index:9999;
+  white-space:nowrap;box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* Mobile sidebar toggle */
+.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:300;width:40px;height:40px;background:var(--bg3);border:1px solid var(--goldborder);border-radius:9px;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;color:var(--gold)}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Responsive */
+@media(max-width:900px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .chat-list{width:220px}
+}
+@media(max-width:768px){
+  .sb{transform:translateX(-100%)}
+  .sb.open{transform:none}
+  .dm{margin-left:0;padding:18px 14px}
+  .mob-toggle{display:flex}
+  .topbar{margin-top:44px}
+  .chat-list{display:none}
+  .fg-2{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toast-ic">✅</span><span id="toast-tx">Done</span></div>
+
+<!-- ██████████████████████████████████████
+     PAGE 1 — SIGN IN / SIGN UP
+██████████████████████████████████████ -->
+<div class="pg show" id="p-signin" style="flex-direction:column;align-items:center;justify-content:center;min-height:100vh;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -5%,rgba(212,168,67,0.07),transparent 65%);pointer-events:none;"></div>
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(212,168,67,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.03) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);pointer-events:none;"></div>
+
+  <div class="si-wrap">
+    <div class="logo-row">
+      <div class="logo-box">⚖</div>
+      <div class="logo-text">LEGALBRIDGE</div>
+    </div>
+
+    <div class="si-card" id="si-card">
+      <!-- Sign In / Sign Up views -->
+      <div id="v-main">
+        <div class="si-eyebrow">👨‍⚖️ Lawyer Portal</div>
+        <h2 class="si-h" id="auth-title">Welcome Back</h2>
+        <p class="si-sub" id="auth-sub">Sign in to access your dashboard</p>
+
+        <div class="tabs">
+          <button class="t on" id="tab-in" onclick="authTab('in')">Sign In</button>
+          <button class="t" id="tab-up" onclick="authTab('up')">Sign Up</button>
+        </div>
+
+        <!-- SIGN IN -->
+        <div id="f-in">
+          <div class="fg">
+            <label>Email or Phone</label>
+            <input type="text" id="si-id" placeholder="your@email.com">
+          </div>
+          <div class="fg">
+            <label>Password</label>
+            <input type="password" id="si-pw" placeholder="Enter your password">
+          </div>
+          <div style="text-align:right;margin-bottom:14px;"><span style="font-size:0.76rem;color:var(--gold);cursor:pointer;">Forgot password?</span></div>
+          <button class="btn-g" onclick="doSignIn()">SIGN IN</button>
+          <p style="text-align:center;margin-top:14px;font-size:0.77rem;color:var(--muted);">No account? <span style="color:var(--gold);cursor:pointer;" onclick="authTab('up')">Create one →</span></p>
+        </div>
+
+        <!-- SIGN UP -->
+        <div id="f-up" style="display:none;">
+          <div class="fg-2">
+            <div class="fg"><label>First Name</label><input type="text" id="up-fn" placeholder="First name"></div>
+            <div class="fg"><label>Last Name</label><input type="text" id="up-ln" placeholder="Last name"></div>
+          </div>
+          <div class="fg"><label>Email Address</label><input type="email" id="up-em" placeholder="rohit@lawfirm.com"></div>
+          <div class="fg fg-ph">
+            <label>Phone Number</label>
+            <div class="fg-ph"><span class="pfx">+91</span><input type="tel" id="up-ph" placeholder="98765 43210" maxlength="10"></div>
+          </div>
+          <div class="fg-2">
+            <div class="fg"><label>Password</label><input type="password" id="up-pw" placeholder="Min 8 characters"></div>
+            <div class="fg"><label>Confirm Password</label><input type="password" id="up-cp" placeholder="Repeat password"></div>
+          </div>
+          <button class="btn-g" onclick="doSignUp()">CONTINUE →</button>
+          <p style="text-align:center;margin-top:14px;font-size:0.77rem;color:var(--muted);">Already registered? <span style="color:var(--gold);cursor:pointer;" onclick="authTab('in')">Sign in</span></p>
+        </div>
+      </div>
+
+      <!-- OTP VERIFICATION -->
+      <div id="v-otp" style="display:none;">
+        <div style="text-align:center;padding:8px 0 20px;">
+          <div style="font-size:3rem;margin-bottom:12px;">📱</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--cream);margin-bottom:8px;">Verify Your Number</h3>
+          <p style="font-size:0.82rem;color:var(--muted);">A 6-digit code was sent to <span style="color:var(--gold);" id="otp-dest">+91 98765 43210</span></p>
+        </div>
+        <div class="otp-row">
+          <input type="text" maxlength="1" class="oi" oninput="om(this,0)">
+          <input type="text" maxlength="1" class="oi" oninput="om(this,1)">
+          <input type="text" maxlength="1" class="oi" oninput="om(this,2)">
+          <input type="text" maxlength="1" class="oi" oninput="om(this,3)">
+          <input type="text" maxlength="1" class="oi" oninput="om(this,4)">
+          <input type="text" maxlength="1" class="oi" oninput="om(this,5)">
+        </div>
+        <button class="btn-g" onclick="doOTP()">VERIFY & CONTINUE</button>
+        <div class="resend-row" style="margin-top:12px;">Didn't get it? <span onclick="resend()">Resend code</span> <span id="timer-txt" style="color:var(--faint);"></span></div>
+        <div style="text-align:center;margin-top:10px;"><button class="btn-o" style="padding:7px 16px;font-size:0.76rem;" onclick="back('v-main')">← Back</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ██████████████████████████████████████
+     PAGE 2 — PROFILE SETUP
+██████████████████████████████████████ -->
+<div class="pg" id="p-profile" style="flex-direction:column;align-items:center;justify-content:flex-start;background:var(--bg2);padding:32px 16px 60px;overflow-y:auto;">
+  <div class="prof-wrap">
+    <div class="setup-head">
+      <div class="setup-eyebrow">⚖ LegalBridge — Lawyer Registration</div>
+      <h2 class="setup-h">Set Up Your Profile</h2>
+      <p class="setup-sub">This information will be shown to clients on the platform.</p>
+    </div>
+
+    <!-- Step indicator: 3 steps (Basic, Documents, Optional) -->
+    <div class="step-dots" id="sdots">
+      <div class="sdot now" id="sd1"></div>
+      <div class="sdot" id="sd2"></div>
+      <div class="sdot" id="sd3"></div>
+    </div>
+
+    <!-- STEP 1: Professional Details -->
+    <div id="pstep-1">
+      <div class="setup-card">
+        <div class="card-title">🎓 Professional Details</div>
+        <div class="fg-2">
+          <div class="fg"><label>Bar Council ID</label><input type="text" id="ps-bar" placeholder="BAR/2015/DL/1234" value="BAR/2008/DL/4521"></div>
+          <div class="fg"><label>Years of Experience</label><input type="number" id="ps-exp" placeholder="12" value="18" min="0"></div>
+        </div>
+        <div class="fg">
+          <label>Primary Specialization</label>
+          <select id="ps-spec">
+            <option value="">— Select —</option>
+            <option selected>Property Law</option>
+            <option>Civil Law</option>
+            <option>Criminal Law</option>
+            <option>Corporate & Commercial Law</option>
+            <option>Family & Divorce Law</option>
+            <option>Constitutional Law</option>
+            <option>Intellectual Property</option>
+            <option>Labour & Employment Law</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Courts of Practice</label>
+          <input type="text" id="ps-courts" placeholder="Delhi HC, Supreme Court of India" value="Delhi HC, Supreme Court of India">
+        </div>
+        <div class="fg">
+          <label>Qualifications</label>
+          <input type="text" id="ps-qual" placeholder="LLB – Delhi University, 2006" value="LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008">
+        </div>
+        <div class="fg">
+          <label>Bio / About Yourself</label>
+          <textarea id="ps-bio" rows="3">Senior advocate with 18 years of experience specialising in property and civil litigation. Appeared in 400+ cases across Delhi HC and Supreme Court of India. Known for thorough preparation and client-focused approach.</textarea>
+        </div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Consultation Fee (₹/hr)</label>
+            <input type="number" id="ps-fee" placeholder="5000" value="8000">
+          </div>
+          <div class="fg">
+            <label>Language(s)</label>
+            <input type="text" id="ps-lang" placeholder="English, Hindi" value="English, Hindi">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;">
+        <button class="btn-g" style="width:auto;padding:12px 32px;" onclick="pStep(2)">Next: Documents →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Document Uploads -->
+    <div id="pstep-2" style="display:none;">
+      <div class="setup-card">
+        <div class="card-title">📄 Verification Documents</div>
+        <p style="font-size:0.8rem;color:var(--muted);margin-bottom:18px;line-height:1.5;">Upload your credentials for platform verification. Clients can see your verified badge once approved.</p>
+
+        <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(212,168,67,0.65);display:block;margin-bottom:8px;">Government ID</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;" id="id-chips">
+          <span class="chip sel" onclick="pickId(this)">🪪 Aadhaar</span>
+          <span class="chip" onclick="pickId(this)">🗃 PAN Card</span>
+          <span class="chip" onclick="pickId(this)">📕 Passport</span>
+          <span class="chip" onclick="pickId(this)">🚗 Driving Licence</span>
+        </div>
+        <div class="upzone" id="uz1" onclick="fakeUpload('uz1','doc1','Aadhaar_Card.pdf','1.2 MB')">
+          <div class="upz-icon">🪪</div>
+          <div class="upz-t">Click to upload Government ID</div>
+          <div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+        </div>
+        <div id="doc1"></div>
+
+        <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(212,168,67,0.65);display:block;margin-bottom:8px;margin-top:14px;">Bar Council Certificate</label>
+        <div class="upzone" id="uz2" onclick="fakeUpload('uz2','doc2','Bar_Council_Certificate.pdf','0.9 MB')">
+          <div class="upz-icon">📜</div>
+          <div class="upz-t">Click to upload Bar Certificate</div>
+          <div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+        </div>
+        <div id="doc2"></div>
+
+        <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(212,168,67,0.65);display:block;margin-bottom:8px;margin-top:14px;">Practice License</label>
+        <div class="upzone" id="uz3" onclick="fakeUpload('uz3','doc3','Practice_License_2025.pdf','0.7 MB')">
+          <div class="upz-icon">📋</div>
+          <div class="upz-t">Click to upload Practice License</div>
+          <div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+        </div>
+        <div id="doc3"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn-o" onclick="pStep(1)">← Back</button>
+        <button class="btn-g" style="width:auto;padding:12px 32px;" onclick="pStep(3)">Next: Optional Info →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Optional Info -->
+    <div id="pstep-3" style="display:none;">
+      <!-- Toggle banner -->
+      <div class="opt-banner" id="opt-banner" onclick="toggleOpt()">
+        <div class="opt-banner-icon">✨</div>
+        <div>
+          <div style="font-size:0.88rem;color:var(--cream);font-weight:500;margin-bottom:3px;">Optional: Enhance Your Profile</div>
+          <div style="font-size:0.77rem;color:var(--muted);line-height:1.4;">Add extra details like achievements, success rate, and specialization chips to stand out to clients.</div>
+        </div>
+        <div class="opt-toggle" id="opt-tog"></div>
+      </div>
+
+      <div id="opt-fields" style="display:none;">
+        <div class="setup-card">
+          <div class="card-title">🏆 Achievements & Track Record</div>
+          <div class="fg">
+            <label>Notable Achievements / Awards</label>
+            <textarea id="op-ach" rows="2" placeholder="e.g., Legal500 India 2024, Best Property Lawyer – Delhi Bar 2022">Featured in Legal500 India 2024. Best Property Law Advocate – Delhi Bar Association 2022.</textarea>
+          </div>
+          <div class="fg-2">
+            <div class="fg">
+              <label>Total Cases Handled</label>
+              <input type="number" id="op-tot" placeholder="127" value="127">
+            </div>
+            <div class="fg">
+              <label>Cases Won</label>
+              <input type="number" id="op-won" placeholder="119" value="119">
+            </div>
+          </div>
+
+          <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(212,168,67,0.65);display:block;margin-bottom:8px;">Self-Assessed Success Rate</label>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+            <input type="range" id="op-rate" min="0" max="100" value="94" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('rate-disp').textContent=this.value+'%'">
+            <span style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);width:48px;" id="rate-disp">94%</span>
+          </div>
+
+          <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(212,168,67,0.65);display:block;margin-bottom:8px;">Areas of Expertise (select all that apply)</label>
+          <div class="chip-row" id="exp-chips">
+            <span class="chip sel" onclick="toggleChip(this)">Property Disputes</span>
+            <span class="chip sel" onclick="toggleChip(this)">Land Acquisition</span>
+            <span class="chip" onclick="toggleChip(this)">Contract Disputes</span>
+            <span class="chip sel" onclick="toggleChip(this)">Civil Litigation</span>
+            <span class="chip" onclick="toggleChip(this)">Corporate Governance</span>
+            <span class="chip" onclick="toggleChip(this)">Bail Applications</span>
+            <span class="chip" onclick="toggleChip(this)">Consumer Cases</span>
+            <span class="chip" onclick="toggleChip(this)">Family Disputes</span>
+            <span class="chip" onclick="toggleChip(this)">Arbitration</span>
+            <span class="chip" onclick="toggleChip(this)">Mediation</span>
+          </div>
+
+          <div class="fg" style="margin-top:16px;">
+            <label>LinkedIn / Website (optional)</label>
+            <input type="url" id="op-link" placeholder="https://linkedin.com/in/yourname">
+          </div>
+          <div class="fg">
+            <label>Law Firm Name (if applicable)</label>
+            <input type="text" id="op-firm" placeholder="e.g. Singh & Associates">
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
+        <button class="btn-o" onclick="pStep(2)">← Back</button>
+        <button class="btn-g" style="width:auto;padding:12px 32px;" onclick="finishSetup()">GO TO DASHBOARD →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ██████████████████████████████████████
+     PAGE 3 — DASHBOARD
+██████████████████████████████████████ -->
+<div class="pg" id="p-dash" style="flex-direction:row;min-height:100vh;">
+  <div class="mob-toggle" onclick="document.getElementById('main-sb').classList.toggle('open')">☰</div>
+
+  <!-- ─── SIDEBAR ─── -->
+  <nav class="sb" id="main-sb">
+    <div class="sb-brand">
+      <div class="sb-logo">⚖ LEGALBRIDGE</div>
+      <div class="sb-role">Lawyer Portal</div>
+    </div>
+    <div class="sb-nav">
+      <div class="nl">Main</div>
+      <div class="ni on" onclick="showSec('overview',this)"><span class="ni-ic">🏠</span>Dashboard</div>
+      <div class="ni" onclick="showSec('profile',this)"><span class="ni-ic">👤</span>My Profile</div>
+      <div class="ni" onclick="showSec('cases',this)"><span class="ni-ic">📂</span>Active Cases</div>
+      <div class="ni" onclick="showSec('requests',this)"><span class="ni-ic">📥</span>Case Requests<span class="ni-badge">3</span></div>
+      <div class="nl">Communication</div>
+      <div class="ni" onclick="showSec('chat',this)"><span class="ni-ic">💬</span>Messages<span class="ni-badge">2</span></div>
+      <div class="nl">Finance & Records</div>
+      <div class="ni" onclick="showSec('history',this)"><span class="ni-ic">🕒</span>Case History</div>
+      <div class="ni" onclick="showSec('earnings',this)"><span class="ni-ic">💰</span>Earnings</div>
+      <div class="ni" onclick="showSec('notifs',this)"><span class="ni-ic">🔔</span>Notifications<span class="ni-badge">2</span></div>
+    </div>
+    <div class="sb-user" onclick="signOut()">
+      <div class="u-av" id="sb-av"></div>
+      <div>
+        <div class="u-n" id="sb-name"></div>
+        <div class="u-s"><span class="u-dot"></span>Active · Sign Out</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── DASHBOARD MAIN ─── -->
+  <main class="dm" id="dm">
+
+    <!-- ── OVERVIEW ── -->
+    <div class="sec on" id="sec-overview">
+      <div class="topbar">
+        <div class="tb-l">
+          <h1>Good Morning, <em id="dash-gname"></em> 👋</h1>
+          <div class="tb-sub" id="dash-date">Monday, March 02, 2026</div>
+        </div>
+        <div class="tb-r">
+          <div class="ib" onclick="showSec('notifs',null)">🔔<div class="dot"></div></div>
+          <button class="btn-g" style="width:auto;padding:9px 18px;font-size:0.78rem;" onclick="showSec('requests',null)">+ New Requests</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="sc sg"><div class="sc-top"><div class="sc-ico">📂</div><span class="sc-trend t-up">+2 this wk</span></div><div class="sc-val">8</div><div class="sc-lbl">Active Cases</div></div>
+        <div class="sc sv"><div class="sc-top"><div class="sc-ico">🏆</div><span class="sc-trend t-up">↑ 2%</span></div><div class="sc-val" id="stat-sr">94%</div><div class="sc-lbl">Success Rate</div></div>
+        <div class="sc sb2" style="--blue:#3b82f6"><div class="sc-top"><div class="sc-ico" style="background:rgba(59,130,246,0.1);">📚</div><span class="sc-trend t-nu">All time</span></div><div class="sc-val">127</div><div class="sc-lbl">Total Cases</div></div>
+        <div class="sc sr"><div class="sc-top"><div class="sc-ico">💰</div><span class="sc-trend t-up">+₹40K</span></div><div class="sc-val">₹3.2L</div><div class="sc-lbl">Earnings (Mar)</div></div>
+      </div>
+
+      <!-- Success ring + case breakdown side by side -->
+      <div style="display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:20px;">
+        <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 120 120">
+              <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8a6520"/><stop offset="100%" stop-color="#f0c96a"/></linearGradient></defs>
+              <circle class="r-bg" cx="60" cy="60" r="54"/>
+              <circle class="r-fg" id="ring" cx="60" cy="60" r="54"/>
+            </svg>
+            <div class="ring-mid"><div class="ring-pct" id="ring-n">94%</div><div class="ring-lbl">Success</div></div>
+          </div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.92rem;color:var(--cream);">Overall Success Rate</div>
+          <div style="display:flex;gap:14px;">
+            <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green);" id="rn-won">119</div><div style="font-size:0.65rem;color:var(--muted);">Won</div></div>
+            <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);">5</div><div style="font-size:0.65rem;color:var(--muted);">Settled</div></div>
+            <div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#ef4444;">3</div><div style="font-size:0.65rem;color:var(--muted);">Lost</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Cases by Type</div>
+          <div id="bar-chart" style="display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+      </div>
+
+      <!-- Upcoming hearings -->
+      <div class="panel">
+        <div class="panel-title">📅 Upcoming Hearings</div>
+        <div id="hearings"></div>
+      </div>
+
+      <!-- Active cases preview -->
+      <div style="margin-top:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div class="panel-title" style="margin:0;">Recent Active Cases</div>
+          <span style="font-size:0.75rem;color:var(--gold);cursor:pointer;" onclick="showSec('cases',null)">View all →</span>
+        </div>
+        <div class="cc-grid" id="ov-cases"></div>
+      </div>
+    </div>
+
+    <!-- ── MY PROFILE ── -->
+    <div class="sec" id="sec-profile">
+      <div class="topbar">
+        <div class="tb-l"><h1>👤 My <em>Profile</em></h1><div class="tb-sub">Your public profile visible to clients</div></div>
+        <div class="tb-r"><button class="btn-g" style="width:auto;padding:9px 18px;font-size:0.78rem;" onclick="showSec('edit',null)">✏️ Edit Profile</button></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;">
+        <!-- Left card -->
+        <div>
+          <div class="panel" style="text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.03));"></div>
+            <div style="position:relative;z-index:1;">
+              <div style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--gold3),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1.8rem;color:var(--bg);font-weight:800;border:3px solid var(--bg3);box-shadow:0 0 0 3px var(--gold3);" id="pp-av">RM</div>
+              <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:20px;padding:3px 10px;font-size:0.68rem;color:var(--green);margin-bottom:9px;">✓ Verified Lawyer</div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--cream);margin-bottom:3px;" id="pp-name">Adv. Rohit Mehta</div>
+              <div style="font-size:0.78rem;color:var(--gold);margin-bottom:5px;" id="pp-spec">Property Law</div>
+              <div style="font-size:0.73rem;color:var(--muted);margin-bottom:14px;" id="pp-exp">18 years • Delhi HC, Supreme Court</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:14px;">
+                <span style="color:var(--gold);font-size:1rem;">★★★★</span><span style="color:var(--gold);font-size:1rem;opacity:0.5;">★</span>
+                <span style="font-size:0.78rem;color:var(--muted);margin-left:5px;">4.8 (64 reviews)</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-bottom:14px;">
+                <div style="flex:1;background:var(--bg4);border-radius:9px;padding:10px 6px;text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);" id="pp-tot">127</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px;">Cases</div></div>
+                <div style="flex:1;background:var(--bg4);border-radius:9px;padding:10px 6px;text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);" id="pp-sr">94%</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px;">Success</div></div>
+                <div style="flex:1;background:var(--bg4);border-radius:9px;padding:10px 6px;text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);">₹8K</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px;">/hr</div></div>
+              </div>
+              <button class="btn-o" style="width:100%;margin-bottom:8px;">💬 Message</button>
+              <button class="btn-o" style="width:100%;">📅 Book Consultation</button>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:14px;">
+            <div class="panel-title">⚖️ Practice Areas</div>
+            <div id="pp-chips"></div>
+          </div>
+        </div>
+        <!-- Right -->
+        <div>
+          <div class="panel">
+            <div class="panel-title">📋 About</div>
+            <p style="font-size:0.83rem;color:var(--muted);line-height:1.6;" id="pp-bio">Senior advocate with 18 years of experience...</p>
+          </div>
+          <div class="panel">
+            <div class="panel-title">🎓 Professional Details</div>
+            <div id="pp-details"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">📊 Performance Stats</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+              <div style="text-align:center;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15);border-radius:10px;padding:13px 8px;"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--green);" id="pp-won">119</div><div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Won</div></div>
+              <div style="text-align:center;background:var(--goldfaint);border:1px solid var(--goldborder);border-radius:10px;padding:13px 8px;"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);">5</div><div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Settled</div></div>
+              <div style="text-align:center;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.12);border-radius:10px;padding:13px 8px;"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#ef4444;">3</div><div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Lost</div></div>
+            </div>
+            <div style="font-size:0.72rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px;"><span>Success Rate</span><span style="color:var(--gold);" id="pp-srb">94%</span></div>
+            <div class="prog-bar"><div class="prog-fill" id="pp-prog" style="width:94%"></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">⭐ Client Reviews</div>
+            <div id="pp-reviews"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ACTIVE CASES ── -->
+    <div class="sec" id="sec-cases">
+      <div class="topbar"><div class="tb-l"><h1>📂 Active <em>Cases</em></h1><div class="tb-sub">All ongoing cases assigned to you</div></div></div>
+      <div class="cc-grid" id="all-cases"></div>
+    </div>
+
+    <!-- ── CASE REQUESTS ── -->
+    <div class="sec" id="sec-requests">
+      <div class="topbar"><div class="tb-l"><h1>📥 Case <em>Requests</em></h1><div class="tb-sub">New cases awaiting your acceptance</div></div></div>
+      <div id="req-list"></div>
+    </div>
+
+    <!-- ── CHAT ── -->
+    <div class="sec" id="sec-chat" style="padding:0;margin:-26px -28px;height:calc(100vh);">
+      <div class="chat-layout">
+        <!-- Client list -->
+        <div class="chat-list">
+          <div class="cl-head">
+            <div class="cl-head-title">💬 Messages</div>
+            <input class="cl-search" type="text" placeholder="Search conversations...">
+          </div>
+          <div class="cl-scroll" id="cl-scroll"></div>
+        </div>
+
+        <!-- Chat area -->
+        <div class="chat-area" id="chat-area">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CASE HISTORY ── -->
+    <div class="sec" id="sec-history">
+      <div class="topbar"><div class="tb-l"><h1>🕒 Case <em>History</em></h1><div class="tb-sub">Completed and closed cases</div></div></div>
+      <div class="cc-grid" id="hist-cases"></div>
+    </div>
+
+    <!-- ── EARNINGS ── -->
+    <div class="sec" id="sec-earnings">
+      <div class="topbar"><div class="tb-l"><h1>💰 <em>Earnings</em></h1><div class="tb-sub">Fees and payment tracking</div></div></div>
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);max-width:680px;margin-bottom:20px;">
+        <div class="sc sg"><div class="sc-top"><div class="sc-ico">📅</div></div><div class="sc-val">₹3.2L</div><div class="sc-lbl">This Month</div></div>
+        <div class="sc sv"><div class="sc-top"><div class="sc-ico">📊</div></div><div class="sc-val">₹28L</div><div class="sc-lbl">This Year</div></div>
+        <div class="sc sr"><div class="sc-top"><div class="sc-ico">⏳</div></div><div class="sc-val">₹45K</div><div class="sc-lbl">Pending</div></div>
+      </div>
+      <div class="panel" style="max-width:680px;">
+        <div class="panel-title">Transaction History</div>
+        <div id="earn-list"></div>
+      </div>
+    </div>
+
+    <!-- ── NOTIFICATIONS ── -->
+    <div class="sec" id="sec-notifs">
+      <div class="topbar"><div class="tb-l"><h1>🔔 <em>Notifications</em></h1></div></div>
+      <div id="notif-list" style="max-width:640px;display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+
+  </main>
+</div>
+
+<svg width="0" height="0" style="position:absolute;"><defs><linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8a6520"/><stop offset="100%" stop-color="#f0c96a"/></linearGradient><linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1e40af"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient><linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#7f1d1d"/><stop offset="100%" stop-color="#f87171"/></linearGradient><linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#14532d"/><stop offset="100%" stop-color="#4ade80"/></linearGradient><linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4c1d95"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient></defs></svg>
+
+<script>
+// ════════════════════════════════════
+//  DUMMY DATA
+// ════════════════════════════════════
+const LAWYER = {
+  fn:'',ln:'',email:'',phone:'',
+  bar:'BAR/2008/DL/4521',exp:18,spec:'Property Law',
+  courts:'Delhi HC, Supreme Court of India',
+  qual:'LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008',
+  bio:'Senior advocate with 18 years of experience specialising in property and civil litigation. Appeared in 400+ cases across Delhi HC and Supreme Court of India. Known for thorough preparation and a client-focused approach.',
+  fee:8000,lang:'English, Hindi',
+  ach:'Featured in Legal500 India 2024. Best Property Law Advocate – Delhi Bar Association 2022.',
+  total:127,won:119,settled:5,lost:3,sr:94,
+  firm:'',
+  chips:['Property Disputes','Land Acquisition','Civil Litigation','Contract Disputes','Injunctions'],
+};
+
+const ACTIVE_CASES = [
+  {id:'LX-2026-0147',type:'tp',badge:'Property',title:'Land Ownership Dispute – Plot 47B, Noida',client:'Arjun Kumar',court:'Delhi HC',hearing:'Mar 8',prog:40,status:'on'},
+  {id:'LX-2026-0152',type:'to',badge:'Corporate',title:'Contract Breach – TechCorp vs StartupXY Ltd.',client:'TechCorp Legal',court:'Delhi HC',hearing:'Mar 20',prog:65,status:'on'},
+  {id:'LX-2026-0158',type:'tc',badge:'Civil',title:'Consumer Complaint – Medical Negligence Claim',client:'Priya Sharma',court:'Delhi Consumer Forum',hearing:'Mar 15',prog:25,status:'on'},
+  {id:'LX-2026-0163',type:'td',badge:'Divorce',title:'Mutual Consent Divorce – Gupta vs Gupta',client:'Neha & Ravi Gupta',court:'Delhi Family Court',hearing:'Mar 25',prog:80,status:'on'},
+  {id:'LX-2026-0170',type:'tp',badge:'Property',title:'Property Registration Fraud – Gurgaon Sector 14',client:'Vikram Singh',court:'Punjab & Haryana HC',hearing:'Apr 2',prog:10,status:'pend'},
+];
+
+const REQUESTS = [
+  {id:'REQ-01',type:'tk',badge:'Criminal',title:'Anticipatory Bail Application – False FIR Filed',client:'Anish Verma',court:'Delhi Sessions Court',urg:'high',docs:3,desc:'Client has been falsely accused by a business partner. FIR filed under IPC 420 & 406. Strong evidence of fabrication. Anticipatory bail required urgently before next police action.'},
+  {id:'REQ-02',type:'tp',badge:'Property',title:'Property Partition Dispute – 3 Siblings',client:'Kapoor Family',court:'Hyderabad HC',urg:'medium',docs:4,desc:'Father passed away intestate. ₹2.2Cr property in Hyderabad. One sibling refusing to participate in partition. Original title deed and sale deed available with client.'},
+  {id:'REQ-03',type:'tc',badge:'Civil',title:'Wrongful Termination Without Notice – IT Sector',client:'Meena Iyer',court:'Bangalore Labour Court',urg:'low',docs:2,desc:'Client was terminated from a major IT company without the 30-day notice period as per appointment letter. Offer letter, employment contract, and termination email all available.'},
+];
+
+const HISTORY = [
+  {type:'tp',badge:'Property',title:'Inheritance Dispute – Kapoor Family Estate',client:'Kapoor Estate',out:'Won',date:'Dec 2025'},
+  {type:'to',badge:'Corporate',title:'IPO Legal Documentation – StartupABC',client:'StartupABC',out:'Completed',date:'Nov 2025'},
+  {type:'tc',badge:'Civil',title:'Defamation Case – Media Publication Co.',client:'Rakesh Jain',out:'Settlement',date:'Oct 2025'},
+  {type:'tp',badge:'Property',title:'Land Acquisition Compensation Appeal',client:'Gram Panchayat, UP',out:'Won',date:'Sep 2025'},
+  {type:'tk',badge:'Criminal',title:'Bail Application – Business Fraud Accusation',client:'Confidential',out:'Won',date:'Aug 2025'},
+];
+
+const EARNINGS = [
+  {case:'Land Ownership – Arjun Kumar',date:'Mar 01, 2026',amt:'₹25,000',paid:true},
+  {case:'TechCorp Contract Dispute',date:'Feb 22, 2026',amt:'₹80,000',paid:true},
+  {case:'Mutual Consent Divorce – Gupta',date:'Feb 15, 2026',amt:'₹35,000',paid:true},
+  {case:'Medical Negligence – Sharma',date:'Feb 05, 2026',amt:'₹20,000',paid:true},
+  {case:'Property Fraud – Vikram Singh',date:'Apr 01, 2026',amt:'₹40,000',paid:false},
+];
+
+const NOTIFS = [
+  {ic:'📥',title:'New Case Request',body:'A new urgent Criminal case matching your specialization was posted 1 hour ago. 4 other lawyers are also viewing it.',time:'1 hour ago',c:'var(--gold)'},
+  {ic:'💰',title:'Payment Received',body:'₹25,000 received from Arjun Kumar for Land Ownership Case retainer. Ref: TXN-98712.',time:'Yesterday',c:'var(--green)'},
+  {ic:'📅',title:'Hearing Reminder',body:'Land Ownership Dispute hearing on March 8, 2026 at Delhi High Court, Room 4 – 10:30 AM.',time:'2 days ago',c:'var(--blue)'},
+  {ic:'⭐',title:'New Client Review',body:'Priya Sharma left a 5-star review: "Adv. Mehta is thorough and extremely professional." Your rating is now 4.8.',time:'3 days ago',c:'var(--amber)'},
+];
+
+const CLIENTS = [
+  {id:0,name:'Arjun Kumar',case:'Land Ownership Dispute',last:'Thank you for the update sir.',unread:2,color:'#c8a951',
+    msgs:[
+      {dir:'in',text:'Good morning Adv. Mehta! Has there been any update on our case before the March 8 hearing?',time:'9:02 AM'},
+      {dir:'out',text:'Good morning, Arjun. Yes — I have reviewed all the documents. The property deed is very clear in your favour. I am preparing the injunction application today.',time:'9:15 AM'},
+      {dir:'in',text:'That is great news! Should I arrange for the original registry copy as well?',time:'9:18 AM'},
+      {dir:'out',text:'Yes, please bring the original registry certificate and the mutation entry copy. Come to my office on Thursday at 11 AM.',time:'9:26 AM'},
+      {dir:'in',text:'Understood. I will be there Thursday 11 AM with all documents.',time:'9:28 AM'},
+      {dir:'out',text:'Perfect. Also keep the court fee receipt from the last filing. We may need it.',time:'9:32 AM'},
+      {dir:'in',text:'Thank you for the update sir.',time:'9:45 AM'},
+    ],
+    caseInfo:{type:'Property',court:'Delhi HC',hearing:'Mar 8, 2026',status:'Ongoing',caseId:'LX-2026-0147'}
+  },
+  {id:1,name:'TechCorp Legal',case:'Contract Breach',last:'Can we schedule a call?',unread:0,color:'#3b82f6',
+    msgs:[
+      {dir:'in',text:'Adv. Mehta, we have received the other party\'s counterclaim. It runs to 40 pages.',time:'Yesterday, 2:15 PM'},
+      {dir:'out',text:'Please share a scanned copy. I will review it overnight and revert with our strategy tomorrow.',time:'Yesterday, 3:00 PM'},
+      {dir:'in',text:'Sharing now.',time:'Yesterday, 3:05 PM',doc:{name:'Counter_Claim_TechCorp.pdf',size:'3.4 MB'}},
+      {dir:'out',text:'Received. I will study this carefully. The core dispute around clause 14(b) remains our strongest ground.',time:'Yesterday, 3:10 PM'},
+      {dir:'in',text:'Can we schedule a call?',time:'Today, 8:55 AM'},
+    ],
+    caseInfo:{type:'Corporate',court:'Delhi HC',hearing:'Mar 20, 2026',status:'Ongoing',caseId:'LX-2026-0152'}
+  },
+  {id:2,name:'Priya Sharma',case:'Medical Negligence',last:'When is the next hearing?',unread:1,color:'#8b5cf6',
+    msgs:[
+      {dir:'in',text:'Hello sir, I wanted to ask about the evidence we submitted. Is everything in order?',time:'Mar 01, 10:30 AM'},
+      {dir:'out',text:'Yes, all evidence has been accepted by the forum. The hospital\'s response is due by March 15th.',time:'Mar 01, 11:00 AM'},
+      {dir:'in',text:'That is a relief. What happens if they don\'t respond in time?',time:'Mar 01, 11:15 AM'},
+      {dir:'out',text:'If they default, we can seek an ex-parte order. But they will almost certainly respond — hospitals always do.',time:'Mar 01, 11:30 AM'},
+      {dir:'in',text:'When is the next hearing?',time:'Today, 7:50 AM'},
+    ],
+    caseInfo:{type:'Civil',court:'Delhi Consumer Forum',hearing:'Mar 15, 2026',status:'Ongoing',caseId:'LX-2026-0158'}
+  },
+];
+
+const REVIEWS = [
+  {name:'Arjun Kumar',stars:5,text:'Adv. Mehta handled our property dispute brilliantly. Always available, very clear in communication throughout the process.',date:'Feb 2026'},
+  {name:'Priya Sharma',stars:5,text:'Extremely professional and thorough. Got us an excellent outcome in the consumer complaint against the hospital.',date:'Jan 2026'},
+  {name:'Vikram Singh',stars:4,text:'Very knowledgeable, especially in property matters. Would definitely recommend to anyone with land disputes.',date:'Dec 2025'},
+];
+
+let activeClient = 0;
+
+// ════════════════════════════════════
+//  AUTH FLOW
+// ════════════════════════════════════
+function show(id){document.querySelectorAll('#si-card > div').forEach(d=>d.style.display='none');document.getElementById(id).style.display='block'}
+function back(id){show(id)}
+
+function authTab(t){
+  document.getElementById('tab-in').classList.toggle('on',t==='in');
+  document.getElementById('tab-up').classList.toggle('on',t==='up');
+  document.getElementById('f-in').style.display=t==='in'?'block':'none';
+  document.getElementById('f-up').style.display=t==='up'?'block':'none';
+  document.getElementById('auth-title').textContent=t==='in'?'Welcome Back':'Create Account';
+  document.getElementById('auth-sub').textContent=t==='in'?'Sign in to access your dashboard':'Register as a verified lawyer';
+}
+
+let isSignUp = false;
+
+function doSignIn(){
+  const v=document.getElementById('si-id').value.trim();
+  const p=document.getElementById('si-pw').value.trim();
+  if(!v||!p){toast('Please fill in all fields','⚠️');return}
+  // Sign in goes straight to dashboard — no OTP needed
+  LAWYER.fn='Rahul'; LAWYER.ln='Sharma';
+  toast('✅ Signed in successfully!');
+  setTimeout(()=>{ goPage('p-dash'); initDash(); },600);
+}
+
+function doSignUp(){
+  const fn=document.getElementById('up-fn').value.trim();
+  const em=document.getElementById('up-em').value.trim();
+  const ph=document.getElementById('up-ph').value.trim();
+  const pw=document.getElementById('up-pw').value.trim();
+  const cp=document.getElementById('up-cp').value.trim();
+  if(!fn||!em||!ph||!pw){toast('Please fill all required fields','⚠️');return}
+  if(pw!==cp){toast('Passwords do not match','❌');return}
+  LAWYER.fn=fn;LAWYER.ln=document.getElementById('up-ln').value.trim()||'';
+  LAWYER.email=em;LAWYER.phone='+91 '+ph;
+  isSignUp = true;
+  showOTP(ph.length>6?'+91 '+ph:em);
+}
+
+let timerInt;
+function showOTP(dest){
+  show('v-otp');
+  document.getElementById('otp-dest').textContent=dest;
+  startTimer();
+}
+
+function startTimer(){
+  let s=30;
+  clearInterval(timerInt);
+  document.getElementById('timer-txt').textContent='('+s+'s)';
+  timerInt=setInterval(()=>{
+    s--;
+    document.getElementById('timer-txt').textContent=s>0?'('+s+'s)':'';
+    if(s<=0)clearInterval(timerInt);
+  },1000);
+}
+
+function resend(){toast('📱 New code sent!');startTimer()}
+
+function om(el,i){
+  el.value=el.value.replace(/\D/,'');
+  if(el.value&&i<5)document.querySelectorAll('.oi')[i+1].focus();
+}
+
+function doOTP(){
+  const vals=Array.from(document.querySelectorAll('.oi')).map(i=>i.value);
+  if(vals.join('').length<6){toast('Enter all 6 digits','⚠️');return}
+  toast('✅ Verified!');
+  clearInterval(timerInt);
+  setTimeout(()=>{
+    if(isSignUp){
+      goPage('p-profile');
+      pStep(1);
+    } else {
+      goPage('p-dash');
+      initDash();
+    }
+  },500);
+}
+
+// ════════════════════════════════════
+//  PROFILE SETUP
+// ════════════════════════════════════
+let pCur=1;
+function pStep(n){
+  document.getElementById('pstep-'+pCur).style.display='none';
+  pCur=n;
+  document.getElementById('pstep-'+n).style.display='block';
+  for(let i=1;i<=3;i++){
+    const d=document.getElementById('sd'+i);
+    d.className='sdot'+(i<n?' done':i===n?' now':'');
+  }
+  window.scrollTo(0,0);
+}
+
+function pickId(el){document.querySelectorAll('#id-chips .chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+
+function fakeUpload(zone,out,fname,fsize){
+  document.getElementById(zone).style.display='none';
+  document.getElementById(out).innerHTML=`<div class="file-done"><span style="font-size:1.2rem;">📄</span><div class="fd-name">${fname}</div><div class="fd-sz">${fsize}</div><span style="color:var(--green);font-size:1rem;">✅</span></div>`;
+  toast(`📎 ${fname} uploaded`);
+}
+
+let optOn=false;
+function toggleOpt(){
+  optOn=!optOn;
+  document.getElementById('opt-tog').classList.toggle('on',optOn);
+  document.getElementById('opt-fields').style.display=optOn?'block':'none';
+}
+
+function toggleChip(el){el.classList.toggle('sel')}
+
+function finishSetup(){
+  // Collect optional fields if open
+  if(optOn){
+    LAWYER.ach=document.getElementById('op-ach').value||LAWYER.ach;
+    LAWYER.total=parseInt(document.getElementById('op-tot').value)||LAWYER.total;
+    LAWYER.won=parseInt(document.getElementById('op-won').value)||LAWYER.won;
+    LAWYER.sr=parseInt(document.getElementById('op-rate').value)||LAWYER.sr;
+    LAWYER.chips=Array.from(document.querySelectorAll('#exp-chips .chip.sel')).map(c=>c.textContent);
+  }
+  LAWYER.bar=document.getElementById('ps-bar').value||LAWYER.bar;
+  LAWYER.exp=parseInt(document.getElementById('ps-exp').value)||LAWYER.exp;
+  LAWYER.spec=document.getElementById('ps-spec').value||LAWYER.spec;
+  LAWYER.courts=document.getElementById('ps-courts').value||LAWYER.courts;
+  LAWYER.qual=document.getElementById('ps-qual').value||LAWYER.qual;
+  LAWYER.bio=document.getElementById('ps-bio').value||LAWYER.bio;
+  LAWYER.fee=parseInt(document.getElementById('ps-fee').value)||LAWYER.fee;
+
+  toast('🚀 Profile setup complete!');
+  setTimeout(()=>{
+    goPage('p-dash');
+    initDash();
+  },600);
+}
+
+// ════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════
+function initDash(){
+  const name=(LAWYER.fn+' '+LAWYER.ln).trim()||'Lawyer';
+  const ab=((LAWYER.fn[0]||'')+(LAWYER.ln[0]||'')).toUpperCase()||'?';
+  document.getElementById('sb-name').textContent=name;
+  document.getElementById('sb-av').textContent=ab;
+  document.getElementById('dash-gname').textContent=LAWYER.fn||name;
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  document.getElementById('stat-sr').textContent=LAWYER.sr+'%';
+  document.getElementById('ring-n').textContent=LAWYER.sr+'%';
+  document.getElementById('rn-won').textContent=LAWYER.won;
+
+  // Ring animation
+  const circ=2*Math.PI*54;
+  setTimeout(()=>{
+    const r=document.getElementById('ring');
+    if(r)r.style.strokeDashoffset=circ-(LAWYER.sr/100)*circ;
+  },300);
+
+  renderBarChart();
+  renderHearings();
+  renderOvCases();
+  renderAllCases();
+  renderRequests();
+  renderHistory();
+  renderEarnings();
+  renderNotifs();
+  renderProfile();
+  renderChatList();
+  openChat(0);
+}
+
+function renderBarChart(){
+  const data=[
+    {label:'Property',n:52,g:'linear-gradient(90deg,#8a6520,#f0c96a)'},
+    {label:'Civil',n:38,g:'linear-gradient(90deg,#1e40af,#60a5fa)'},
+    {label:'Criminal',n:18,g:'linear-gradient(90deg,#7f1d1d,#f87171)'},
+    {label:'Corporate',n:14,g:'linear-gradient(90deg,#14532d,#4ade80)'},
+    {label:'Divorce',n:5,g:'linear-gradient(90deg,#4c1d95,#a78bfa)'},
+  ];
+  const max=52;
+  document.getElementById('bar-chart').innerHTML=data.map(d=>`
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:0.76rem;color:var(--muted);width:70px;flex-shrink:0;">${d.label}</div>
+      <div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
+        <div data-w="${(d.n/max*100).toFixed(0)}" data-g="${d.g}" class="bbar" style="height:100%;border-radius:4px;width:0%;transition:width 1.2s cubic-bezier(0.22,1,0.36,1);"></div>
+      </div>
+      <div style="font-size:0.76rem;color:var(--cream);width:22px;text-align:right;">${d.n}</div>
+    </div>`).join('');
+  setTimeout(()=>document.querySelectorAll('.bbar').forEach(b=>{b.style.width=b.dataset.w+'%';b.style.background=b.dataset.g}),100);
+}
+
+function renderHearings(){
+  const h=[
+    {day:'08',mon:'MAR',name:'Land Ownership Dispute – Arjun Kumar',court:'Delhi HC, Room 4 • 10:30 AM',tag:'soon',tagLabel:'6 days'},
+    {day:'15',mon:'MAR',name:'Medical Negligence – Consumer Forum',court:'Delhi Consumer Forum • 2:00 PM',tag:'normal',tagLabel:'13 days'},
+    {day:'20',mon:'MAR',name:'Contract Breach – TechCorp',court:'Delhi HC, Room 7 • 11:00 AM',tag:'normal',tagLabel:'18 days'},
+  ];
+  document.getElementById('hearings').innerHTML=h.map(x=>`
+    <div class="hearing-item">
+      <div class="hi-date"><div class="hi-day">${x.day}</div><div class="hi-mon">${x.mon}</div></div>
+      <div class="hi-info"><div class="hi-name">${x.name}</div><div class="hi-court">🏛 ${x.court}</div></div>
+      <span class="hi-tag ${x.tag}">${x.tagLabel}</span>
+    </div>`).join('');
+}
+
+function caseCardHTML(c,showAccept=false){
+  const acc=showAccept?`<div style="display:flex;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);"><button class="btn-acc" onclick="acceptCase(this,'${c.id}')">✅ Accept</button><button class="btn-dec" onclick="this.closest('.cc').remove();toast('Case declined','ℹ️')">❌</button></div>`:'';
+  return `
+  <div class="cc ${c.type}">
+    <div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-${c.status||'on'}"></div></div>
+    <div class="cc-title">${c.title}</div>
+    <div class="cc-meta"><span>👤 ${c.client}</span><span>🏛 ${c.court}</span></div>
+    ${c.hearing?`<div class="cc-meta" style="margin-top:4px;"><span>📅 Next: ${c.hearing}</span></div>`:''}
+    ${c.prog!==undefined?`<div class="cc-prog"><div class="cp-row"><span>Progress</span><span>${c.prog}%</span></div><div class="cp-track"><div class="cp-fill" style="width:${c.prog}%"></div></div></div>`:''}
+    ${acc}
+  </div>`;
+}
+
+function renderOvCases(){document.getElementById('ov-cases').innerHTML=ACTIVE_CASES.slice(0,4).map(c=>caseCardHTML(c)).join('')}
+function renderAllCases(){document.getElementById('all-cases').innerHTML=ACTIVE_CASES.map(c=>caseCardHTML(c)).join('')}
+
+function renderRequests(){
+  const uc={'high':'urgent','medium':'soon','low':'normal'};
+  const ul={'high':'🔴 Urgent','medium':'🟡 Medium','low':'🟢 Low'};
+  document.getElementById('req-list').innerHTML=REQUESTS.map(r=>`
+    <div class="rq-card" id="rq-${r.id}">
+      <div class="rq-top"><span class="cc-badge ${r.type}" style="font-size:0.65rem;padding:3px 9px;border-radius:8px;">${r.badge}</span><span class="hi-tag ${uc[r.urg]}">${ul[r.urg]}</span></div>
+      <div class="rq-title">${r.title}</div>
+      <div class="cc-meta" style="margin-bottom:8px;"><span>👤 ${r.client}</span><span>🏛 ${r.court}</span><span>📎 ${r.docs} docs</span></div>
+      <div class="rq-desc">${r.desc}</div>
+      <div class="rq-actions">
+        <button class="btn-acc" onclick="acceptCase(this,'${r.id}')">✅ Accept & Send Proposal</button>
+        <button class="btn-dec" onclick="document.getElementById('rq-${r.id}').style.opacity='0.35';document.getElementById('rq-${r.id}').style.pointerEvents='none';toast('Case declined','ℹ️')">❌ Decline</button>
+      </div>
+    </div>`).join('');
+}
+
+function acceptCase(btn,id){
+  btn.textContent='✅ Accepted';btn.style.background='rgba(34,197,94,0.18)';btn.style.color='var(--green)';
+  toast('Case accepted! Proposal sent to client ✅');
+}
+
+function renderHistory(){
+  const oc={'Won':'var(--green)','Completed':'var(--gold)','Settlement':'var(--blue)'};
+  const oe={'Won':'🏆','Completed':'✅','Settlement':'🤝'};
+  document.getElementById('hist-cases').innerHTML=HISTORY.map(c=>`
+    <div class="cc ${c.type}">
+      <div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-done"></div></div>
+      <div class="cc-title">${c.title}</div>
+      <div class="cc-meta"><span>👤 ${c.client}</span><span>📅 ${c.date}</span></div>
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;">
+        <span style="font-size:0.71rem;color:var(--muted);">Outcome</span>
+        <span style="font-size:0.78rem;font-weight:600;color:${oc[c.out]||'var(--gold)'};">${oe[c.out]} ${c.out}</span>
+      </div>
+    </div>`).join('');
+}
+
+function renderEarnings(){
+  document.getElementById('earn-list').innerHTML=EARNINGS.map(e=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div><div style="font-size:0.82rem;color:var(--cream);">${e.case}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${e.date}</div></div>
+      <div style="font-family:'Playfair Display',serif;font-size:0.98rem;color:${e.paid?'var(--green)':'var(--gold)'};">${e.amt}${e.paid?' ✓':' (pending)'}</div>
+    </div>`).join('');
+}
+
+function renderNotifs(){
+  document.getElementById('notif-list').innerHTML=NOTIFS.map(n=>`
+    <div style="background:var(--bg3);border:1px solid var(--goldborder);border-left:3px solid ${n.c};border-radius:12px;padding:14px 16px;display:flex;gap:12px;">
+      <span style="font-size:1.3rem;">${n.ic}</span>
+      <div><div style="font-size:0.85rem;color:var(--cream);font-weight:500;margin-bottom:3px;">${n.title}</div><div style="font-size:0.77rem;color:var(--muted);line-height:1.45;">${n.body}</div><div style="font-size:0.66rem;color:var(--faint);margin-top:5px;">${n.time}</div></div>
+    </div>`).join('');
+}
+
+function renderProfile(){
+  const L=LAWYER;
+  const ab=((L.fn[0]||'')+(L.ln[0]||'')).toUpperCase()||'?';
+  document.getElementById('pp-av').textContent=ab;
+  document.getElementById('pp-name').textContent=(L.fn+' '+L.ln).trim();
+  document.getElementById('pp-spec').textContent=L.spec;
+  document.getElementById('pp-exp').textContent=L.exp+' years • '+L.courts;
+  document.getElementById('pp-bio').textContent=L.bio;
+  document.getElementById('pp-tot').textContent=L.total;
+  document.getElementById('pp-sr').textContent=L.sr+'%';
+  document.getElementById('pp-won').textContent=L.won;
+  document.getElementById('pp-srb').textContent=L.sr+'%';
+  document.getElementById('pp-prog').style.width=L.sr+'%';
+  document.getElementById('pp-chips').innerHTML=L.chips.map(c=>`<span class="dchip">${c}</span>`).join('');
+  document.getElementById('pp-details').innerHTML=[
+    {l:'Bar Council ID',v:L.bar,cls:'gv'},
+    {l:'Qualifications',v:L.qual},
+    {l:'Courts of Practice',v:L.courts},
+    {l:'Experience',v:L.exp+' years'},
+    {l:'Consultation Fee',v:'₹'+L.fee.toLocaleString()+' / hour'},
+    {l:'Languages',v:L.lang},
+    {l:'Law Firm',v:L.firm},
+    {l:'Notable Achievements',v:L.ach},
+    {l:'Verification',v:'✅ Verified',cls:'grn'},
+  ].map(r=>`<div class="ir"><span class="ir-l">${r.l}</span><span class="ir-v ${r.cls||''}">${r.v}</span></div>`).join('');
+  document.getElementById('pp-reviews').innerHTML=REVIEWS.map(r=>`
+    <div style="padding:13px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:0.78rem;color:var(--muted);">${r.name[0]}</div>
+        <div style="flex:1;font-size:0.82rem;color:var(--cream);">${r.name}</div>
+        <div style="color:var(--gold);font-size:0.78rem;">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.5;">"${r.text}"</div>
+      <div style="font-size:0.66rem;color:var(--faint);margin-top:4px;">${r.date}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════
+//  CHAT
+// ════════════════════════════════════
+function renderChatList(){
+  document.getElementById('cl-scroll').innerHTML=CLIENTS.map(c=>`
+    <div class="cl-item${c.id===activeClient?' active':''}" onclick="openChat(${c.id})">
+      <div class="cl-av" style="background:${c.color};color:${c.id===0?'#111':'#fff'};">${c.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div class="cl-info">
+        <div class="cl-name">${c.name}</div>
+        <div class="cl-preview">${c.last}</div>
+      </div>
+      <div class="cl-time">Today</div>
+      ${c.unread?`<div class="cl-unread">${c.unread}</div>`:''}
+    </div>`).join('');
+}
+
+function openChat(id){
+  activeClient=id;
+  const c=CLIENTS[id];
+  c.unread=0;
+  renderChatList();
+
+  const ci=c.caseInfo;
+  document.getElementById('chat-area').innerHTML=`
+    <div class="ca-head">
+      <div class="ca-av" style="background:${c.color};color:${id===0?'#111':'#fff'};">${c.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+      <div><div class="ca-name">${c.name}</div><div class="ca-case">${c.case}</div></div>
+      <div class="ca-actions">
+        <button class="ca-btn">📞 Call</button>
+        <button class="ca-btn">📄 Documents</button>
+        <button class="ca-btn" onclick="showSec('cases',null)">📂 Case</button>
+      </div>
+    </div>
+
+    <div class="case-strip">
+      <div class="cs-item">🏷 Case ID: <strong>${ci.caseId}</strong></div>
+      <div class="cs-item">⚖️ Type: <strong>${ci.type}</strong></div>
+      <div class="cs-item">🏛 Court: <strong>${ci.court}</strong></div>
+      <div class="cs-item">📅 Next Hearing: <strong>${ci.hearing}</strong></div>
+      <div class="cs-item">● <strong style="color:var(--green);">${ci.status}</strong></div>
+    </div>
+
+    <div class="msgs" id="msgs-box">
+      <div class="day-sep">Today</div>
+      ${c.msgs.map(m=>msgHTML(m)).join('')}
+    </div>
+
+    <div class="chat-inp-row">
+      <div class="ci-actions">
+        <div class="ci-icon" title="Attach document">📎</div>
+      </div>
+      <textarea class="ci" id="ci-input" placeholder="Type a message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+      <div class="ci-actions">
+        <div class="ci-send" onclick="sendMsg()">➤</div>
+      </div>
+    </div>`;
+
+  // Scroll to bottom
+  setTimeout(()=>{const mb=document.getElementById('msgs-box');if(mb)mb.scrollTop=mb.scrollHeight},50);
+}
+
+function msgHTML(m){
+  if(m.doc){
+    return `<div class="msg-group"><div class="msg ${m.dir==='in'?'in':'out'}" style="padding:8px 10px;">
+      <div class="msg-doc"><span style="font-size:1.2rem;">📄</span><div><div class="doc-name">${m.doc.name}</div><div class="doc-sz">${m.doc.size}</div></div><span style="font-size:0.8rem;color:var(--gold);">↓</span></div>
+      <span class="msg-t">${m.time}</span></div></div>`;
+  }
+  return `<div class="msg-group"><div class="msg ${m.dir==='in'?'in':'out'}">${m.text}<span class="msg-t">${m.time}</span></div></div>`;
+}
+
+function sendMsg(){
+  const inp=document.getElementById('ci-input');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  const mb=document.getElementById('msgs-box');
+  const now=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const div=document.createElement('div');
+  div.innerHTML=msgHTML({dir:'out',text:txt,time:now});
+  mb.appendChild(div);
+  mb.scrollTop=mb.scrollHeight;
+  CLIENTS[activeClient].msgs.push({dir:'out',text:txt,time:now});
+  CLIENTS[activeClient].last=txt;
+  inp.value='';inp.style.height='auto';
+  renderChatList();
+
+  // Simulate reply
+  if(Math.random()>0.5){
+    setTimeout(()=>{
+      const replies=['Understood. Thank you for the update.','Noted. I will arrange the documents immediately.','That is very helpful. What do I need to do next?','Thank you, sir. I really appreciate the update.'];
+      const r=replies[Math.floor(Math.random()*replies.length)];
+      const rt=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+      const rd=document.createElement('div');
+      rd.innerHTML=msgHTML({dir:'in',text:r,time:rt});
+      mb.appendChild(rd);
+      mb.scrollTop=mb.scrollHeight;
+    },1200+Math.random()*1200);
+  }
+}
+
+// ════════════════════════════════════
+//  SECTION SWITCHER
+// ════════════════════════════════════
+function showSec(id,navEl){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  if(navEl){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));navEl.classList.add('on')}
+  if(window.innerWidth<=768)document.getElementById('main-sb').classList.remove('open');
+}
+
+// ════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════
+function goPage(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  window.scrollTo(0,0);
+}
+
+function toast(msg,ic='✅'){
+  document.getElementById('toast-tx').textContent=msg;
+  document.getElementById('toast-ic').textContent=ic;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2700);
+}
+
+function signOut(){
+  toast('Signed out successfully','👋');
+  setTimeout(()=>goPage('p-signin'),700);
+}
+
+// Quick demo: clicking sign in directly goes through
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+});
+</script>
+</body>
+</html>
