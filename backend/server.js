@@ -9,14 +9,18 @@ const app = express();
 
 connectDB();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));app.use("/uploads", express.static("uploads"));
+app.use(express.urlencoded({ extended: true }));   // ✅ ADD THIS
+
+// Static uploads folder (only once!)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));  // ✅ FIX PATH
 
 // Serve frontend from project root
 app.use(express.static(path.join(__dirname, "../")));
 
-// API
+// Routes
 const lawyerRoutes = require("./routes/lawyerRoutes");
 app.use("/api/lawyer", lawyerRoutes);
 
