@@ -7,22 +7,22 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// Connect DB
+// Connect to MongoDB
 connectDB();
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 
-// ✅ Serve static frontend files
-app.use(express.static(__dirname));
+// Serve static files from backend folder
+app.use(express.static(path.join(__dirname)));
 
-// ✅ Load index.html on root
+// Default route
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Routes
+// API routes
 const lawyerRoutes = require("./routes/lawyerRoutes");
 app.use("/api/lawyer", lawyerRoutes);
 
