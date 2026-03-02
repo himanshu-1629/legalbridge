@@ -297,11 +297,11 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
       <div class="ni on" onclick="showSec('overview',this)"><span class="ni-ic">🏠</span>Dashboard</div>
       <div class="ni" onclick="showSec('profile',this)"><span class="ni-ic">👤</span>My Profile</div>
       <div class="ni" onclick="showSec('cases',this)"><span class="ni-ic">📂</span>Active Cases</div>
-      <div class="ni" onclick="showSec('requests',this)"><span class="ni-ic">📥</span>Case Requests<span class="ni-badge">3</span></div>
+      <div class="ni" onclick="showSec('requests',this)"><span class="ni-ic">📥</span>Case Requests<span class="ni-badge" id="badge-requests">3</span></div>
       <div class="nl">Finance & Records</div>
       <div class="ni" onclick="showSec('history',this)"><span class="ni-ic">🕒</span>Case History</div>
       <div class="ni" onclick="showSec('earnings',this)"><span class="ni-ic">💰</span>Earnings</div>
-      <div class="ni" onclick="showSec('notifs',this)"><span class="ni-ic">🔔</span>Notifications<span class="ni-badge">2</span></div>
+      <div class="ni" onclick="showSec('notifs',this)"><span class="ni-ic">🔔</span>Notifications<span class="ni-badge" id="badge-notifs">4</span></div>
     </div>
     <div class="sb-user" onclick="signOut()"><div class="u-av" id="sb-av"></div><div><div class="u-n" id="sb-name"></div><div class="u-s"><span class="u-dot"></span>Active · Sign Out</div></div></div>
   </nav>
@@ -665,7 +665,7 @@ function initDash(){
   document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   document.getElementById('stat-sr').textContent=LAWYER.sr+'%';document.getElementById('ring-n').textContent=LAWYER.sr+'%';document.getElementById('rn-won').textContent=LAWYER.won;
   const circ=2*Math.PI*54;setTimeout(()=>{const r=document.getElementById('ring');if(r)r.style.strokeDashoffset=circ-(LAWYER.sr/100)*circ},300);
-  renderBarChart();renderHearings();renderOvCases();renderAllCases();renderRequests();renderHistory();renderEarnings();renderNotifs();renderProfile();
+  renderBarChart();renderHearings();renderOvCases();renderAllCases();renderRequests();renderHistory();renderEarnings();renderNotifs();renderProfile();updateBadges();
 }
 function renderBarChart(){const data=[{label:'Property',n:52,g:'linear-gradient(90deg,#8a6520,#f0c96a)'},{label:'Civil',n:38,g:'linear-gradient(90deg,#1e40af,#60a5fa)'},{label:'Criminal',n:18,g:'linear-gradient(90deg,#7f1d1d,#f87171)'},{label:'Corporate',n:14,g:'linear-gradient(90deg,#14532d,#4ade80)'},{label:'Divorce',n:5,g:'linear-gradient(90deg,#4c1d95,#a78bfa)'}];const max=52;document.getElementById('bar-chart').innerHTML=data.map(d=>`<div style="display:flex;align-items:center;gap:10px;"><div style="font-size:0.76rem;color:var(--text2);width:70px;flex-shrink:0;">${d.label}</div><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div data-w="${(d.n/max*100).toFixed(0)}" data-g="${d.g}" class="bbar" style="height:100%;border-radius:4px;width:0%;transition:width 1.2s cubic-bezier(0.22,1,0.36,1);"></div></div><div style="font-size:0.76rem;color:var(--text);font-weight:600;width:22px;text-align:right;">${d.n}</div></div>`).join('');setTimeout(()=>document.querySelectorAll('.bbar').forEach(b=>{b.style.width=b.dataset.w+'%';b.style.background=b.dataset.g}),100)}
 function renderHearings(){const h=[{day:'08',mon:'MAR',name:'Land Ownership Dispute – Arjun Kumar',court:'Delhi HC, Room 4 • 10:30 AM',tag:'soon',tagLabel:'6 days'},{day:'15',mon:'MAR',name:'Medical Negligence – Consumer Forum',court:'Delhi Consumer Forum • 2:00 PM',tag:'normal',tagLabel:'13 days'},{day:'20',mon:'MAR',name:'Contract Breach – TechCorp',court:'Delhi HC, Room 7 • 11:00 AM',tag:'normal',tagLabel:'18 days'}];document.getElementById('hearings').innerHTML=h.map(x=>`<div class="hearing-item"><div class="hi-date"><div class="hi-day">${x.day}</div><div class="hi-mon">${x.mon}</div></div><div class="hi-info"><div class="hi-name">${x.name}</div><div class="hi-court">🏛 ${x.court}</div></div><span class="hi-tag ${x.tag}">${x.tagLabel}</span></div>`).join('')}
@@ -786,6 +786,19 @@ function cmTab(btn,tabId){
 }
 function renderOvCases(){document.getElementById('ov-cases').innerHTML=ACTIVE_CASES.slice(0,4).map(c=>caseCardHTML(c)).join('')}
 function renderAllCases(){document.getElementById('all-cases').innerHTML=ACTIVE_CASES.map(c=>caseCardHTML(c)).join('')}
+function updateBadges(){
+  const rb=document.getElementById('badge-requests');
+  if(rb){
+    rb.textContent=REQUESTS.length;
+    rb.style.display=REQUESTS.length>0?'':'none';
+  }
+  const nb=document.getElementById('badge-notifs');
+  if(nb){
+    nb.textContent=NOTIFS.length;
+    nb.style.display=NOTIFS.length>0?'':'none';
+  }
+}
+
 function renderRequests(){
   const uc={'high':'urgent','medium':'soon','low':'normal'};
   const ul={'high':'🔴 Urgent','medium':'🟡 Medium','low':'🟢 Low'};
@@ -794,12 +807,14 @@ function renderRequests(){
     return;
   }
   document.getElementById('req-list').innerHTML=REQUESTS.map(r=>`<div class="rq-card" id="rq-${r.id}"><div class="rq-top"><span class="cc-badge ${r.type}" style="font-size:0.65rem;padding:3px 9px;border-radius:8px;">${r.badge}</span><span class="hi-tag ${uc[r.urg]}">${ul[r.urg]}</span></div><div class="rq-title">${r.title}</div><div class="cc-meta" style="margin-bottom:8px;"><span>👤 ${r.client}</span><span>🏛 ${r.court}</span><span>📎 ${r.docs} docs</span></div><div class="rq-desc">${r.desc}</div><div class="rq-actions"><button class="btn-acc" onclick="acceptCase(this,'${r.id}')">✅ Accept & Send Proposal</button><button class="btn-dec" onclick="declineCase('${r.id}')">❌ Decline</button></div></div>`).join('');
+  updateBadges();
 }
 function declineCase(id){
   const idx=REQUESTS.findIndex(r=>r.id===id);
   if(idx===-1)return;
   REQUESTS.splice(idx,1);
   renderRequests();
+  updateBadges();
   toast('Case declined','ℹ️');
 }
 function acceptCase(btn,id){
@@ -864,7 +879,15 @@ function acceptCase(btn,id){
 }
 function renderHistory(){const oc={'Won':'var(--green)','Completed':'var(--gold)','Settlement':'var(--blue)'};const oe={'Won':'🏆','Completed':'✅','Settlement':'🤝'};document.getElementById('hist-cases').innerHTML=HISTORY.map(c=>`<div class="cc ${c.type}"><div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-done"></div></div><div class="cc-title">${c.title}</div><div class="cc-meta"><span>👤 ${c.client}</span><span>📅 ${c.date}</span></div><div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;"><span style="font-size:0.71rem;color:var(--text2);">Outcome</span><span style="font-size:0.78rem;font-weight:600;color:${oc[c.out]||'var(--gold)'};">${oe[c.out]} ${c.out}</span></div></div>`).join('')}
 function renderEarnings(){document.getElementById('earn-list').innerHTML=EARNINGS.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:0.82rem;color:var(--text);font-weight:500;">${e.case}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${e.date}</div></div><div style="font-family:'Playfair Display',serif;font-size:0.98rem;color:${e.paid?'var(--green)':'var(--gold)'};">${e.amt}${e.paid?' ✓':' (pending)'}</div></div>`).join('')}
-function renderNotifs(){document.getElementById('notif-list').innerHTML=NOTIFS.map(n=>`<div style="background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);border-left:3px solid ${n.c};border-radius:12px;padding:14px 16px;display:flex;gap:12px;"><span style="font-size:1.3rem;">${n.ic}</span><div><div style="font-size:0.85rem;color:var(--text);font-weight:600;margin-bottom:3px;">${n.title}</div><div style="font-size:0.77rem;color:var(--muted);line-height:1.45;">${n.body}</div><div style="font-size:0.66rem;color:var(--faint);margin-top:5px;">${n.time}</div></div></div>`).join('')}
+function renderNotifs(){
+  if(NOTIFS.length===0){
+    document.getElementById('notif-list').innerHTML=`<div style="text-align:center;padding:50px 20px;"><div style="font-size:2.5rem;margin-bottom:12px;">🔔</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--navy);margin-bottom:6px;">All caught up!</div><div style="font-size:0.82rem;color:var(--muted);">No new notifications.</div></div>`;
+    updateBadges();return;
+  }
+  document.getElementById('notif-list').innerHTML=NOTIFS.map((n,i)=>`<div style="background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);border-left:3px solid ${n.c};border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span style="font-size:1.3rem;flex-shrink:0;">${n.ic}</span><div style="flex:1;"><div style="font-size:0.85rem;color:var(--text);font-weight:600;margin-bottom:3px;">${n.title}</div><div style="font-size:0.77rem;color:var(--muted);line-height:1.45;">${n.body}</div><div style="font-size:0.66rem;color:var(--faint);margin-top:5px;">${n.time}</div></div><button onclick="dismissNotif(${i})" style="background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0;" onmouseover="this.style.background='var(--bg4)'" onmouseout="this.style.background='transparent'" title="Dismiss">✕</button></div>`).join('');
+  updateBadges();
+}
+function dismissNotif(i){NOTIFS.splice(i,1);renderNotifs();}
 function renderProfile(){const L=LAWYER;const ab=((L.fn[0]||'')+(L.ln[0]||'')).toUpperCase()||'?';document.getElementById('pp-av').textContent=ab;document.getElementById('pp-name').textContent=(L.fn+' '+L.ln).trim();document.getElementById('pp-spec').textContent=L.spec;document.getElementById('pp-exp').textContent=L.exp+' years • '+L.courts;document.getElementById('pp-bio').textContent=L.bio;document.getElementById('pp-tot').textContent=L.total;document.getElementById('pp-sr').textContent=L.sr+'%';document.getElementById('pp-won').textContent=L.won;document.getElementById('pp-srb').textContent=L.sr+'%';document.getElementById('pp-prog').style.width=L.sr+'%';document.getElementById('pp-chips').innerHTML=L.chips.map(c=>`<span class="dchip">${c}</span>`).join('');document.getElementById('pp-details').innerHTML=[{l:'Bar Council ID',v:L.bar,cls:'gv'},{l:'Qualifications',v:L.qual},{l:'Courts of Practice',v:L.courts},{l:'Experience',v:L.exp+' years'},{l:'Consultation Fee',v:'₹'+L.fee.toLocaleString()+' / hour'},{l:'Languages',v:L.lang},{l:'Verification',v:'✅ Verified',cls:'grn'}].map(r=>`<div class="ir"><span class="ir-l">${r.l}</span><span class="ir-v ${r.cls||''}">${r.v}</span></div>`).join('');
 document.getElementById('pp-contact').innerHTML=[
   {ic:'📧',l:'Email',v:L.email||'—'},
