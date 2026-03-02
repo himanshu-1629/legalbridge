@@ -597,33 +597,84 @@ function authTab(t){document.getElementById('tab-in').classList.toggle('on',t===
 function clearEmailErr(){document.getElementById('up-em').classList.remove('invalid');document.getElementById('email-err').style.display='none';}
 function clearSignInErr(){document.getElementById('si-id').classList.remove('invalid');document.getElementById('si-email-err').style.display='none';}
 
-function doSignIn(){
-  const v=document.getElementById('si-id').value.trim();
-  const p=document.getElementById('si-pw').value.trim();
-  if(!v||!p){toast('Please fill in all fields','⚠️');return}
-  const gmailRegex=/^[a-zA-Z0-9._%+\-]+@gmail\.com$/i;
-  if(!gmailRegex.test(v)){document.getElementById('si-id').classList.add('invalid');document.getElementById('si-email-err').style.display='flex';document.getElementById('si-id').focus();toast('Invalid Gmail — must end in @gmail.com','❌');return;}
-  LAWYER.fn='Rahul';LAWYER.ln='Sharma';LAWYER.verified=true;
-  LAWYER.email=v;LAWYER.bar='BAR/2008/DL/4521';LAWYER.exp=18;LAWYER.spec='Property Law';LAWYER.courts='Delhi HC, Supreme Court of India';LAWYER.qual='LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008';LAWYER.bio='Senior advocate with 18 years of experience specialising in property and civil litigation. Appeared in 400+ cases across Delhi HC and Supreme Court of India. Known for thorough preparation and a client-focused approach.';LAWYER.fee=8000;LAWYER.lang='English, Hindi';LAWYER.ach='Featured in Legal500 India 2024. Best Property Law Advocate – Delhi Bar Association 2022.';LAWYER.total=127;LAWYER.won=119;LAWYER.settled=5;LAWYER.lost=3;LAWYER.sr=94;LAWYER.chips=['Property Disputes','Land Acquisition','Civil Litigation','Contract Disputes','Injunctions'];
-  toast('✅ Signed in successfully!');
-  setTimeout(()=>{goPage('p-dash');initDash()},600);
+async function doSignIn() {
+  const email = document.getElementById("si-id").value;
+  const password = document.getElementById("si-pw").value;
+
+  try {
+    const response = await fetch("http://localhost:3000/api/lawyer/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    if (response.ok) {
+      localStorage.setItem("lawyer", JSON.stringify(data.lawyer));
+
+      // Switch to dashboard page
+      document.getElementById("p-signin").classList.remove("show");
+      document.getElementById("p-dash").classList.add("show");
+
+      // Set lawyer name in sidebar + dashboard
+      document.getElementById("sb-name").innerText =
+        data.lawyer.firstName + " " + data.lawyer.lastName;
+
+      document.getElementById("dash-gname").innerText =
+        data.lawyer.firstName;
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
 }
 
-function doSignUp(){
-  const fn=document.getElementById('up-fn').value.trim();
-  const em=document.getElementById('up-em').value.trim();
-  const ph=document.getElementById('up-ph').value.trim();
-  const pw=document.getElementById('up-pw').value.trim();
-  const cp=document.getElementById('up-cp').value.trim();
-  if(!fn||!em||!ph||!pw){toast('Please fill all required fields','⚠️');return}
-  const gmailRegex=/^[a-zA-Z0-9._%+\-]+@gmail\.com$/i;
-  if(!gmailRegex.test(em)){document.getElementById('up-em').classList.add('invalid');document.getElementById('email-err').style.display='flex';document.getElementById('up-em').focus();toast('Invalid Gmail — must end in @gmail.com','❌');return;}
-  if(pw!==cp){toast('Passwords do not match','❌');return}
-  if(pw.length<8){toast('Password must be at least 8 characters','⚠️');return}
-  LAWYER.fn=fn;LAWYER.ln=document.getElementById('up-ln').value.trim()||'';LAWYER.email=em;LAWYER.phone='+91 '+ph;LAWYER.address=document.getElementById('up-addr').value.trim();
-  LAWYER.verified=false; // new sign-up users are NOT verified
-  toast('✅ Account created!');
-  setTimeout(()=>{goPage('p-dash');initDash()},600);
+async function doSignUp() {
+  const firstName = document.getElementById("up-fn").value;
+  const lastName = document.getElementById("up-ln").value;
+  const email = document.getElementById("up-em").value;
+  const phone = document.getElementById("up-ph").value;
+  const address = document.getElementById("up-addr").value;
+  const password = document.getElementById("up-pw").value;
+  const confirmPassword = document.getElementById("up-cp").value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3000/api/lawyer/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        password
+      })
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    if (response.ok) {
+      authTab("in"); // Switch to Sign In tab
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
 }
 
 // ─── VERIFICATION STEPS ───
