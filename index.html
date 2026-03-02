@@ -2,584 +2,796 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LegalBridge</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Legal Bridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* ─────────────────────────────────────────
+   RESET & ROOT
+───────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --gold: #c9a84c;
-    --gold-dim: #8a6a20;
-    --gold-pale: #f0d080;
-    --dark: #07070d;
-    --lawyer-tint: rgba(13,31,76,0.55);
-    --client-tint: rgba(76,18,0,0.55);
-  }
+:root {
+  --gold:        #c9a84c;
+  --gold-dim:    #8a6a20;
+  --gold-pale:   #f0d080;
+  --dark:        #07070d;
+  --cream:       #f0ebe0;
+}
 
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    font-family: 'Cormorant Garamond', serif;
-    background: var(--dark);
-    color: #f0ebe0;
-    cursor: default;
-  }
+html { scroll-behavior: smooth; }
 
-  /* ── NOISE GRAIN ── */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
-  }
+body {
+  width: 100%; height: 100dvh;
+  overflow: hidden;
+  font-family: 'Cormorant Garamond', serif;
+  background: var(--dark);
+  color: var(--cream);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 
-  /* ══════════════════════════════
-     SPLIT PANELS
-  ══════════════════════════════ */
-  .stage {
-    position: fixed; inset: 0;
-    display: flex;
-  }
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='0.032'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9000;
+}
+
+/* ─────────────────────────────────────────
+   VIEWS
+───────────────────────────────────────── */
+.view {
+  position: fixed; inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  z-index: 1;
+}
+.view.active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 2;
+}
+
+/* ════════════════════════════════════════
+   VIEW 1 — LANDING
+════════════════════════════════════════ */
+#view-landing {
+  display: flex;
+  flex-direction: row;
+}
+
+/* ── Panels ── */
+.panel {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: max(7vh, 44px);
+  overflow: hidden;
+  cursor: pointer;
+  transition: flex 0.72s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover { flex: 1.38; }
+  #view-landing:has(.panel-lawyer:hover) .panel-client { flex: 0.62; }
+  #view-landing:has(.panel-client:hover) .panel-lawyer { flex: 0.62; }
+}
+
+.panel-lawyer { background: linear-gradient(115deg, #090c18 0%, var(--dark) 60%); }
+.panel-client { background: linear-gradient(245deg, #130400 0%, var(--dark) 60%); }
+
+/* Radial hover glow */
+.panel::before {
+  content: ''; position: absolute; inset: 0;
+  opacity: 0;
+  transition: opacity 0.58s ease;
+  pointer-events: none;
+}
+.panel-lawyer::before {
+  background:
+    radial-gradient(ellipse 70% 80% at 25% 92%, rgba(25,55,150,0.52) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 8% 8%, rgba(8,20,60,0.38) 0%, transparent 55%);
+}
+.panel-client::before {
+  background:
+    radial-gradient(ellipse 70% 80% at 75% 92%, rgba(150,35,0,0.52) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 92% 8%, rgba(70,12,0,0.38) 0%, transparent 55%);
+}
+.panel:hover::before,
+.panel.tapped::before { opacity: 1; }
+
+/* Scanlines */
+.panel::after {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+  pointer-events: none; z-index: 0;
+}
+
+/* Panel content */
+.panel-body {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center;
+  gap: clamp(10px, 1.8vh, 18px);
+  transition: transform 0.48s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover .panel-body { transform: translateY(-12px); }
+}
+
+.role-icon {
+  width: clamp(54px, 8vw, 108px);
+  height: auto;
+  opacity: 0.15;
+  filter: brightness(1.6);
+  transition: opacity 0.48s, transform 0.48s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover .role-icon { opacity: 0.52; transform: scale(1.07) translateY(-4px); }
+}
+
+.role-label {
+  font-family: 'Cinzel', serif; font-weight: 600;
+  letter-spacing: 0.28em;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(201,168,76,0.3);
+  font-size: clamp(1.4rem, 3.2vw, 3rem);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.role-sub {
+  font-size: clamp(0.62rem, 1vw, 0.82rem);
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: rgba(240,235,224,0.32); font-style: italic;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s 0.06s ease, transform 0.4s 0.06s ease;
+}
+
+/* Desktop hover reveals labels */
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover .role-label { opacity: 1; transform: translateY(0); }
+  .panel:hover .role-sub   { opacity: 1; transform: translateY(0); }
+}
+/* Touch always shows */
+@media (hover: none) {
+  .role-label { opacity: 1; transform: translateY(0); }
+  .role-sub   { opacity: 1; transform: translateY(0); }
+  .role-icon  { opacity: 0.38; }
+}
+
+.enter-btn {
+  padding: clamp(9px,1.2vh,13px) clamp(22px,3vw,40px);
+  border: 1px solid rgba(201,168,76,0.52);
+  background: transparent; color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.62rem, 0.88vw, 0.76rem);
+  letter-spacing: 0.25em; text-transform: uppercase;
+  cursor: pointer; position: relative; overflow: hidden;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 0.4s 0.12s ease, transform 0.4s 0.12s ease,
+              color 0.28s, border-color 0.28s;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 138px; white-space: nowrap;
+}
+.enter-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease; z-index: -1;
+}
+.enter-btn:hover::before, .enter-btn:active::before { transform: scaleX(1); }
+.enter-btn:hover, .enter-btn:active { color: var(--dark); border-color: var(--gold); }
+
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover .enter-btn { opacity: 1; transform: translateY(0); }
+}
+@media (hover: none) {
+  .enter-btn { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Divider ── */
+.divider-line {
+  position: fixed; left: 50%; top: 0; bottom: 0;
+  width: 1px; transform: translateX(-50%);
+  background: linear-gradient(to bottom,
+    transparent 0%, rgba(201,168,76,0.08) 12%,
+    rgba(201,168,76,0.55) 45%, rgba(201,168,76,0.88) 50%,
+    rgba(201,168,76,0.55) 55%, rgba(201,168,76,0.08) 88%, transparent 100%);
+  z-index: 40; pointer-events: none;
+}
+.divider-diamond {
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px; height: 13px;
+  background: var(--gold);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  z-index: 60; pointer-events: none;
+  animation: diamond-pulse 3s ease-in-out infinite;
+}
+@keyframes diamond-pulse {
+  0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+  50%      { transform: translate(-50%,-50%) scale(0.65); opacity: 0.42; }
+}
+
+/* ── Center justice wrap ── */
+.center-wrap {
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  display: flex; flex-direction: column; align-items: center;
+  pointer-events: none;
+}
+.wordmark {
+  text-align: center;
+  margin-bottom: clamp(10px, 2vh, 20px);
+  animation: fadeUp 1.1s 0.2s both;
+}
+.wordmark-title {
+  font-family: 'Cinzel', serif; font-weight: 900;
+  font-size: clamp(0.82rem, 1.9vw, 1.9rem);
+  letter-spacing: 0.42em; color: var(--gold);
+  text-shadow: 0 2px 36px rgba(201,168,76,0.18);
+  white-space: nowrap;
+}
+.wordmark-sub {
+  font-size: clamp(0.48rem, 0.75vw, 0.68rem);
+  letter-spacing: 0.45em;
+  color: rgba(240,235,224,0.2);
+  text-transform: uppercase; margin-top: 5px;
+}
+.justice-figure {
+  width: clamp(96px, 13.5vw, 225px);
+  height: auto;
+  animation: float 7s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(201,168,76,0.14));
+  display: block;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+.scales-arm  { transform-origin: 120px 105px; animation: sway 9s ease-in-out infinite; }
+@keyframes sway { 0%,100% { transform: rotate(3.5deg); } 50% { transform: rotate(-3.5deg); } }
+.pan-left  { animation: pan-l 9s ease-in-out infinite; }
+.pan-right { animation: pan-r 9s ease-in-out infinite; }
+@keyframes pan-l { 0%,100% { transform: translateY(4px); }  50% { transform: translateY(-4px); } }
+@keyframes pan-r { 0%,100% { transform: translateY(-4px); } 50% { transform: translateY(4px); } }
+.motto {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.4rem, 0.62vw, 0.6rem);
+  letter-spacing: 0.42em; color: rgba(201,168,76,0.2);
+  text-transform: uppercase; margin-top: 8px;
+  animation: fadeUp 1.3s 0.6s both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Bottom hint */
+.hint {
+  position: fixed; bottom: max(18px, 2.8vh); left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.52rem, 0.82vw, 0.68rem);
+  letter-spacing: 0.28em; color: rgba(240,235,224,0.15);
+  text-transform: uppercase; z-index: 100; white-space: nowrap;
+  animation: blink-hint 4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes blink-hint { 0%,60%,100% { opacity: 1; } 80% { opacity: 0.22; } }
+
+/* ════════════════════════════════════════
+   VIEW 2 — CONFIRM ROLE
+════════════════════════════════════════ */
+#view-confirm {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--dark);
+}
+
+.confirm-bg {
+  position: absolute; inset: 0;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.5s ease;
+}
+#view-confirm.lawyer-mode .confirm-bg {
+  background: radial-gradient(ellipse 90% 80% at 50% 100%, rgba(18,44,130,0.42) 0%, transparent 70%);
+  opacity: 1;
+}
+#view-confirm.client-mode .confirm-bg {
+  background: radial-gradient(ellipse 90% 80% at 50% 100%, rgba(130,26,0,0.42) 0%, transparent 70%);
+  opacity: 1;
+}
+
+/* Scanlines on confirm too */
+#view-confirm::after {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+  pointer-events: none; z-index: 0;
+}
+
+.confirm-inner {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  padding: clamp(20px, 4vw, 56px) clamp(20px, 5vw, 60px);
+  gap: clamp(12px, 2.2vh, 26px);
+  max-width: min(580px, 92vw);
+  width: 100%;
+  animation: confirmIn 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes confirmIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.confirm-role-icon {
+  width: clamp(52px, 9vw, 88px);
+  height: auto; opacity: 0.65;
+}
+.confirm-title {
+  font-family: 'Cinzel', serif; font-weight: 900;
+  font-size: clamp(1.5rem, 5vw, 3.2rem);
+  letter-spacing: 0.3em; color: var(--gold);
+  text-shadow: 0 0 48px rgba(201,168,76,0.28);
+}
+.confirm-rule {
+  width: 56px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+}
+.confirm-subtitle {
+  font-size: clamp(0.82rem, 1.6vw, 1.08rem);
+  color: rgba(240,235,224,0.42);
+  letter-spacing: 0.06em; font-style: italic;
+  line-height: 1.65; max-width: 420px;
+}
+.confirm-buttons {
+  display: flex; gap: clamp(10px, 2vw, 18px);
+  flex-wrap: wrap; justify-content: center;
+  margin-top: 4px;
+}
+.btn-proceed {
+  padding: clamp(11px,1.5vh,15px) clamp(26px,4vw,48px);
+  background: var(--gold); border: none;
+  color: var(--dark);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.68rem, 0.95vw, 0.82rem);
+  letter-spacing: 0.26em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.28s, transform 0.18s, box-shadow 0.28s;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.18);
+}
+.btn-proceed:hover, .btn-proceed:active {
+  background: var(--gold-pale);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(201,168,76,0.3);
+}
+.btn-back {
+  padding: clamp(11px,1.5vh,15px) clamp(20px,3vw,36px);
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.3);
+  color: rgba(201,168,76,0.58);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.68rem, 0.95vw, 0.82rem);
+  letter-spacing: 0.26em; text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.28s, color 0.28s, background 0.28s;
+}
+.btn-back:hover, .btn-back:active {
+  border-color: rgba(201,168,76,0.65);
+  color: var(--gold); background: rgba(201,168,76,0.05);
+}
+.confirm-platform {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.52rem, 0.76vw, 0.62rem);
+  letter-spacing: 0.42em; color: rgba(201,168,76,0.18);
+  text-transform: uppercase; margin-top: 2px;
+}
+
+/* Corner back button */
+.corner-home {
+  position: absolute;
+  top: clamp(14px, 2.8vw, 26px);
+  left: clamp(14px, 2.8vw, 26px);
+  z-index: 10;
+  background: none;
+  border: 1px solid rgba(201,168,76,0.18);
+  color: rgba(201,168,76,0.4);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.58rem, 0.85vw, 0.7rem);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: clamp(7px,1vh,10px) clamp(12px,1.6vw,18px);
+  cursor: pointer;
+  transition: all 0.28s;
+  display: flex; align-items: center; gap: 7px;
+}
+.corner-home svg { width: 11px; height: 11px; flex-shrink: 0; }
+.corner-home:hover, .corner-home:active {
+  border-color: rgba(201,168,76,0.55);
+  color: var(--gold); background: rgba(201,168,76,0.05);
+}
+
+/* ════════════════════════════════════════
+   FLASH OVERLAY
+════════════════════════════════════════ */
+.flash-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  opacity: 0; pointer-events: none;
+  /* NO transition — instant hide so back never gets stuck */
+}
+.flash-overlay.go {
+  opacity: 1; pointer-events: all;
+  transition: opacity 0.32s ease;
+}
+
+/* ════════════════════════════════════════
+   RIPPLE
+════════════════════════════════════════ */
+.ripple {
+  position: fixed; border-radius: 50%;
+  pointer-events: none;
+  border: 1.5px solid rgba(201,168,76,0.52);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple-out 0.65s ease-out forwards;
+  z-index: 8000;
+}
+@keyframes ripple-out { to { transform: translate(-50%,-50%) scale(8); opacity: 0; } }
+
+/* ════════════════════════════════════════
+   MOBILE — vertical (portrait)
+════════════════════════════════════════ */
+@media (max-width: 600px) {
+  #view-landing { flex-direction: column; }
 
   .panel {
     flex: 1;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    padding-bottom: 8vh;
-    overflow: hidden;
-    cursor: pointer;
-    transition: flex 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+    justify-content: center;
+    padding-bottom: 0; padding-top: 0;
   }
 
-  .panel:hover { flex: 1.35; }
-  .panel:hover ~ .panel,
-  .stage:has(.panel:first-child:hover) .panel:last-child { flex: 0.65; }
+  .role-icon  { width: 46px; opacity: 0.42; }
+  .role-label { font-size: clamp(1.3rem, 6.5vw, 2rem); letter-spacing: 0.18em; }
+  .role-sub   { font-size: 0.6rem; letter-spacing: 0.22em; }
+  .enter-btn  { font-size: 0.62rem; letter-spacing: 0.18em; min-width: 118px; padding: 10px 20px; }
 
-  /* Background glow per side */
-  .panel::before {
-    content: '';
-    position: absolute; inset: 0;
-    transition: opacity 0.6s ease;
-    opacity: 0;
-  }
-
-  .panel-::before {
-    background:
-      radial-gradient(ellipse 60% 70% at 30% 85%, rgba(30,64,160,0.5) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 50% at 10% 20%, rgba(10,25,70,0.4) 0%, transparent 60%);
-  }
-
-  .panel-client::before {
-    background:
-      radial-gradient(ellipse 60% 70% at 70% 85%, rgba(160,40,0,0.5) 0%, transparent 70%),
-      radial-gradient(ellipse 40% 50% at 90% 20%, rgba(80,15,0,0.4) 0%, transparent 60%);
-  }
-
-  .panel:hover::before { opacity: 1; }
-
-  /* Vignette edges */
-  .panel-lawyer {
-    background: linear-gradient(105deg, #0a0d1a 0%, #07070d 50%);
-  }
-  .panel-client {
-    background: linear-gradient(255deg, #1a0800 0%, #07070d 50%);
-  }
-
-  /* Horizontal scan lines (retro-legal feel) */
-  .panel::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(0,0,0,0.06) 3px,
-      rgba(0,0,0,0.06) 4px
-    );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* ── PANEL CONTENT ── */
-  .panel-body {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    transition: transform 0.5s ease;
-  }
-
-  .panel:hover .panel-body { transform: translateY(-10px); }
-
-  /* Role icon */
-  .role-icon {
-    width: clamp(70px, 9vw, 120px);
-    height: auto;
-    opacity: 0.18;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    filter: brightness(1.5);
-  }
-  .panel:hover .role-icon {
-    opacity: 0.55;
-    transform: scale(1.06) translateY(-4px);
-  }
-
-  .role-label {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(1.6rem, 2.8vw, 3rem);
-    font-weight: 600;
-    letter-spacing: 0.3em;
-    color: var(--gold);
-    text-shadow: 0 0 50px rgba(201,168,76,0.35);
-    opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 0.45s ease, transform 0.45s ease;
-  }
-
-  .role-sub {
-    font-size: clamp(0.7rem, 1vw, 0.9rem);
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: rgba(240,235,224,0.35);
-    font-style: italic;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.45s 0.07s ease, transform 0.45s 0.07s ease;
-  }
-
-  .panel:hover .role-label,
-  .panel:hover .role-sub {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Enter pill button */
-  .enter-btn {
-    margin-top: 6px;
-    padding: 11px 38px;
-    border: 1px solid rgba(201,168,76,0.5);
-    background: transparent;
-    color: var(--gold);
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.45s 0.13s ease, transform 0.45s 0.13s ease,
-                background 0.3s, color 0.3s, border-color 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .enter-btn::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: var(--gold);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.35s ease;
-    z-index: -1;
-  }
-
-  .enter-btn:hover::before { transform: scaleX(1); }
-  .enter-btn:hover { color: var(--dark); border-color: var(--gold); }
-
-  .panel:hover .enter-btn {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ══════════════════════════════
-     CENTER JUSTICE
-  ══════════════════════════════ */
-  .center-wrap {
-    position: fixed;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    pointer-events: none;
-    gap: 0;
-  }
-
-  /* Platform wordmark — above the figure */
-  .wordmark {
-    text-align: center;
-    margin-bottom: 18px;
-  }
-
-  .wordmark-title {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(1.1rem, 2.2vw, 2rem);
-    font-weight: 900;
-    letter-spacing: 0.45em;
-    color: var(--gold);
-    text-shadow: 0 2px 40px rgba(201,168,76,0.25);
-    white-space: nowrap;
-    animation: fadeUp 1.2s 0.3s both;
-  }
-
-  .wordmark-sub {
-    font-size: clamp(0.6rem, 0.9vw, 0.75rem);
-    letter-spacing: 0.5em;
-    color: rgba(240,235,224,0.25);
-    text-transform: uppercase;
-    margin-top: 5px;
-    animation: fadeUp 1.2s 0.5s both;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Divider line full height */
+  /* Horizontal divider */
   .divider-line {
-    position: fixed;
-    left: 50%; top: 0; bottom: 0;
-    width: 1px;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(201,168,76,0.08) 15%,
-      rgba(201,168,76,0.5) 45%,
-      rgba(201,168,76,0.8) 50%,
-      rgba(201,168,76,0.5) 55%,
-      rgba(201,168,76,0.08) 85%,
-      transparent 100%
-    );
-    z-index: 40;
-    pointer-events: none;
+    left: 0; right: 0; top: 50%; bottom: auto;
+    width: 100%; height: 1px; transform: none;
+    background: linear-gradient(to right,
+      transparent 0%, rgba(201,168,76,0.38) 30%,
+      rgba(201,168,76,0.88) 50%, rgba(201,168,76,0.38) 70%, transparent 100%);
   }
+  .divider-diamond { top: 50%; left: 50%; }
 
-  /* Animated diamond on divider */
-  .divider-diamond {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 14px; height: 14px;
-    background: var(--gold);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    z-index: 60;
-    pointer-events: none;
-    animation: diamond-pulse 3s ease-in-out infinite;
-  }
+  /* Compact justice */
+  .center-wrap { top: 50%; }
+  .wordmark    { display: none; }
+  .justice-figure { width: 58px; }
+  .motto       { display: none; }
+  .hint { font-size: 0.48rem; letter-spacing: 0.16em; bottom: 8px; }
+}
 
-  @keyframes diamond-pulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    50% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.5; }
-  }
+/* Small tablet portrait */
+@media (min-width: 601px) and (max-width: 900px) {
+  .role-icon       { width: clamp(58px, 6.5vw, 86px); }
+  .justice-figure  { width: clamp(108px, 14vw, 155px); }
+  .wordmark-title  { font-size: clamp(0.82rem, 2.2vw, 1.3rem); }
+  .enter-btn       { min-width: 118px; }
+}
 
-  /* Justice SVG */
-  .justice-figure {
-    width: clamp(160px, 18vw, 260px);
-    height: auto;
-    animation: float 7s ease-in-out infinite;
-    filter: drop-shadow(0 0 24px rgba(201,168,76,0.18));
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-10px); }
-  }
-
-  .scales-arm {
-    transform-origin: 120px 105px;
-    animation: sway 9s ease-in-out infinite;
-  }
-
-  @keyframes sway {
-    0%, 100% { transform: rotate(4deg); }
-    50%       { transform: rotate(-4deg); }
-  }
-
-  .pan-left {
-    transform-origin: 42px 140px;
-    animation: pan-l 9s ease-in-out infinite;
-  }
-
-  .pan-right {
-    transform-origin: 198px 130px;
-    animation: pan-r 9s ease-in-out infinite;
-  }
-
-  @keyframes pan-l {
-    0%, 100% { transform: translateY(4px) rotate(2deg); }
-    50%       { transform: translateY(-4px) rotate(-2deg); }
-  }
-  @keyframes pan-r {
-    0%, 100% { transform: translateY(-4px) rotate(-2deg); }
-    50%       { transform: translateY(4px) rotate(2deg); }
-  }
-
-  /* Motto beneath figure */
-  .motto {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(0.55rem, 0.75vw, 0.68rem);
-    letter-spacing: 0.45em;
-    color: rgba(201,168,76,0.25);
-    text-transform: uppercase;
-    margin-top: 10px;
-    animation: fadeUp 1.4s 0.8s both;
-  }
-
-  /* ── INSTRUCTION HINT ── */
-  .hint {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.72rem;
-    letter-spacing: 0.3em;
-    color: rgba(240,235,224,0.18);
-    text-transform: uppercase;
-    z-index: 100;
-    white-space: nowrap;
-    animation: blink-hint 4s ease-in-out infinite;
-  }
-
-  @keyframes blink-hint {
-    0%, 60%, 100% { opacity: 1; }
-    80% { opacity: 0.3; }
-  }
-
-  /* ── CLICK RIPPLE ── */
-  .ripple {
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    border: 1px solid rgba(201,168,76,0.6);
-    transform: translate(-50%, -50%) scale(0);
-    animation: ripple-out 0.6s ease-out forwards;
-    z-index: 999;
-  }
-
-  @keyframes ripple-out {
-    to { transform: translate(-50%, -50%) scale(6); opacity: 0; }
-  }
-
-  /* ── PAGE EXIT ANIMATION ── */
-  .exit-flash {
-    position: fixed; inset: 0;
-    background: var(--gold);
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.35s ease;
-  }
-  .exit-flash.go { opacity: 1; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    .stage { flex-direction: column; }
-    .panel:hover { flex: 1.25; }
-    .divider-line {
-      left: 0; right: 0; top: 50%; bottom: auto;
-      width: auto; height: 1px;
-      background: linear-gradient(to right,
-        transparent 0%, rgba(201,168,76,0.5) 40%,
-        rgba(201,168,76,0.8) 50%,
-        rgba(201,168,76,0.5) 60%, transparent 100%
-      );
-    }
-    .divider-diamond { top: 50%; left: 50%; }
-    .center-wrap { flex-direction: row; top: 50%; gap: 20px; }
-    .wordmark { display: none; }
-    .justice-figure { width: 100px; }
-    .motto { display: none; }
-    .panel { justify-content: center; padding-bottom: 0; padding-top: 30px; }
-  }
+/* Large / 4k */
+@media (min-width: 1600px) {
+  .justice-figure  { width: 255px; }
+  .wordmark-title  { font-size: 2.1rem; }
+  .role-label      { font-size: 3.5rem; }
+}
 </style>
 </head>
 <body>
 
-<!-- Exit flash overlay -->
-<div class="exit-flash" id="exitFlash"></div>
+<div class="flash-overlay" id="flashOverlay"></div>
 
-<!-- Thin divider line -->
-<div class="divider-line"></div>
-<div class="divider-diamond"></div>
+<!-- ══════════════════════
+     VIEW 1: LANDING
+══════════════════════ -->
+<div class="view active" id="view-landing">
 
-<!-- Split panels -->
-<div class="stage">
+  <div class="divider-line"></div>
+  <div class="divider-diamond"></div>
 
-  <!-- LAWYER -->
-  <div class="panel panel-lawyer" id="panelLawyer">
+  <!-- LAWYER PANEL -->
+  <div class="panel panel-lawyer" onclick="selectRole('lawyer', event)">
     <div class="panel-body">
-      <!-- Briefcase / Lawyer icon -->
-      <svg class="role-icon" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="22" r="16" fill="rgba(201,168,76,0.7)"/>
-        <path d="M18 55 Q18 40 50 40 Q82 40 82 55 L84 105 Q84 115 70 115 L30 115 Q16 115 16 105Z" fill="rgba(201,168,76,0.35)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+      <svg class="role-icon" viewBox="0 0 100 120" fill="none">
+        <circle cx="50" cy="22" r="16" fill="rgba(201,168,76,0.75)"/>
+        <path d="M18 55 Q18 40 50 40 Q82 40 82 55 L84 105 Q84 115 70 115 L30 115 Q16 115 16 105Z"
+              fill="rgba(201,168,76,0.35)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
         <rect x="32" y="36" width="36" height="12" rx="2" fill="rgba(201,168,76,0.5)"/>
-        <rect x="24" y="78" width="52" height="34" rx="3" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
-        <rect x="36" y="72" width="28" height="8" rx="2" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
-        <line x1="50" y1="78" x2="50" y2="112" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
-        <line x1="24" y1="95" x2="76" y2="95" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+        <rect x="24" y="78" width="52" height="32" rx="3"
+              fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.55)" stroke-width="1.2"/>
+        <rect x="36" y="72" width="28" height="8" rx="2"
+              fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+        <line x1="50" y1="78" x2="50" y2="110" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <line x1="24" y1="94" x2="76" y2="94" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
       </svg>
-
       <div class="role-label">LAWYER</div>
       <div class="role-sub">Legal Professionals</div>
-      <button class="enter-btn" onclick="navigate('lawyer')">Enter Portal →</button>
+      <button class="enter-btn" onclick="selectRole('lawyer', event)">Enter Portal →</button>
     </div>
   </div>
 
-  <!-- CLIENT -->
-  <div class="panel panel-client" id="panelClient">
+  <!-- CLIENT PANEL -->
+  <div class="panel panel-client" onclick="selectRole('client', event)">
     <div class="panel-body">
-      <!-- Person with document icon -->
-      <svg class="role-icon" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="42" cy="22" r="16" fill="rgba(201,168,76,0.7)"/>
-        <path d="M12 58 Q12 42 42 42 Q72 42 72 58 L72 115 L12 115 Z" fill="rgba(201,168,76,0.35)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+      <svg class="role-icon" viewBox="0 0 100 120" fill="none">
+        <circle cx="42" cy="22" r="16" fill="rgba(201,168,76,0.75)"/>
+        <path d="M12 58 Q12 42 42 42 Q72 42 72 58 L72 115 L12 115 Z"
+              fill="rgba(201,168,76,0.35)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
         <rect x="34" y="38" width="16" height="8" rx="2" fill="rgba(201,168,76,0.5)"/>
-        <rect x="62" y="55" width="30" height="40" rx="3" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
-        <line x1="66" y1="64" x2="88" y2="64" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+        <rect x="62" y="55" width="30" height="40" rx="3"
+              fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.55)" stroke-width="1.2"/>
+        <line x1="66" y1="64" x2="88" y2="64" stroke="rgba(201,168,76,0.55)" stroke-width="1.2"/>
         <line x1="66" y1="71" x2="88" y2="71" stroke="rgba(201,168,76,0.4)" stroke-width="1.2"/>
         <line x1="66" y1="78" x2="82" y2="78" stroke="rgba(201,168,76,0.3)" stroke-width="1.2"/>
         <line x1="66" y1="85" x2="80" y2="85" stroke="rgba(201,168,76,0.2)" stroke-width="1.2"/>
       </svg>
-
       <div class="role-label">CLIENT</div>
       <div class="role-sub">Seeking Justice</div>
-      <button class="enter-btn" onclick="navigate('client')">Enter Portal →</button>
+      <button class="enter-btn" onclick="selectRole('client', event)">Enter Portal →</button>
     </div>
   </div>
-</div>
 
-<!-- CENTER: Justice figure + title -->
-<div class="center-wrap">
-  <div class="wordmark">
-    <div class="wordmark-title">LEGAL BRIDGE</div>
-    <div class="wordmark-sub">Connecting Law · Empowering Justice</div>
+  <!-- Justice figure -->
+  <div class="center-wrap">
+    <div class="wordmark">
+      <div class="wordmark-title">LEGAL BRIDGE</div>
+      <div class="wordmark-sub">Connecting Law · Empowering Justice</div>
+    </div>
+    <svg class="justice-figure" viewBox="0 0 240 340" fill="none">
+      <defs>
+        <radialGradient id="aura" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#c9a84c" stop-opacity="0.18"/>
+          <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="120" cy="175" rx="85" ry="155" fill="url(#aura)"/>
+      <g class="scales-arm">
+        <line x1="35" y1="105" x2="205" y2="105" stroke="#c9a84c" stroke-width="2.2" opacity="0.85"/>
+        <line x1="120" y1="105" x2="120" y2="48" stroke="#c9a84c" stroke-width="2.2" opacity="0.85"/>
+        <polygon points="120,40 127,54 113,54" fill="#c9a84c" opacity="0.9"/>
+        <circle cx="120" cy="105" r="5" fill="#c9a84c" opacity="0.7"/>
+      </g>
+      <g class="pan-left">
+        <line x1="42" y1="105" x2="42" y2="148" stroke="#c9a84c" stroke-width="1.4" opacity="0.65"/>
+        <ellipse cx="42" cy="152" rx="24" ry="5.5" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity="0.8"/>
+        <path d="M18 152 Q42 166 66 152" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="0.8"/>
+      </g>
+      <g class="pan-right">
+        <line x1="198" y1="105" x2="198" y2="134" stroke="#c9a84c" stroke-width="1.4" opacity="0.65"/>
+        <ellipse cx="198" cy="138" rx="24" ry="5.5" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity="0.8"/>
+        <path d="M174 138 Q198 152 222 138" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="0.8"/>
+      </g>
+      <path d="M80 200 Q62 228 58 310 Q80 328 120 328 Q160 328 182 310 Q178 228 160 200 Z"
+            fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.25)" stroke-width="1.4"/>
+      <line x1="93"  y1="215" x2="90"  y2="320" stroke="rgba(201,168,76,0.09)" stroke-width="1"/>
+      <line x1="120" y1="210" x2="120" y2="325" stroke="rgba(201,168,76,0.09)" stroke-width="1"/>
+      <line x1="147" y1="215" x2="150" y2="320" stroke="rgba(201,168,76,0.09)" stroke-width="1"/>
+      <path d="M86 170 Q84 192 80 200 L160 200 Q156 192 154 170 Z"
+            fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+      <rect x="112" y="158" width="16" height="16" rx="4"
+            fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.3)" stroke-width="0.8"/>
+      <ellipse cx="120" cy="143" rx="25" ry="27"
+               fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.4)" stroke-width="1.4"/>
+      <path d="M98 133 Q104 120 111 128 Q116 115 120 124 Q124 115 129 128 Q136 120 142 133"
+            fill="none" stroke="rgba(201,168,76,0.55)" stroke-width="1.4"/>
+      <rect x="96" y="135" width="48" height="12" rx="5"
+            fill="rgba(201,168,76,0.22)" stroke="rgba(201,168,76,0.65)" stroke-width="1.2"/>
+      <line x1="96"  y1="141" x2="88"  y2="141" stroke="rgba(201,168,76,0.45)" stroke-width="1.4"/>
+      <line x1="144" y1="141" x2="152" y2="141" stroke="rgba(201,168,76,0.45)" stroke-width="1.4"/>
+      <path d="M86 182 Q66 172 42 155" stroke="rgba(201,168,76,0.3)" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <path d="M154 185 Q168 195 175 240" stroke="rgba(201,168,76,0.3)" stroke-width="8" stroke-linecap="round" fill="none"/>
+      <line x1="174" y1="238" x2="186" y2="296" stroke="rgba(201,168,76,0.7)" stroke-width="1.8"/>
+      <polygon points="186,297 179,283 193,283" fill="rgba(201,168,76,0.6)"/>
+      <rect x="169" y="236" width="14" height="4" rx="1" fill="rgba(201,168,76,0.55)"/>
+    </svg>
+    <div class="motto">Fiat Justitia Ruat Caelum</div>
   </div>
 
-  <svg class="justice-figure" viewBox="0 0 240 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="aura" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.2"/>
-        <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
-      </radialGradient>
-    </defs>
-
-    <!-- Ambient aura -->
-    <ellipse cx="120" cy="175" rx="85" ry="155" fill="url(#aura)"/>
-
-    <!-- ─ SCALES ─ -->
-    <g class="scales-arm">
-      <!-- Horizontal beam -->
-      <line x1="35" y1="105" x2="205" y2="105" stroke="#c9a84c" stroke-width="2.2" opacity="0.85"/>
-      <!-- Vertical post -->
-      <line x1="120" y1="105" x2="120" y2="48" stroke="#c9a84c" stroke-width="2.2" opacity="0.85"/>
-      <!-- Top ornament -->
-      <polygon points="120,40 127,54 113,54" fill="#c9a84c" opacity="0.9"/>
-      <!-- Center pivot circle -->
-      <circle cx="120" cy="105" r="5" fill="#c9a84c" opacity="0.7"/>
-    </g>
-
-    <!-- Left pan group -->
-    <g class="pan-left">
-      <line x1="42" y1="105" x2="42" y2="148" stroke="#c9a84c" stroke-width="1.4" opacity="0.65"/>
-      <ellipse cx="42" cy="152" rx="24" ry="5.5" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity="0.8"/>
-      <path d="M18 152 Q42 166 66 152" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="0.8"/>
-    </g>
-
-    <!-- Right pan group -->
-    <g class="pan-right">
-      <line x1="198" y1="105" x2="198" y2="134" stroke="#c9a84c" stroke-width="1.4" opacity="0.65"/>
-      <ellipse cx="198" cy="138" rx="24" ry="5.5" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity="0.8"/>
-      <path d="M174 138 Q198 152 222 138" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="0.8"/>
-    </g>
-
-    <!-- ─ FIGURE ─ -->
-
-    <!-- Robe body -->
-    <path d="M80 200 Q62 228 58 310 Q80 328 120 328 Q160 328 182 310 Q178 228 160 200 Z"
-          fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.25)" stroke-width="1.4"/>
-    <!-- Robe folds -->
-    <line x1="93" y1="215" x2="90" y2="320" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
-    <line x1="120" y1="210" x2="120" y2="325" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
-    <line x1="147" y1="215" x2="150" y2="320" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
-
-    <!-- Torso -->
-    <path d="M86 170 Q84 192 80 200 L160 200 Q156 192 154 170 Z"
-          fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
-
-    <!-- Neck -->
-    <rect x="112" y="158" width="16" height="16" rx="4" fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.3)" stroke-width="0.8"/>
-
-    <!-- Head -->
-    <ellipse cx="120" cy="143" rx="25" ry="27" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.4)" stroke-width="1.4"/>
-
-    <!-- Crown / wreath -->
-    <path d="M98 133 Q104 120 111 128 Q116 115 120 124 Q124 115 129 128 Q136 120 142 133"
-          fill="none" stroke="rgba(201,168,76,0.55)" stroke-width="1.4"/>
-
-    <!-- Blindfold -->
-    <rect x="96" y="135" width="48" height="12" rx="5" fill="rgba(201,168,76,0.22)" stroke="rgba(201,168,76,0.65)" stroke-width="1.2"/>
-    <line x1="96"  y1="141" x2="88"  y2="141" stroke="rgba(201,168,76,0.45)" stroke-width="1.4"/>
-    <line x1="144" y1="141" x2="152" y2="141" stroke="rgba(201,168,76,0.45)" stroke-width="1.4"/>
-
-    <!-- Left arm (holding scales chain) -->
-    <path d="M86 182 Q66 172 42 155" stroke="rgba(201,168,76,0.35)" stroke-width="8" stroke-linecap="round" fill="none"/>
-
-    <!-- Right arm (sword) -->
-    <path d="M154 185 Q168 195 175 240" stroke="rgba(201,168,76,0.35)" stroke-width="8" stroke-linecap="round" fill="none"/>
-    <!-- Sword blade -->
-    <line x1="174" y1="238" x2="185" y2="295" stroke="rgba(201,168,76,0.7)" stroke-width="2"/>
-    <polygon points="185,296 178,283 192,283" fill="rgba(201,168,76,0.6)"/>
-    <!-- Crossguard -->
-    <rect x="169" y="236" width="14" height="4" rx="1" fill="rgba(201,168,76,0.55)"/>
-  </svg>
-
-  <div class="motto">Fiat Justitia Ruat Caelum</div>
+  <div class="hint">Select your role to enter the platform</div>
 </div>
 
-<!-- Bottom hint -->
-<div class="hint">Select your role to enter the platform</div>
+<!-- ══════════════════════
+     VIEW 2: CONFIRM ROLE
+══════════════════════ -->
+<div class="view" id="view-confirm">
+  <div class="confirm-bg"></div>
+
+  <button class="corner-home" onclick="goHome()" aria-label="Back to home">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="10,2 4,8 10,14"/>
+    </svg>
+    Back
+  </button>
+
+  <div class="confirm-inner" id="confirmInner"></div>
+</div>
 
 <script>
-  // Navigate with flash + ripple effect
-  function navigate(role) {
-    // The URLs your team will provide for each dashboard
-    const urls = {
-  lawyer: './lawyer.html',
-  client: './client.html'
+/* ── STATE ── */
+let currentRole = null;
+let isTransitioning = false;
+
+/* ── ROLE CONFIG ── */
+const roles = {
+  lawyer: {
+    label: 'LAWYER',
+    sub:   'Legal Professionals Portal',
+    desc:  'Manage your case portfolio, review new client proposals, track court hearings, and collaborate securely with your clients.',
+    url:   './lawyer.html',
+    flash: 'rgba(8,15,50,0.97)',
+    icon:  `<svg viewBox="0 0 100 120" fill="none">
+      <circle cx="50" cy="22" r="16" fill="rgba(201,168,76,0.75)"/>
+      <path d="M18 55 Q18 40 50 40 Q82 40 82 55 L84 105 Q84 115 70 115 L30 115 Q16 115 16 105Z" fill="rgba(201,168,76,0.38)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+      <rect x="32" y="36" width="36" height="12" rx="2" fill="rgba(201,168,76,0.55)"/>
+      <rect x="24" y="78" width="52" height="32" rx="3" fill="rgba(201,168,76,0.22)" stroke="rgba(201,168,76,0.6)" stroke-width="1.2"/>
+      <rect x="36" y="72" width="28" height="8" rx="2" fill="none" stroke="rgba(201,168,76,0.55)" stroke-width="1.2"/>
+      <line x1="50" y1="78" x2="50" y2="110" stroke="rgba(201,168,76,0.45)" stroke-width="1"/>
+      <line x1="24" y1="94" x2="76" y2="94" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+    </svg>`,
+  },
+  client: {
+    label: 'CLIENT',
+    sub:   'Client Services Portal',
+    desc:  'Submit your legal matter, compare qualified lawyers, track case progress, and communicate securely with your appointed counsel.',
+    url:   './client.html',
+    flash: 'rgba(50,8,0,0.97)',
+    icon:  `<svg viewBox="0 0 100 120" fill="none">
+      <circle cx="42" cy="22" r="16" fill="rgba(201,168,76,0.75)"/>
+      <path d="M12 58 Q12 42 42 42 Q72 42 72 58 L72 115 L12 115 Z" fill="rgba(201,168,76,0.38)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+      <rect x="34" y="38" width="16" height="8" rx="2" fill="rgba(201,168,76,0.55)"/>
+      <rect x="62" y="55" width="30" height="40" rx="3" fill="rgba(201,168,76,0.22)" stroke="rgba(201,168,76,0.6)" stroke-width="1.2"/>
+      <line x1="66" y1="64" x2="88" y2="64" stroke="rgba(201,168,76,0.6)" stroke-width="1.2"/>
+      <line x1="66" y1="71" x2="88" y2="71" stroke="rgba(201,168,76,0.45)" stroke-width="1.2"/>
+      <line x1="66" y1="78" x2="82" y2="78" stroke="rgba(201,168,76,0.32)" stroke-width="1.2"/>
+      <line x1="66" y1="85" x2="80" y2="85" stroke="rgba(201,168,76,0.2)" stroke-width="1.2"/>
+    </svg>`,
+  }
 };
 
-    // Flash transition
-    const flash = document.getElementById('exitFlash');
-    flash.style.background = role === 'lawyer'
-      ? 'rgba(13,31,76,0.95)'
-      : 'rgba(76,18,0,0.95)';
-    flash.classList.add('go');
+/* ── SHOW VIEW ── */
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
 
-    setTimeout(() => {
-      window.location.href = urls[role];
-    }, 380);
+/* ── SELECT ROLE ── */
+function selectRole(role, event) {
+  if (isTransitioning) return;
+  if (event) event.stopPropagation();
+
+  currentRole = role;
+  const d = roles[role];
+
+  /* Build confirm screen */
+  document.getElementById('confirmInner').innerHTML = `
+    <div class="confirm-role-icon">${d.icon}</div>
+    <div class="confirm-title">${d.label}</div>
+    <div class="confirm-rule"></div>
+    <div class="confirm-subtitle">${d.desc}</div>
+    <div class="confirm-buttons">
+      <button class="btn-proceed" onclick="proceed()">Enter Dashboard →</button>
+      <button class="btn-back"    onclick="goHome()">← Change Role</button>
+    </div>
+    <div class="confirm-platform">JusticeBridge &nbsp;·&nbsp; ${d.sub}</div>
+  `;
+
+  const cv = document.getElementById('view-confirm');
+  cv.className = 'view ' + role + '-mode';
+
+  /* Ripple */
+  if (event) spawnRipple(event.clientX, event.clientY);
+
+  /* Push browser history so native back works */
+  history.pushState({ view: 'confirm', role }, '', '');
+
+  showView('view-confirm');
+}
+
+/* ── RESET FLASH (always call this when returning home) ── */
+function resetFlash() {
+  const flash = document.getElementById('flashOverlay');
+  flash.classList.remove('go');
+  /* Force instant hide — remove any lingering transition */
+  flash.style.transition = 'none';
+  flash.style.opacity = '0';
+  flash.style.pointerEvents = 'none';
+  /* Re-enable transition after a frame so future forward-nav still animates */
+  requestAnimationFrame(() => { flash.style.transition = ''; });
+}
+
+/* ── PROCEED TO DASHBOARD ── */
+function proceed() {
+  if (isTransitioning || !currentRole) return;
+  isTransitioning = true;
+
+  const flash = document.getElementById('flashOverlay');
+  flash.style.background = roles[currentRole].flash;
+  flash.classList.add('go');
+
+  setTimeout(() => {
+    window.location.href = roles[currentRole].url;
+  }, 380);
+}
+
+/* ── GO HOME ── */
+function goHome() {
+  /* Always reset state regardless of isTransitioning — unstick the UI */
+  isTransitioning = false;
+  resetFlash();
+  currentRole = null;
+
+  if (history.state && history.state.view === 'confirm') {
+    history.back(); /* popstate will call showView('view-landing') */
+  } else {
+    showView('view-landing');
   }
+}
 
-  // Ripple on panel click
-  document.querySelectorAll('.panel').forEach(panel => {
-    panel.addEventListener('click', e => {
-      const r = document.createElement('div');
-      r.className = 'ripple';
-      r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:60px;height:60px;`;
-      document.body.appendChild(r);
-      setTimeout(() => r.remove(), 650);
-    });
-  });
+/* ── BROWSER / DEVICE BACK BUTTON ── */
+window.addEventListener('popstate', () => {
+  /* Called for any back press — always go to landing and reset everything */
+  isTransitioning = false;
+  resetFlash();
+  currentRole = null;
+  showView('view-landing');
+});
+
+/* ── ALSO RESET FLASH when page is shown again (bfcache / tab switch) ── */
+window.addEventListener('pageshow', () => {
+  isTransitioning = false;
+  resetFlash();
+});
+window.addEventListener('visibilitychange', () => {
+  if (!document.hidden) { isTransitioning = false; resetFlash(); }
+});
+
+/* Seed initial history state */
+if (!history.state || !history.state.view) {
+  history.replaceState({ view: 'landing' }, '', '');
+}
+
+/* ── RIPPLE ── */
+function spawnRipple(x, y) {
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.cssText = `left:${x}px;top:${y}px;width:48px;height:48px;`;
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+}
+
+document.querySelectorAll('.panel').forEach(p => {
+  p.addEventListener('pointerdown', e => spawnRipple(e.clientX, e.clientY));
+});
+
+/* ── TOUCH TAP GLOW ── */
+document.querySelectorAll('.panel').forEach(p => {
+  p.addEventListener('touchstart', () => p.classList.add('tapped'), { passive: true });
+  p.addEventListener('touchend',   () => setTimeout(() => p.classList.remove('tapped'), 480), { passive: true });
+});
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') goHome();
+});
 </script>
 </body>
 </html>
