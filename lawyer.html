@@ -578,7 +578,29 @@ const ACTIVE_CASES=[
     ]
   },
 ];
-const REQUESTS=[{id:'REQ-01',type:'tk',badge:'Criminal',title:'Anticipatory Bail Application – False FIR Filed',client:'Anish Verma',court:'Delhi Sessions Court',urg:'high',docs:3,desc:'Client has been falsely accused by a business partner. FIR filed under IPC 420 & 406. Anticipatory bail required urgently.'},{id:'REQ-02',type:'tp',badge:'Property',title:'Property Partition Dispute – 3 Siblings',client:'Kapoor Family',court:'Hyderabad HC',urg:'medium',docs:4,desc:'Father passed away intestate. ₹2.2Cr property in Hyderabad. One sibling refusing to participate in partition.'},{id:'REQ-03',type:'tc',badge:'Civil',title:'Wrongful Termination Without Notice – IT Sector',client:'Meena Iyer',court:'Bangalore Labour Court',urg:'low',docs:2,desc:'Client was terminated without the 30-day notice period as per appointment letter. All documents available.'}];
+const REQUESTS=[
+  {id:'REQ-01',type:'tk',badge:'Criminal',title:'Anticipatory Bail Application – False FIR Filed',client:'Anish Verma',clientPhone:'+91 98001 54321',clientEmail:'anish.verma@gmail.com',court:'Delhi Sessions Court',urg:'high',docs:3,desc:'Client has been falsely accused by a business partner. FIR filed under IPC 420 & 406. Anticipatory bail required urgently.',
+    summary:'Anish Verma, a Delhi-based entrepreneur, has been falsely implicated in a cheating and criminal breach of trust case filed by his former business partner. The FIR was filed under IPC Sections 420 and 406 at Lajpat Nagar PS. Anticipatory bail needs to be filed at Delhi Sessions Court before the client is arrested. All documents including partnership deed, bank statements, and WhatsApp correspondence proving innocence are available.',
+    hearingRoom:'Sessions Court Room 3, TBD',retainer:'₹75,000',filedDate:null,
+    milestones:[{label:'Filed',done:false},{label:'Bail Hearing',done:false},{label:'Evidence',done:false},{label:'Arguments',done:false},{label:'Order',done:false}],
+    timeline:[{date:'Today',event:'New case request received. Anticipatory bail required urgently.',type:'upcoming'}],
+    docs:[{name:'FIR_Copy_Lajpat_Nagar.pdf',size:'0.5 MB',date:'Today',type:'🚔'},{name:'Partnership_Deed.pdf',size:'1.2 MB',date:'Today',type:'📜'},{name:'Bank_Statements_6months.pdf',size:'2.1 MB',date:'Today',type:'💰'}],
+    notes:[]},
+  {id:'REQ-02',type:'tp',badge:'Property',title:'Property Partition Dispute – 3 Siblings',client:'Kapoor Family',clientPhone:'+91 99200 87654',clientEmail:'kapoor.family@gmail.com',court:'Hyderabad HC',urg:'medium',docs:4,desc:'Father passed away intestate. ₹2.2Cr property in Hyderabad. One sibling refusing to participate in partition.',
+    summary:'Mr. Ramesh Kapoor passed away intestate in October 2025 leaving behind a residential property worth ₹2.2 Crore in Banjara Hills, Hyderabad. Of his three children, two wish to sell the property and divide the proceeds equally. The third sibling, currently residing in the property, is refusing to vacate or agree to partition. A civil partition suit needs to be filed at Hyderabad HC.',
+    hearingRoom:'Hyderabad HC Civil Division, TBD',retainer:'₹90,000',filedDate:null,
+    milestones:[{label:'Filed',done:false},{label:'Notice',done:false},{label:'Written Stmt',done:false},{label:'Arguments',done:false},{label:'Decree',done:false}],
+    timeline:[{date:'Today',event:'New case request received. Partition suit to be filed at Hyderabad HC.',type:'upcoming'}],
+    docs:[{name:'Property_Title_Deed.pdf',size:'1.8 MB',date:'Today',type:'📜'},{name:'Death_Certificate_Father.pdf',size:'0.3 MB',date:'Today',type:'📋'},{name:'Legal_Heir_Certificate.pdf',size:'0.4 MB',date:'Today',type:'⚖️'},{name:'Property_Valuation_Report.pdf',size:'0.9 MB',date:'Today',type:'💰'}],
+    notes:[]},
+  {id:'REQ-03',type:'tc',badge:'Civil',title:'Wrongful Termination Without Notice – IT Sector',client:'Meena Iyer',clientPhone:'+91 97400 22133',clientEmail:'meena.iyer@gmail.com',court:'Bangalore Labour Court',urg:'low',docs:2,desc:'Client was terminated without the 30-day notice period as per appointment letter. All documents available.',
+    summary:'Meena Iyer, a senior software engineer, was abruptly terminated by her employer without the 30-day notice period mandated in her appointment letter. She is entitled to 30 days salary in lieu of notice (₹1.4L) plus full and final settlement dues. The Labour Court complaint under the Industrial Disputes Act will seek reinstatement or compensation. All employment documents, termination letter, and payslips are available.',
+    hearingRoom:'Bangalore Labour Court, TBD',retainer:'₹35,000',filedDate:null,
+    milestones:[{label:'Filed',done:false},{label:'Notice',done:false},{label:'Reply',done:false},{label:'Hearing',done:false},{label:'Award',done:false}],
+    timeline:[{date:'Today',event:'New case request received. Labour complaint to be filed at Bangalore Labour Court.',type:'upcoming'}],
+    docs:[{name:'Appointment_Letter.pdf',size:'0.6 MB',date:'Today',type:'📋'},{name:'Termination_Letter.pdf',size:'0.4 MB',date:'Today',type:'⚠️'}],
+    notes:[]}
+];
 const HISTORY=[{type:'tp',badge:'Property',title:'Inheritance Dispute – Kapoor Family Estate',client:'Kapoor Estate',out:'Won',date:'Dec 2025'},{type:'to',badge:'Corporate',title:'IPO Legal Documentation – StartupABC',client:'StartupABC',out:'Completed',date:'Nov 2025'},{type:'tc',badge:'Civil',title:'Defamation Case – Media Publication Co.',client:'Rakesh Jain',out:'Settlement',date:'Oct 2025'},{type:'tp',badge:'Property',title:'Land Acquisition Compensation Appeal',client:'Gram Panchayat, UP',out:'Won',date:'Sep 2025'},{type:'tk',badge:'Criminal',title:'Bail Application – Business Fraud Accusation',client:'Confidential',out:'Won',date:'Aug 2025'}];
 const EARNINGS=[{case:'Land Ownership – Arjun Kumar',date:'Mar 01, 2026',amt:'₹25,000',paid:true},{case:'TechCorp Contract Dispute',date:'Feb 22, 2026',amt:'₹80,000',paid:true},{case:'Mutual Consent Divorce – Gupta',date:'Feb 15, 2026',amt:'₹35,000',paid:true},{case:'Medical Negligence – Sharma',date:'Feb 05, 2026',amt:'₹20,000',paid:true},{case:'Property Fraud – Vikram Singh',date:'Apr 01, 2026',amt:'₹40,000',paid:false}];
 const NOTIFS=[{ic:'📥',title:'New Case Request',body:'A new urgent Criminal case matching your specialization was posted 1 hour ago.',time:'1 hour ago',c:'var(--gold)'},{ic:'💰',title:'Payment Received',body:'₹25,000 received from Arjun Kumar for Land Ownership Case retainer. Ref: TXN-98712.',time:'Yesterday',c:'var(--green)'},{ic:'📅',title:'Hearing Reminder',body:'Land Ownership Dispute hearing on March 8, 2026 at Delhi HC, Room 4 – 10:30 AM.',time:'2 days ago',c:'var(--blue)'},{ic:'⭐',title:'New Client Review',body:'Priya Sharma left a 5-star review. Your rating is now 4.8.',time:'3 days ago',c:'var(--amber)'}];
@@ -794,8 +816,82 @@ function cmTab(btn,tabId){
 }
 function renderOvCases(){document.getElementById('ov-cases').innerHTML=ACTIVE_CASES.slice(0,4).map(c=>caseCardHTML(c)).join('')}
 function renderAllCases(){document.getElementById('all-cases').innerHTML=ACTIVE_CASES.map(c=>caseCardHTML(c)).join('')}
-function renderRequests(){const uc={'high':'urgent','medium':'soon','low':'normal'};const ul={'high':'🔴 Urgent','medium':'🟡 Medium','low':'🟢 Low'};document.getElementById('req-list').innerHTML=REQUESTS.map(r=>`<div class="rq-card" id="rq-${r.id}"><div class="rq-top"><span class="cc-badge ${r.type}" style="font-size:0.65rem;padding:3px 9px;border-radius:8px;">${r.badge}</span><span class="hi-tag ${uc[r.urg]}">${ul[r.urg]}</span></div><div class="rq-title">${r.title}</div><div class="cc-meta" style="margin-bottom:8px;"><span>👤 ${r.client}</span><span>🏛 ${r.court}</span><span>📎 ${r.docs} docs</span></div><div class="rq-desc">${r.desc}</div><div class="rq-actions"><button class="btn-acc" onclick="acceptCase(this,'${r.id}')">✅ Accept & Send Proposal</button><button class="btn-dec" onclick="document.getElementById('rq-${r.id}').style.opacity='0.35';document.getElementById('rq-${r.id}').style.pointerEvents='none';toast('Case declined','ℹ️')">❌ Decline</button></div></div>`).join('')}
-function acceptCase(btn,id){btn.textContent='✅ Accepted';btn.style.background='rgba(34,197,94,0.18)';btn.style.color='var(--green)';toast('Case accepted! Proposal sent to client ✅')}
+function renderRequests(){
+  const uc={'high':'urgent','medium':'soon','low':'normal'};
+  const ul={'high':'🔴 Urgent','medium':'🟡 Medium','low':'🟢 Low'};
+  if(REQUESTS.length===0){
+    document.getElementById('req-list').innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:3rem;margin-bottom:14px;">📭</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--cream);margin-bottom:8px;">No Pending Requests</div><div style="font-size:0.82rem;">All case requests have been accepted or declined.</div></div>`;
+    return;
+  }
+  document.getElementById('req-list').innerHTML=REQUESTS.map(r=>`<div class="rq-card" id="rq-${r.id}"><div class="rq-top"><span class="cc-badge ${r.type}" style="font-size:0.65rem;padding:3px 9px;border-radius:8px;">${r.badge}</span><span class="hi-tag ${uc[r.urg]}">${ul[r.urg]}</span></div><div class="rq-title">${r.title}</div><div class="cc-meta" style="margin-bottom:8px;"><span>👤 ${r.client}</span><span>🏛 ${r.court}</span><span>📎 ${r.docs} docs</span></div><div class="rq-desc">${r.desc}</div><div class="rq-actions"><button class="btn-acc" onclick="acceptCase(this,'${r.id}')">✅ Accept & Send Proposal</button><button class="btn-dec" onclick="declineCase('${r.id}')">❌ Decline</button></div></div>`).join('');
+}
+function declineCase(id){
+  const idx=REQUESTS.findIndex(r=>r.id===id);
+  if(idx===-1)return;
+  REQUESTS.splice(idx,1);
+  renderRequests();
+  toast('Case declined','ℹ️');
+}
+function acceptCase(btn,id){
+  const idx=REQUESTS.findIndex(r=>r.id===id);
+  if(idx===-1)return;
+  const req=REQUESTS[idx];
+
+  // Build a full active case from the request
+  const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  const newCase={
+    id:'LX-2026-0'+Math.floor(180+Math.random()*20),
+    type:req.type,
+    badge:req.badge,
+    title:req.title,
+    client:req.client,
+    clientPhone:req.clientPhone,
+    clientEmail:req.clientEmail,
+    court:req.court,
+    hearing:'TBD',
+    hearingRoom:req.hearingRoom,
+    prog:0,
+    status:'on',
+    filedDate:today,
+    retainer:req.retainer,
+    summary:req.summary,
+    milestones:req.milestones,
+    timeline:[{date:today,event:'Case accepted. Proposal sent to client. Case registered.',type:'filed'},...req.timeline.filter(t=>t.type!=='upcoming')],
+    docs:req.docs,
+    notes:req.notes
+  };
+
+  // Add to active cases
+  ACTIVE_CASES.push(newCase);
+
+  // Remove from requests
+  REQUESTS.splice(idx,1);
+
+  // Re-render both sections
+  renderRequests();
+  renderAllCases();
+  renderOvCases();
+
+  // Update active cases stat count
+  const statEl=document.querySelector('.sc.sg .sc-val');
+  if(statEl) statEl.textContent=ACTIVE_CASES.length;
+
+  toast('✅ Case accepted! Moving to Active Cases...');
+
+  // After a short delay, navigate to active cases to show it
+  setTimeout(()=>{
+    showSec('cases',null);
+    // Highlight the new card briefly
+    const cards=document.querySelectorAll('#all-cases .cc');
+    const last=cards[cards.length-1];
+    if(last){
+      last.style.transition='box-shadow 0.4s';
+      last.style.boxShadow='0 0 0 2px var(--gold), 0 8px 32px rgba(212,168,67,0.3)';
+      setTimeout(()=>{last.style.boxShadow=''},2500);
+      last.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  },800);
+}
 function renderHistory(){const oc={'Won':'var(--green)','Completed':'var(--gold)','Settlement':'var(--blue)'};const oe={'Won':'🏆','Completed':'✅','Settlement':'🤝'};document.getElementById('hist-cases').innerHTML=HISTORY.map(c=>`<div class="cc ${c.type}"><div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-done"></div></div><div class="cc-title">${c.title}</div><div class="cc-meta"><span>👤 ${c.client}</span><span>📅 ${c.date}</span></div><div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between;"><span style="font-size:0.71rem;color:var(--muted);">Outcome</span><span style="font-size:0.78rem;font-weight:600;color:${oc[c.out]||'var(--gold)'};">${oe[c.out]} ${c.out}</span></div></div>`).join('')}
 function renderEarnings(){document.getElementById('earn-list').innerHTML=EARNINGS.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><div><div style="font-size:0.82rem;color:var(--cream);">${e.case}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${e.date}</div></div><div style="font-family:'Playfair Display',serif;font-size:0.98rem;color:${e.paid?'var(--green)':'var(--gold)'};">${e.amt}${e.paid?' ✓':' (pending)'}</div></div>`).join('')}
 function renderNotifs(){document.getElementById('notif-list').innerHTML=NOTIFS.map(n=>`<div style="background:var(--bg3);border:1px solid var(--goldborder);border-left:3px solid ${n.c};border-radius:12px;padding:14px 16px;display:flex;gap:12px;"><span style="font-size:1.3rem;">${n.ic}</span><div><div style="font-size:0.85rem;color:var(--cream);font-weight:500;margin-bottom:3px;">${n.title}</div><div style="font-size:0.77rem;color:var(--muted);line-height:1.45;">${n.body}</div><div style="font-size:0.66rem;color:var(--faint);margin-top:5px;">${n.time}</div></div></div>`).join('')}
