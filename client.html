@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>legalbridge — Legal Platform</title>
+<title>LegalBridge — Legal Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -451,7 +451,7 @@
   .compare-checkbox input { accent-color:var(--gold); }
 
   /* ─── ACTIVE CASE DETAIL ─── */
-  .case-detail-grid { display:grid; grid-template-columns:2fr 1fr; gap:24px; }
+  .case-detail-grid { display:grid; grid-template-columns:2fr 1fr; gap:32px; }
   .timeline { position:relative; padding-left:32px; }
   .timeline::before { content:''; position:absolute; left:8px; top:4px; bottom:4px; width:2px; background:var(--border); }
   .timeline-item { position:relative; margin-bottom:24px; }
@@ -679,7 +679,7 @@
   <div class="welcome-grid"></div>
   <div class="welcome-content">
     <div class="welcome-badge">⚖️ Legal Intelligence Platform</div>
-    <div class="welcome-logo">Lex<span>Bridge</span></div>
+    <div class="welcome-logo">Legal<span>Bridge</span></div>
     <div class="welcome-tagline">Connect. Consult. Conquer.</div>
     <div class="welcome-divider"></div>
     <p class="welcome-desc">Transparent legal representation at your fingertips. Post your case, compare top lawyers, track progress — all in one secure platform.</p>
@@ -697,7 +697,7 @@
 <div id="screen-signup" class="screen" style="flex-direction:column;align-items:center;justify-content:center;background:var(--navy);position:relative;">
 <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 30% 50%, rgba(201,168,76,0.1) 0%, transparent 60%);"></div>
   <div class="auth-card">
-    <div class="auth-logo">Lex<span>Bridge</span></div>
+    <div class="auth-logo">Legal<span>Bridge</span></div>
     <div class="auth-subtitle">Client Registration</div>
     <div class="step-indicator" id="signup-steps">
       <div class="step-dot active" id="sdot-1"></div>
@@ -751,7 +751,7 @@
 <div id="screen-login" class="screen" style="flex-direction:column;align-items:center;justify-content:center;background:var(--navy);position:relative;">
 <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 50%, rgba(201,168,76,0.1) 0%, transparent 60%);"></div>
   <div class="auth-card">
-    <div class="auth-logo">Lex<span>Bridge</span></div>
+    <div class="auth-logo">Legal<span>Bridge</span></div>
     <div class="auth-subtitle">Welcome back</div>
     <div class="auth-title">Sign In to Your Account</div>
     <div class="form-group">
@@ -776,7 +776,7 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">Lex<span>Bridge</span></div>
+    <div class="sidebar-logo">Legal<span>Bridge</span></div>
     <div class="sidebar-user" id="sidebar-user-btn" onclick="openProfileFromSidebar()" title="View Account Details">
       <div class="user-avatar" id="sidebar-avatar">RS</div>
       <div class="user-info">
@@ -802,8 +802,9 @@
         <span class="nav-icon">⚖️</span> Lawyer Proposals
         <span class="nav-badge">5</span>
       </div>
-      <div class="nav-item" onclick="showPage('page-case-detail', this)">
-        <span class="nav-icon">📂</span> Case Dashboard
+      <div class="nav-item" onclick="showPage('page-chat', this)">
+        <span class="nav-icon">💬</span> Messages
+        <span class="nav-badge">1</span>
       </div>
       <div class="nav-item" onclick="showPage('page-history', this)">
         <span class="nav-icon">🕐</span> Case History
@@ -854,7 +855,7 @@
           <div class="stat-label">Pending Proposals</div>
           <div class="stat-change" style="color:var(--warning)">2 new today</div>
         </div>
-        <div class="stat-card" style="--accent-color:rgba(239,68,68,0.1);cursor:pointer;" onclick="showPage('page-case-detail', document.querySelector('[onclick*=page-case-detail]'))">
+        <div class="stat-card" style="--accent-color:rgba(239,68,68,0.1);cursor:pointer;" onclick="showPage('page-active-cases', document.querySelector('[onclick*=page-active-cases]'))">
           <div class="stat-icon">📅</div>
           <div class="stat-value">2</div>
           <div class="stat-label">Upcoming Hearings</div>
@@ -895,7 +896,7 @@
         <div class="card">
           <div class="card-title">Active Cases Overview</div>
           <div style="display:flex;flex-direction:column;gap:14px;">
-            <div onclick="showPage('page-case-detail',document.querySelector('[onclick*=page-case-detail]'))" style="cursor:pointer;">
+            <div onclick="openCase(0)" style="cursor:pointer;">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                 <span style="font-size:14px;font-weight:600;color:var(--navy)">Property Dispute — Delhi HC</span>
                 <span class="badge badge-ongoing">Ongoing</span>
@@ -936,7 +937,7 @@
         <div class="card-title">Quick Actions</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <button class="btn btn-navy" onclick="showPage('page-proposals',document.querySelector('[onclick*=page-proposals]'))">⚖️ View Proposals</button>
-          <button class="btn btn-ghost" onclick="showPage('page-case-detail',document.querySelector('[onclick*=page-case-detail]'))">📂 Open Case Dashboard</button>
+          <button class="btn btn-ghost" onclick="showPage('page-active-cases',document.querySelector('[onclick*=page-active-cases]'))">📂 My Cases</button>
           <button class="btn btn-ghost" onclick="showPage('page-post-case',document.querySelector('[onclick*=page-post-case]'))">➕ Post New Case</button>
           <button class="btn btn-ghost" onclick="showPage('page-notifications',document.querySelector('[onclick*=page-notifications]'))">🔔 Notifications (4)</button>
         </div>
@@ -1102,7 +1103,7 @@
         <button class="btn btn-gold" onclick="showPage('page-post-case',document.querySelector('[onclick*=page-post-case]'))">+ New Case</button>
       </div>
       <div class="cases-grid">
-        <div class="case-card" onclick="showPage('page-case-detail',document.querySelector('[onclick*=page-case-detail]'))">
+        <div class="case-card" onclick="openCase(0)">
           <div class="case-card-header">
             <div>
               <div class="case-title-text">Property Dispute — 200 sq yd Plot</div>
@@ -1122,7 +1123,7 @@
             <span>📅 Next: Mar 15, 2025</span>
           </div>
         </div>
-        <div class="case-card">
+        <div class="case-card" onclick="openCase(1)">
           <div class="case-card-header">
             <div>
               <div class="case-title-text">Family — Divorce Settlement</div>
@@ -1142,7 +1143,7 @@
             <span>5 proposals pending</span>
           </div>
         </div>
-        <div class="case-card">
+        <div class="case-card" onclick="openCase(2)">
           <div class="case-card-header">
             <div>
               <div class="case-title-text">Corporate — Contract Breach</div>
@@ -1207,7 +1208,7 @@
             <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">🏆 Delhi Bar Association Award 2022 · LLM Harvard</div>
             <div class="lawyer-actions">
               <button class="btn btn-ghost btn-sm" onclick="showLawyerProfile('Priya Mehta')">View Profile</button>
-              <button class="btn btn-ghost btn-sm" onclick="showPage('page-case-detail',document.querySelector('[onclick*=page-case-detail]'));setTimeout(()=>scrollToChat(),300)">💬 Chat</button>
+              <button class="btn btn-ghost btn-sm" onclick="showPage('page-chat',document.querySelector('[onclick*=page-chat]'))">💬 Chat</button>
               <button class="btn btn-gold btn-sm" onclick="appointLawyer('Priya Mehta')">✓ Appoint</button>
             </div>
           </div>
@@ -1275,216 +1276,11 @@
 
     <!-- ══ CASE DASHBOARD ══ -->
     <div class="page" id="page-case-detail">
-      <div class="page-header header-row">
-        <div>
-          <div class="page-title">Property Dispute — 200 sq yd Plot</div>
-          <div class="page-subtitle" style="display:flex;align-items:center;gap:10px;">
-            <span class="badge badge-ongoing">Ongoing</span>
-            <span style="color:var(--text-muted);">📍 New Delhi · Delhi High Court</span>
-          </div>
-        </div>
-        <div style="display:flex;gap:10px;">
-          <button class="btn btn-ghost btn-sm" onclick="showReminderModal()">⏰ Add Reminder</button>
-          <button class="btn btn-navy btn-sm">📤 Share with Lawyer</button>
-        </div>
-      </div>
-
-      <div class="case-detail-grid">
-        <div style="display:flex;flex-direction:column;gap:24px;">
-          <!-- Case Overview -->
-          <div class="card">
-            <div class="card-title">📋 Case Overview</div>
-            <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">
-              Dispute over a 200 sq yard residential plot in Lajpat Nagar, New Delhi. Opposing party claims ownership based on a forged sale deed dated 2018. Client has original purchase documents from 1995.
-            </div>
-            <div class="review-row"><span class="review-key">Case ID</span><span class="review-val">#LXB-2025-0042</span></div>
-            <div class="review-row"><span class="review-key">Filed Date</span><span class="review-val">February 12, 2025</span></div>
-            <div class="review-row"><span class="review-key">Assigned Lawyer</span><span class="review-val">Adv. Priya Mehta</span></div>
-            <div class="review-row"><span class="review-key">Next Hearing</span><span class="review-val">March 15, 2025</span></div>
-          </div>
-
-          <!-- Progress Updates -->
-          <div class="card">
-            <div class="card-title">📈 Progress Updates</div>
-            <div class="progress-bar-container">
-              <div class="progress-label"><span>Overall Progress</span><span>65%</span></div>
-              <div class="progress-bar"><div class="progress-fill" style="width:65%"></div></div>
-            </div>
-            <div class="timeline" style="margin-top:20px;">
-              <div class="timeline-item">
-                <div class="timeline-dot done">✓</div>
-                <div class="timeline-date">Mar 1, 2025</div>
-                <div class="timeline-title">Injunction Granted</div>
-                <div class="timeline-desc">Court granted interim injunction stopping transfer of property</div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot done">✓</div>
-                <div class="timeline-date">Feb 20, 2025</div>
-                <div class="timeline-title">Case Filed</div>
-                <div class="timeline-desc">Plaint filed at Delhi High Court, cause number assigned</div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot active"></div>
-                <div class="timeline-date">Mar 15, 2025 — Upcoming</div>
-                <div class="timeline-title">Evidence Submission Hearing</div>
-                <div class="timeline-desc">Both parties to present documentary evidence</div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">Apr 28, 2025 — Scheduled</div>
-                <div class="timeline-title">Witness Examination</div>
-                <div class="timeline-desc">Cross-examination of opposing party's witnesses</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Document Vault -->
-          <div class="card">
-            <div class="card-title">🔒 Secure Document Vault</div>
-            <div class="vault-label">
-              <span class="lock-icon">🔒</span> Documents are encrypted. Only Adv. Priya Mehta has authorized access.
-            </div>
-            <div class="doc-grid">
-              <div class="doc-item"><div class="doc-icon">📄</div><div class="doc-name">Original_Deed_1995.pdf</div><div class="doc-size">2.1 MB</div></div>
-              <div class="doc-item"><div class="doc-icon">🪪</div><div class="doc-name">Aadhaar_Card.jpg</div><div class="doc-size">0.8 MB</div></div>
-              <div class="doc-item"><div class="doc-icon">📋</div><div class="doc-name">Court_Order_Feb.pdf</div><div class="doc-size">1.4 MB</div></div>
-              <div class="doc-item"><div class="doc-icon">📷</div><div class="doc-name">Site_Photos.zip</div><div class="doc-size">15 MB</div></div>
-              <div class="doc-item" style="border-style:dashed;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;" onclick="triggerUpload('vault-upload')">
-                <input type="file" id="vault-upload" style="display:none">
-                <div class="doc-icon">➕</div><div class="doc-name" style="color:var(--text-muted);">Add Document</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Chat -->
-          <div class="card" id="chat-section">
-            <div class="card-title">💬 Chat with Adv. Priya Mehta</div>
-            <div class="chat-container">
-              <div class="chat-header">
-                <div class="chat-avatar">PM</div>
-                <div>
-                  <div class="chat-lawyer-name">Adv. Priya Mehta</div>
-                  <div class="chat-status">● Online</div>
-                </div>
-              </div>
-              <div class="chat-messages" id="chat-messages">
-                <div class="chat-msg received">
-                  <div class="chat-bubble">Hello! I've reviewed your case documents. We have a strong case. The 1995 deed clearly establishes your ownership.</div>
-                  <div class="chat-time">10:30 AM</div>
-                </div>
-                <div class="chat-msg sent">
-                  <div class="chat-bubble">Thank you! What documents do I need to bring for the next hearing?</div>
-                  <div class="chat-time">10:35 AM</div>
-                </div>
-                <div class="chat-msg received">
-                  <div class="chat-bubble">Please bring the original 1995 deed, any tax receipts from that period, and 2 passport-size photos. I'll handle the rest.</div>
-                  <div class="chat-time">10:40 AM</div>
-                </div>
-                <div class="chat-msg sent">
-                  <div class="chat-bubble">Got it. Will I need to testify?</div>
-                  <div class="chat-time">10:42 AM</div>
-                </div>
-                <div class="chat-msg received">
-                  <div class="chat-bubble">Most likely yes during the witness examination hearing in April. Don't worry — I'll prepare you thoroughly beforehand.</div>
-                  <div class="chat-time">10:45 AM</div>
-                </div>
-              </div>
-              <div class="chat-input-row">
-                <button style="background:none;border:none;font-size:20px;cursor:pointer;">📎</button>
-                <input class="chat-input" placeholder="Type a message..." id="chat-input" onkeydown="if(event.key==='Enter')sendChatMsg()">
-                <button class="chat-send" onclick="sendChatMsg()">➤</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column -->
-        <div style="display:flex;flex-direction:column;gap:20px;">
-          <!-- Upcoming Hearings -->
-          <div class="hearing-card">
-            <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Next Hearing</div>
-            <div class="hearing-date">15</div>
-            <div class="hearing-month">March 2025 · Thursday</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;">Evidence Submission</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Delhi High Court, Room 7 · 10:30 AM</div>
-            <button class="btn btn-ghost" style="margin-top:12px;width:100%;color:white;border-color:rgba(255,255,255,0.2);">📅 Add to Calendar</button>
-          </div>
-
-          <!-- Upcoming Hearings Timeline -->
-          <div class="card">
-            <div class="card-title">📅 Hearing Schedule</div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--gold);color:var(--navy);border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:12px;min-width:48px;">MAR<br>15</div>
-                <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Evidence Submission</div><div style="font-size:11px;color:var(--text-muted);">10:30 AM · Room 7</div></div>
-                <span class="badge badge-active" style="margin-left:auto;font-size:10px;">Upcoming</span>
-              </div>
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--cream);color:var(--navy);border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:12px;min-width:48px;border:1px solid var(--border);">APR<br>28</div>
-                <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Witness Exam</div><div style="font-size:11px;color:var(--text-muted);">11:00 AM · Room 3</div></div>
-                <span class="badge badge-pending" style="margin-left:auto;font-size:10px;">Scheduled</span>
-              </div>
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--cream);color:var(--navy);border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:12px;min-width:48px;border:1px solid var(--border);">JUN<br>10</div>
-                <div><div style="font-size:13px;font-weight:600;color:var(--navy);">Final Arguments</div><div style="font-size:11px;color:var(--text-muted);">TBD</div></div>
-                <span class="badge badge-closed" style="margin-left:auto;font-size:10px;">Tentative</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lawyer Suggestions -->
-          <div class="card">
-            <div class="card-title">💡 Lawyer Suggestions</div>
-            <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
-              <div style="padding:10px 0;border-bottom:1px solid var(--border);">
-                <div style="font-weight:600;color:var(--navy);margin-bottom:4px;">🔹 Bring all original documents to hearing</div>
-                <div>Adv. Mehta recommends original 1995 deed + all tax receipts</div>
-              </div>
-              <div style="padding:10px 0;border-bottom:1px solid var(--border);">
-                <div style="font-weight:600;color:var(--navy);margin-bottom:4px;">🔹 Consider mediation</div>
-                <div>Pre-trial mediation could speed up resolution by 3–6 months</div>
-              </div>
-              <div style="padding:10px 0;">
-                <div style="font-weight:600;color:var(--navy);margin-bottom:4px;">🔹 Get handwriting expert</div>
-                <div>Forensic analysis of the 2018 deed signature is recommended</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Payment Status -->
-          <div class="card">
-            <div class="card-title">💳 Payment Status</div>
-            <div style="font-size:26px;font-weight:700;font-family:'Playfair Display',serif;color:var(--navy);margin-bottom:4px;">₹75,000</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Total agreed fee</div>
-            <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-                <span>Retainer (50%)</span><span class="pay-status-paid">✓ ₹37,500 Paid</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
-                <span>Milestone 2</span><span class="pay-status-pending">⏳ ₹25,000 Due Mar 15</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;">
-                <span>Final Payment</span><span style="color:var(--text-muted);">₹12,500 On Verdict</span>
-              </div>
-            </div>
-            <button class="btn btn-gold btn-block" style="margin-top:16px;">💳 Pay Now — ₹25,000</button>
-          </div>
-
-          <!-- Reminders -->
-          <div class="card">
-            <div class="card-title">⏰ Reminders</div>
-            <div class="reminder-list" id="reminder-list">
-              <div class="reminder-item"><input type="checkbox" onchange="this.parentElement.classList.toggle('done')"> <span>Collect original deed from locker</span></div>
-              <div class="reminder-item done"><input type="checkbox" checked onchange="this.parentElement.classList.toggle('done')"> <span>Submit ID proof to lawyer</span></div>
-              <div class="reminder-item"><input type="checkbox" onchange="this.parentElement.classList.toggle('done')"> <span>Attend Mar 15 hearing at 10:30 AM</span></div>
-            </div>
-            <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="showReminderModal()">+ Add Reminder</button>
-          </div>
-        </div>
-      </div>
+      <!-- Dynamic content rendered by openCase() -->
+      <div id="case-detail-content"></div>
     </div>
 
-    <!-- ══ CASE HISTORY ══ -->
+        <!-- ══ CASE HISTORY ══ -->
     <div class="page" id="page-history">
       <div class="page-header">
         <div class="page-title">Case History</div>
@@ -1539,6 +1335,111 @@
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+
+    <!-- ══ CHAT ══ -->
+    <div class="page" id="page-chat">
+      <div class="page-header header-row" style="margin-bottom:24px;">
+        <div>
+          <div class="page-title">Messages</div>
+          <div class="page-subtitle">Communicate privately with your lawyers</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:0;background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--card-shadow);border:1px solid rgba(0,0,0,0.06);overflow:hidden;height:600px;">
+
+        <!-- Conversation List -->
+        <div style="border-right:1px solid var(--border);display:flex;flex-direction:column;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
+            <input class="form-input" placeholder="🔍  Search conversations…" style="background:var(--cream);border-color:var(--border);color:var(--text-primary);font-size:13px;padding:9px 14px;">
+          </div>
+          <div style="overflow-y:auto;flex:1;">
+            <!-- Convo 1 - active -->
+            <div id="convo-1" onclick="switchChat(1)" style="display:flex;gap:12px;padding:16px 20px;cursor:pointer;background:rgba(201,168,76,0.07);border-left:3px solid var(--gold);">
+              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--navy);flex-shrink:0;">PM</div>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <div style="font-size:13px;font-weight:600;color:var(--navy);">Adv. Priya Mehta</div>
+                  <div style="font-size:10px;color:var(--text-muted);">10:45 AM</div>
+                </div>
+                <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">I'll prepare you thoroughly beforehand.</div>
+                <div style="margin-top:4px;"><span style="font-size:10px;background:var(--gold);color:var(--navy);padding:2px 7px;border-radius:100px;font-weight:700;">Property Dispute</span></div>
+              </div>
+            </div>
+            <!-- Convo 2 -->
+            <div id="convo-2" onclick="switchChat(2)" style="display:flex;gap:12px;padding:16px 20px;cursor:pointer;border-left:3px solid transparent;border-bottom:1px solid var(--border);">
+              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--navy-light),var(--navy));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--white);flex-shrink:0;">RK</div>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <div style="font-size:13px;font-weight:600;color:var(--navy);">Adv. Rajesh Kumar</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Yesterday</div>
+                </div>
+                <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Please share the employment contract.</div>
+                <div style="margin-top:4px;"><span style="font-size:10px;background:var(--cream);color:var(--text-secondary);padding:2px 7px;border-radius:100px;font-weight:600;border:1px solid var(--border);">Labour Case</span></div>
+              </div>
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--gold);margin-top:4px;flex-shrink:0;"></div>
+            </div>
+            <!-- Convo 3 -->
+            <div id="convo-3" onclick="switchChat(3)" style="display:flex;gap:12px;padding:16px 20px;cursor:pointer;border-left:3px solid transparent;">
+              <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#10b981,#34d399);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;flex-shrink:0;">AS</div>
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                  <div style="font-size:13px;font-weight:600;color:var(--navy);">Adv. Anita Singh</div>
+                  <div style="font-size:10px;color:var(--text-muted);">Mar 1</div>
+                </div>
+                <div style="font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Case has been successfully closed. ✅</div>
+                <div style="margin-top:4px;"><span style="font-size:10px;background:#ecfdf5;color:#059669;padding:2px 7px;border-radius:100px;font-weight:600;">Closed</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Chat Window -->
+        <div style="display:flex;flex-direction:column;" id="chat-window">
+          <!-- Header -->
+          <div style="background:var(--navy);padding:18px 24px;display:flex;align-items:center;gap:14px;flex-shrink:0;">
+            <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--navy);" id="chat-hd-avatar">PM</div>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:600;color:white;" id="chat-hd-name">Adv. Priya Mehta</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.45);" id="chat-hd-case">Property Dispute — 200 sq yd Plot</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">📞 Call</button>
+              <button style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:white;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;">📅 Schedule</button>
+            </div>
+          </div>
+          <!-- Messages -->
+          <div id="chat-messages-main" style="flex:1;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:16px;background:#fafaf8;">
+            <div style="text-align:center;margin-bottom:8px;"><span style="font-size:11px;color:var(--text-muted);background:var(--border);padding:4px 14px;border-radius:100px;">Today</span></div>
+            <div class="chat-msg received" style="max-width:58%;">
+              <div class="chat-bubble">Hello! I've reviewed your case documents. We have a strong case. The 1995 deed clearly establishes your ownership.</div>
+              <div class="chat-time">10:30 AM</div>
+            </div>
+            <div class="chat-msg sent" style="max-width:58%;">
+              <div class="chat-bubble">Thank you! What documents do I need to bring for the next hearing?</div>
+              <div class="chat-time">10:35 AM</div>
+            </div>
+            <div class="chat-msg received" style="max-width:58%;">
+              <div class="chat-bubble">Please bring the original 1995 deed, any tax receipts from that period, and 2 passport-size photos. I'll handle the rest.</div>
+              <div class="chat-time">10:40 AM</div>
+            </div>
+            <div class="chat-msg sent" style="max-width:58%;">
+              <div class="chat-bubble">Got it. Will I need to testify?</div>
+              <div class="chat-time">10:42 AM</div>
+            </div>
+            <div class="chat-msg received" style="max-width:58%;">
+              <div class="chat-bubble">Most likely yes during the witness examination hearing in April. Don't worry — I'll prepare you thoroughly beforehand.</div>
+              <div class="chat-time">10:45 AM</div>
+            </div>
+          </div>
+          <!-- Input -->
+          <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:center;background:var(--white);flex-shrink:0;">
+            <button style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);" title="Attach file">📎</button>
+            <input class="chat-input" id="chat-input-main" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendMainChat()" style="border-radius:10px;background:var(--cream);border-color:var(--border);color:var(--text-primary);">
+            <button class="chat-send" onclick="sendMainChat()" style="width:42px;height:42px;font-size:18px;">➤</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1834,7 +1735,7 @@
 <div id="modal-logout" style="display:none;" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
   <div class="modal-box" style="max-width:400px;text-align:center;">
     <div style="width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,0.1);border:2px solid rgba(239,68,68,0.2);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;">🚪</div>
-    <div class="modal-title" style="text-align:center;font-size:20px;">Log Out of legalbridge?</div>
+    <div class="modal-title" style="text-align:center;font-size:20px;">Log Out of LegalBridge?</div>
     <p style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">You're currently signed in as</p>
     <div style="display:flex;align-items:center;gap:12px;background:var(--cream);border-radius:12px;padding:14px 18px;margin:0 auto 24px;width:fit-content;">
       <div class="user-avatar" style="width:40px;height:40px;font-size:15px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;" id="logout-modal-avatar">RS</div>
@@ -1913,7 +1814,7 @@
       </div>
     </div>
     <div style="padding:12px 24px 20px;text-align:center;">
-      <span style="font-size:11px;color:var(--text-muted);">Member since January 2024 · legalbridge v2.0</span>
+      <span style="font-size:11px;color:var(--text-muted);">Member since January 2024 · LegalBridge v2.0</span>
     </div>
   </div>
 </div>
@@ -2092,7 +1993,7 @@ function completeSignup() {
   updateUserUI();
   showScreen('screen-app');
   setGreeting();
-  showToast('Welcome to legalbridge! Account created.', 'success');
+  showToast('Welcome to LegalBridge! Account created.', 'success');
 }
 
 function doLogin() {
@@ -2278,7 +2179,7 @@ function confirmAppoint() {
   document.getElementById('modal-lawyer').style.display  = 'none';
   showToast('Adv. ' + state.pendingAppointLawyer + ' has been appointed!', 'success');
   setTimeout(function() {
-    showPage('page-case-detail', document.querySelector('[onclick*=page-case-detail]'));
+    showPage('page-active-cases', document.querySelector('[onclick*=page-active-cases]'));
   }, 600);
 }
 
@@ -2343,6 +2244,384 @@ function saveProfile() {
     setGreeting();
   }
   showToast('Profile saved successfully', 'success');
+}
+
+// ─── CASE DATA & DYNAMIC DASHBOARD ──────────────────────
+var casesData = [
+  {
+    id: 0,
+    title: 'Property Dispute — 200 sq yd Plot',
+    status: 'ongoing',
+    statusLabel: 'Ongoing',
+    statusClass: 'badge-ongoing',
+    category: '📂 Property',
+    location: 'New Delhi · Delhi High Court',
+    progress: 65,
+    lawyer: 'Adv. Priya Mehta',
+    lawyerInitials: 'PM',
+    lawyerSpec: 'Property Law · Civil · 14 yrs exp',
+    nextHearing: 'March 15, 2025',
+    filedDate: 'February 12, 2025',
+    caseId: '#LXB-2025-0042',
+    description: 'Dispute over a 200 sq yard residential plot in Lajpat Nagar, New Delhi. Opposing party claims ownership based on a forged sale deed dated 2018. Client has original purchase documents from 1995.',
+    timeline: [
+      { status: 'done', date: 'Mar 1, 2025', title: 'Injunction Granted', desc: 'Court granted interim injunction stopping transfer of property' },
+      { status: 'done', date: 'Feb 20, 2025', title: 'Case Filed', desc: 'Plaint filed at Delhi High Court, cause number assigned' },
+      { status: 'active', date: 'Mar 15, 2025 — Upcoming', title: 'Evidence Submission Hearing', desc: 'Both parties to present documentary evidence' },
+      { status: '', date: 'Apr 28, 2025 — Scheduled', title: 'Witness Examination', desc: 'Cross-examination of opposing party\'s witnesses' }
+    ],
+    hearings: [
+      { month: 'MAR', day: '15', title: 'Evidence Submission', time: '10:30 AM · Room 7', badgeClass: 'badge-active', badgeLabel: 'Upcoming', gold: true },
+      { month: 'APR', day: '28', title: 'Witness Exam', time: '11:00 AM · Room 3', badgeClass: 'badge-pending', badgeLabel: 'Scheduled', gold: false },
+      { month: 'JUN', day: '10', title: 'Final Arguments', time: 'TBD', badgeClass: 'badge-closed', badgeLabel: 'Tentative', gold: false }
+    ],
+    docs: [
+      { icon: '📄', name: 'Original_Deed_1995.pdf', size: '2.1 MB' },
+      { icon: '🪪', name: 'Aadhaar_Card.jpg', size: '0.8 MB' },
+      { icon: '📋', name: 'Court_Order_Feb.pdf', size: '1.4 MB' },
+      { icon: '📷', name: 'Site_Photos.zip', size: '15 MB' }
+    ],
+    payment: { total: '₹75,000', rows: [
+      { label: 'Retainer (50%)', val: '✓ ₹37,500 Paid', cls: 'pay-status-paid' },
+      { label: 'Milestone 2', val: '⏳ ₹25,000 Due Mar 15', cls: 'pay-status-pending' },
+      { label: 'Final Payment', val: '₹12,500 On Verdict', cls: '' }
+    ]},
+    reminders: ['Collect original deed from locker', 'Attend Mar 15 hearing at 10:30 AM'],
+    suggestions: [
+      { title: '🔹 Bring all original documents to hearing', desc: 'Adv. Mehta recommends original 1995 deed + all tax receipts' },
+      { title: '🔹 Consider mediation', desc: 'Pre-trial mediation could speed up resolution by 3–6 months' },
+      { title: '🔹 Get handwriting expert', desc: 'Forensic analysis of the 2018 deed signature is recommended' }
+    ]
+  },
+  {
+    id: 1,
+    title: 'Family — Divorce Settlement',
+    status: 'waiting',
+    statusLabel: 'Waiting for Lawyer',
+    statusClass: 'badge-waiting',
+    category: '👨‍👩‍👧 Family',
+    location: 'Mumbai',
+    progress: 20,
+    lawyer: null,
+    lawyerInitials: null,
+    lawyerSpec: null,
+    nextHearing: null,
+    filedDate: 'February 28, 2025',
+    caseId: '#LXB-2025-0051',
+    description: 'Divorce and property settlement dispute. 5 lawyer proposals received and under review.',
+    timeline: [
+      { status: 'done', date: 'Feb 28, 2025', title: 'Case Posted', desc: 'Case posted on LegalBridge platform' },
+      { status: 'active', date: 'Now', title: 'Awaiting Lawyer Assignment', desc: '5 proposals received — review and appoint a lawyer to proceed' },
+      { status: '', date: 'TBD', title: 'First Hearing', desc: 'Will be scheduled after lawyer appointment' }
+    ],
+    hearings: [],
+    docs: [],
+    payment: null,
+    reminders: ['Review the 5 lawyer proposals', 'Consult family for final decision'],
+    suggestions: []
+  },
+  {
+    id: 2,
+    title: 'Corporate — Contract Breach',
+    status: 'active',
+    statusLabel: 'Active',
+    statusClass: 'badge-active',
+    category: '🏢 Corporate',
+    location: 'Bengaluru',
+    progress: 42,
+    lawyer: 'Adv. Rajesh Kumar',
+    lawyerInitials: 'RK',
+    lawyerSpec: 'Corporate Law · Civil · 22 yrs exp',
+    nextHearing: 'April 2, 2025',
+    filedDate: 'January 20, 2025',
+    caseId: '#LXB-2025-0031',
+    description: 'Contract breach by a software vendor who failed to deliver agreed milestones. Seeking damages of ₹18 lakhs plus penalty clauses.',
+    timeline: [
+      { status: 'done', date: 'Jan 20, 2025', title: 'Case Filed', desc: 'Commercial dispute filed at City Civil Court, Bengaluru' },
+      { status: 'done', date: 'Feb 5, 2025', title: 'Lawyer Appointed', desc: 'Adv. Rajesh Kumar appointed and briefed on the case' },
+      { status: 'active', date: 'Apr 2, 2025 — Upcoming', title: 'First Hearing', desc: 'Preliminary hearing for case admission' },
+      { status: '', date: 'TBD', title: 'Evidence & Arguments', desc: 'Scheduled after first hearing outcome' }
+    ],
+    hearings: [
+      { month: 'APR', day: '2', title: 'Preliminary Hearing', time: '11:00 AM · Court 4', badgeClass: 'badge-active', badgeLabel: 'Upcoming', gold: true }
+    ],
+    docs: [
+      { icon: '📄', name: 'Contract_Agreement.pdf', size: '3.2 MB' },
+      { icon: '📋', name: 'Breach_Notice.pdf', size: '0.5 MB' }
+    ],
+    payment: { total: '₹55,000', rows: [
+      { label: 'Retainer (50%)', val: '✓ ₹27,500 Paid', cls: 'pay-status-paid' },
+      { label: 'Balance', val: '⏳ ₹27,500 Due on Verdict', cls: 'pay-status-pending' }
+    ]},
+    reminders: ['Share vendor emails with Adv. Kumar', 'Attend Apr 2 hearing'],
+    suggestions: [
+      { title: '🔹 Gather all vendor communications', desc: 'Emails, chat logs, and delivery reports will strengthen the case' }
+    ]
+  }
+];
+
+function openCase(idx) {
+  var c = casesData[idx];
+  var navEl = document.querySelector('[onclick*="page-active-cases"]');
+  showPage('page-case-detail', navEl);
+
+  var isWaiting = c.status === 'waiting';
+  var hasLawyer = !!c.lawyer;
+  var hasHearings = c.hearings && c.hearings.length > 0;
+  var hasDocs = c.docs && c.docs.length > 0;
+  var hasPayment = !!c.payment;
+  var hasSuggestions = c.suggestions && c.suggestions.length > 0;
+
+  // Build timeline HTML
+  var timelineHtml = '';
+  for (var i = 0; i < c.timeline.length; i++) {
+    var t = c.timeline[i];
+    var dotClass = t.status === 'done' ? 'done' : t.status === 'active' ? 'active' : '';
+    var dotInner = t.status === 'done' ? '✓' : '';
+    timelineHtml += '<div class="timeline-item">'
+      + '<div class="timeline-dot ' + dotClass + '">' + dotInner + '</div>'
+      + '<div class="timeline-date">' + t.date + '</div>'
+      + '<div class="timeline-title">' + t.title + '</div>'
+      + '<div class="timeline-desc">' + t.desc + '</div>'
+      + '</div>';
+  }
+
+  // Build hearings HTML
+  var hearingsHtml = '';
+  if (hasHearings) {
+    for (var i = 0; i < c.hearings.length; i++) {
+      var h = c.hearings[i];
+      var bg = h.gold ? 'background:var(--gold);color:var(--navy);' : 'background:var(--cream);color:var(--navy);border:1px solid var(--border);';
+      hearingsHtml += '<div style="display:flex;gap:12px;align-items:center;">'
+        + '<div style="' + bg + 'border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:12px;min-width:48px;">' + h.month + '<br>' + h.day + '</div>'
+        + '<div><div style="font-size:13px;font-weight:600;color:var(--navy);">' + h.title + '</div><div style="font-size:11px;color:var(--text-muted);">' + h.time + '</div></div>'
+        + '<span class="badge ' + h.badgeClass + '" style="margin-left:auto;font-size:10px;">' + h.badgeLabel + '</span>'
+        + '</div>';
+    }
+  }
+
+  // Build docs HTML
+  var docsHtml = '';
+  if (hasDocs) {
+    for (var i = 0; i < c.docs.length; i++) {
+      var d = c.docs[i];
+      docsHtml += '<div class="doc-item"><div class="doc-icon">' + d.icon + '</div><div class="doc-name">' + d.name + '</div><div class="doc-size">' + d.size + '</div></div>';
+    }
+  }
+  docsHtml += '<div class="doc-item" style="border-style:dashed;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;" onclick="showToast(\'File upload coming soon\',\'\')">'
+    + '<div class="doc-icon">➕</div><div class="doc-name" style="color:var(--text-muted);">Add Document</div></div>';
+
+  // Build payment HTML
+  var paymentHtml = '';
+  if (hasPayment) {
+    var rowsHtml = '';
+    for (var i = 0; i < c.payment.rows.length; i++) {
+      var r = c.payment.rows[i];
+      rowsHtml += '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:' + (i < c.payment.rows.length-1 ? '1px solid var(--border)' : 'none') + ';">'
+        + '<span>' + r.label + '</span><span class="' + r.cls + '">' + r.val + '</span></div>';
+    }
+    paymentHtml = '<div class="card"><div class="card-title">💳 Payment Status</div>'
+      + '<div style="font-size:26px;font-weight:700;font-family:\'Playfair Display\',serif;color:var(--navy);margin-bottom:4px;">' + c.payment.total + '</div>'
+      + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Total agreed fee</div>'
+      + '<div style="display:flex;flex-direction:column;gap:0;font-size:13px;">' + rowsHtml + '</div>'
+      + '<button class="btn btn-gold btn-block" style="margin-top:16px;">💳 Pay Now</button></div>';
+  }
+
+  // Build suggestions HTML
+  var suggestionsHtml = '';
+  if (hasSuggestions) {
+    var items = '';
+    for (var i = 0; i < c.suggestions.length; i++) {
+      var s = c.suggestions[i];
+      items += '<div style="padding:10px 0;' + (i < c.suggestions.length-1 ? 'border-bottom:1px solid var(--border);' : '') + '">'
+        + '<div style="font-weight:600;color:var(--navy);margin-bottom:4px;">' + s.title + '</div>'
+        + '<div style="color:var(--text-secondary);font-size:13px;">' + s.desc + '</div></div>';
+    }
+    suggestionsHtml = '<div class="card"><div class="card-title">💡 Lawyer Suggestions</div>' + items + '</div>';
+  }
+
+  // Build reminders HTML
+  var remindersHtml = '';
+  for (var i = 0; i < c.reminders.length; i++) {
+    remindersHtml += '<div class="reminder-item"><input type="checkbox" onchange="this.parentElement.classList.toggle(\'done\')"> <span>' + c.reminders[i] + '</span></div>';
+  }
+
+  // Waiting banner
+  var waitingBanner = isWaiting ? '<div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:center;">'
+    + '<span style="font-size:24px;">⏳</span>'
+    + '<div><div style="font-weight:600;color:#92400e;font-size:14px;">Awaiting Lawyer Assignment</div>'
+    + '<div style="font-size:13px;color:#b45309;margin-top:2px;">Review the proposals submitted and appoint a lawyer to get started.</div></div>'
+    + '<button class="btn btn-gold btn-sm" style="margin-left:auto;" onclick="showPage(\'page-proposals\',document.querySelector(\'[onclick*=page-proposals]\'))">View Proposals →</button>'
+    + '</div>' : '';
+
+  // Right column — conditional
+  var rightColHtml = '';
+  if (hasHearings) {
+    var fh = c.hearings[0];
+    var fhBg = fh.gold ? 'var(--gold)' : 'var(--cream)';
+    rightColHtml += '<div class="hearing-card">'
+      + '<div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Next Hearing</div>'
+      + '<div class="hearing-date">' + fh.day + '</div>'
+      + '<div class="hearing-month">' + fh.month + ' 2025</div>'
+      + '<div style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;">' + fh.title + '</div>'
+      + '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">' + fh.time + '</div>'
+      + '<button class="btn btn-ghost" style="margin-top:12px;width:100%;color:white;border-color:rgba(255,255,255,0.2);">📅 Add to Calendar</button></div>';
+  }
+  if (hasHearings && c.hearings.length > 1) {
+    rightColHtml += '<div class="card"><div class="card-title">📅 Hearing Schedule</div>'
+      + '<div style="display:flex;flex-direction:column;gap:12px;">' + hearingsHtml + '</div></div>';
+  }
+  if (hasSuggestions) rightColHtml += suggestionsHtml;
+  if (hasPayment) rightColHtml += paymentHtml;
+  rightColHtml += '<div class="card"><div class="card-title">⏰ Reminders</div>'
+    + '<div class="reminder-list" id="reminder-list">' + remindersHtml + '</div>'
+    + '<button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="showReminderModal()">+ Add Reminder</button></div>';
+
+  // If waiting and no lawyer, show simple "Awaiting" right panel instead
+  if (isWaiting && !hasLawyer) {
+    rightColHtml = '<div class="card" style="text-align:center;padding:32px 24px;">'
+      + '<div style="font-size:40px;margin-bottom:12px;">⚖️</div>'
+      + '<div style="font-size:15px;font-weight:600;color:var(--navy);margin-bottom:8px;">No Lawyer Assigned Yet</div>'
+      + '<div style="font-size:13px;color:var(--text-muted);margin-bottom:20px);">5 proposals are waiting for your review.</div>'
+      + '<button class="btn btn-gold btn-block" onclick="showPage(\'page-proposals\',document.querySelector(\'[onclick*=page-proposals]\'))">View Proposals</button>'
+      + '</div>'
+      + '<div class="card"><div class="card-title">⏰ Reminders</div>'
+      + '<div class="reminder-list">' + remindersHtml + '</div>'
+      + '<button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="showReminderModal()">+ Add Reminder</button></div>';
+  }
+
+  var html = '<div class="page-header header-row" style="margin-bottom:28px;">'
+    + '<div>'
+    + '<div class="page-title">' + c.title + '</div>'
+    + '<div class="page-subtitle" style="display:flex;align-items:center;gap:10px;margin-top:6px;">'
+    + '<span class="badge ' + c.statusClass + '">' + c.statusLabel + '</span>'
+    + '<span style="color:var(--text-muted);">' + c.category + ' · 📍 ' + c.location + '</span>'
+    + '</div></div>'
+    + '<div style="display:flex;gap:10px;">'
+    + '<button class="btn btn-ghost btn-sm" onclick="showPage(\'page-active-cases\',document.querySelector(\'[onclick*=page-active-cases]\'))">← Back to Cases</button>'
+    + (hasLawyer ? '<button class="btn btn-ghost btn-sm" onclick="showReminderModal()">⏰ Add Reminder</button>' : '')
+    + '</div></div>'
+    + waitingBanner
+    + '<div class="case-detail-grid">'
+    + '<div style="display:flex;flex-direction:column;gap:28px;">'
+
+    // Case Overview
+    + '<div class="card"><div class="card-title">📋 Case Overview</div>'
+    + '<div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">' + c.description + '</div>'
+    + '<div class="review-row"><span class="review-key">Case ID</span><span class="review-val">' + c.caseId + '</span></div>'
+    + '<div class="review-row"><span class="review-key">Filed Date</span><span class="review-val">' + c.filedDate + '</span></div>'
+    + (hasLawyer ? '<div class="review-row"><span class="review-key">Assigned Lawyer</span><span class="review-val">' + c.lawyer + '</span></div>' : '<div class="review-row"><span class="review-key">Assigned Lawyer</span><span class="review-val" style="color:var(--warning);">Pending Assignment</span></div>')
+    + (c.nextHearing ? '<div class="review-row"><span class="review-key">Next Hearing</span><span class="review-val">' + c.nextHearing + '</span></div>' : '<div class="review-row"><span class="review-key">Next Hearing</span><span class="review-val" style="color:var(--text-muted);">To be scheduled</span></div>')
+    + '</div>'
+
+    // Progress
+    + '<div class="card"><div class="card-title">📈 Progress Updates</div>'
+    + '<div class="progress-bar-container"><div class="progress-label"><span>Overall Progress</span><span>' + c.progress + '%</span></div>'
+    + '<div class="progress-bar"><div class="progress-fill" style="width:' + c.progress + '%"></div></div></div>'
+    + '<div class="timeline" style="margin-top:20px;">' + timelineHtml + '</div></div>'
+
+    // Docs (only if has docs or ongoing/active)
+    + ((!isWaiting) ? '<div class="card"><div class="card-title">🔒 Secure Document Vault</div>'
+    + '<div class="vault-label"><span class="lock-icon">🔒</span> Documents are encrypted. '
+    + (hasLawyer ? 'Only ' + c.lawyer + ' has authorized access.' : 'Accessible after lawyer is assigned.') + '</div>'
+    + '<div class="doc-grid">' + docsHtml + '</div></div>' : '')
+
+    + '</div>'
+    + '<div style="display:flex;flex-direction:column;gap:28px;">' + rightColHtml + '</div>'
+    + '</div>';
+
+  document.getElementById('case-detail-content').innerHTML = html;
+}
+
+// ─── CHAT PAGE ───────────────────────────────────────────
+var chatData = {
+  1: {
+    avatar: 'PM', name: 'Adv. Priya Mehta', case: 'Property Dispute — 200 sq yd Plot',
+    messages: [
+      { from:'received', text:"Hello! I've reviewed your case documents. We have a strong case. The 1995 deed clearly establishes your ownership.", time:'10:30 AM' },
+      { from:'sent', text:"Thank you! What documents do I need to bring for the next hearing?", time:'10:35 AM' },
+      { from:'received', text:"Please bring the original 1995 deed, any tax receipts from that period, and 2 passport-size photos. I'll handle the rest.", time:'10:40 AM' },
+      { from:'sent', text:"Got it. Will I need to testify?", time:'10:42 AM' },
+      { from:'received', text:"Most likely yes during the witness examination hearing in April. Don't worry — I'll prepare you thoroughly beforehand.", time:'10:45 AM' }
+    ]
+  },
+  2: {
+    avatar: 'RK', name: 'Adv. Rajesh Kumar', case: 'Labour Dispute Case',
+    messages: [
+      { from:'received', text:"I've taken up your labour dispute case. Could you share any written communication from your employer?", time:'Yesterday, 3:10 PM' },
+      { from:'sent', text:"Sure, I'll scan and send the termination letter.", time:'Yesterday, 3:45 PM' },
+      { from:'received', text:"Please also share the employment contract if you have it.", time:'Yesterday, 4:00 PM' }
+    ]
+  },
+  3: {
+    avatar: 'AS', name: 'Adv. Anita Singh', case: 'Consumer Complaint (Closed)',
+    messages: [
+      { from:'received', text:"The consumer forum has ruled in your favour. You'll receive the compensation within 30 days.", time:'Mar 1, 2:00 PM' },
+      { from:'sent', text:"That's great news! Thank you so much for your help.", time:'Mar 1, 2:15 PM' },
+      { from:'received', text:"Case has been successfully closed. ✅ Feel free to reach out if you need anything in future.", time:'Mar 1, 2:20 PM' }
+    ]
+  }
+};
+var activeChat = 1;
+
+function switchChat(id) {
+  activeChat = id;
+  // Update sidebar highlight
+  for (var i = 1; i <= 3; i++) {
+    var el = document.getElementById('convo-' + i);
+    if (!el) continue;
+    if (i === id) {
+      el.style.background = 'rgba(201,168,76,0.07)';
+      el.style.borderLeftColor = 'var(--gold)';
+    } else {
+      el.style.background = '';
+      el.style.borderLeftColor = 'transparent';
+    }
+  }
+  var d = chatData[id];
+  if (!d) return;
+  document.getElementById('chat-hd-avatar').textContent = d.avatar;
+  document.getElementById('chat-hd-name').textContent = d.name;
+  document.getElementById('chat-hd-case').textContent = d.case;
+  var box = document.getElementById('chat-messages-main');
+  box.innerHTML = '<div style="text-align:center;margin-bottom:8px;"><span style="font-size:11px;color:var(--text-muted);background:var(--border);padding:4px 14px;border-radius:100px;">Today</span></div>';
+  for (var j = 0; j < d.messages.length; j++) {
+    var m = d.messages[j];
+    var div = document.createElement('div');
+    div.className = 'chat-msg ' + m.from;
+    div.style.maxWidth = '58%';
+    div.innerHTML = '<div class="chat-bubble">' + m.text + '</div><div class="chat-time">' + m.time + '</div>';
+    box.appendChild(div);
+  }
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendMainChat() {
+  var input = document.getElementById('chat-input-main');
+  var msg = input.value.trim();
+  if (!msg) return;
+  var d = chatData[activeChat];
+  if (!d) return;
+  var time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  d.messages.push({ from:'sent', text: msg, time: time });
+  input.value = '';
+  var box = document.getElementById('chat-messages-main');
+  var div = document.createElement('div');
+  div.className = 'chat-msg sent';
+  div.style.maxWidth = '58%';
+  div.innerHTML = '<div class="chat-bubble">' + msg + '</div><div class="chat-time">' + time + '</div>';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  // Auto-reply
+  setTimeout(function() {
+    var reply = document.createElement('div');
+    reply.className = 'chat-msg received';
+    reply.style.maxWidth = '58%';
+    var rt = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    reply.innerHTML = '<div class="chat-bubble">Thank you for your message. I\'ll review and get back to you shortly.</div><div class="chat-time">' + rt + '</div>';
+    box.appendChild(reply);
+    box.scrollTop = box.scrollHeight;
+  }, 1200);
 }
 
 // ─── TOAST ───────────────────────────────────────────────
