@@ -121,5 +121,27 @@ router.put("/approve/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// ================= GET LAWYER BY ID =================
+router.get("/me/:id", async (req, res) => {
+  try {
+
+    const lawyer = await Lawyer.findById(req.params.id);
+
+    if (!lawyer) {
+      return res.status(404).json({ message: "Lawyer not found" });
+    }
+
+    res.json({
+      id: lawyer._id,
+      firstName: lawyer.firstName,
+      lastName: lawyer.lastName,
+      email: lawyer.email,
+      verificationStatus: lawyer.verificationStatus
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;
