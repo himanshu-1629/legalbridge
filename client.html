@@ -2175,7 +2175,7 @@ async function completeSignup() {
   var pass  = document.getElementById('reg-pass').value;
 
   try {
-    const res = await fetch('http://localhost:3000/client/signup', {
+    const res = await fetch('http://localhost:3000/client/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
