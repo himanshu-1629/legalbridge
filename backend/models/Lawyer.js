@@ -11,12 +11,11 @@ const lawyerSchema = new mongoose.Schema({
   address: String,
   password: String,
 
-  // 🔹 Verification Fields
-verificationStatus: {
-  type: String,
-  enum: ["not_submitted", "submitted", "approved", "rejected"],
-  default: "not_submitted"
-}
+  verificationStatus: {
+    type: String,
+    enum: ["not_submitted", "submitted", "approved", "rejected"],
+    default: "not_submitted"
+  },   // ✅ IMPORTANT COMMA HERE
 
   professionalDetails: {
     barId: String,
@@ -30,7 +29,5 @@ verificationStatus: {
   }
 
 }, { timestamps: true });
-
-module.exports = mongoose.model("Lawyer", lawyerSchema);
 
 module.exports = mongoose.model("Lawyer", lawyerSchema);
