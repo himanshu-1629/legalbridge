@@ -101,5 +101,25 @@ router.post("/verify", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// ================= ADMIN APPROVE =================
+router.put("/approve/:id", async (req, res) => {
+  try {
+
+    const lawyer = await Lawyer.findById(req.params.id);
+
+    if (!lawyer) {
+      return res.status(404).json({ message: "Lawyer not found" });
+    }
+
+    lawyer.verificationStatus = "approved";
+
+    await lawyer.save();
+
+    res.json({ message: "Lawyer approved successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;
