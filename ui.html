@@ -1,1 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JusticeBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+  :root {
+    --gold: #c9a84c;
+    --gold-dim: #8a6a20;
+    --gold-pale: #f0d080;
+    --dark: #07070d;
+    --lawyer-tint: rgba(13,31,76,0.55);
+    --client-tint: rgba(76,18,0,0.55);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--dark);
+    color: #f0ebe0;
+    cursor: default;
+  }
+
+  /* ── NOISE GRAIN ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ══════════════════════════════
+     SPLIT PANELS
+  ══════════════════════════════ */
+  .stage {
+    position: fixed; inset: 0;
+    display: flex;
+  }
+
+  .panel {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 8vh;
+    overflow: hidden;
+    cursor: pointer;
+    transition: flex 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+
+  .panel:hover { flex: 1.35; }
+  .panel:hover ~ .panel,
+  .stage:has(.panel:first-child:hover) .panel:last-child { flex: 0.65; }
+
+  /* Background glow per side */
+  .panel::before {
+    content: '';
+    position: absolute; inset: 0;
+    transition: opacity 0.6s ease;
+    opacity: 0;
+  }
+
+  .panel-lawyer::before {
+    background:
+      radial-gradient(ellipse 60% 70% at 30% 85%, rgba(30,64,160,0.5) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 10% 20%, rgba(10,25,70,0.4) 0%, transparent 60%);
+  }
+
+  .panel-client::before {
+    background:
+      radial-gradient(ellipse 60% 70% at 70% 85%, rgba(160,40,0,0.5) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 50% at 90% 20%, rgba(80,15,0,0.4) 0%, transparent 60%);
+  }
+
+  .panel:hover::before { opacity: 1; }
+
+  /* Vignette edges */
+  .panel-lawyer {
+    background: linear-gradient(105deg, #0a0d1a 0%, #07070d 50%);
+  }
+  .panel-client {
+    background: linear-gradient(255deg, #1a0800 0%, #07070d 50%);
+  }
+
+  /* Horizontal scan lines (retro-legal feel) */
+  .panel::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.06) 3px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── PANEL CONTENT ── */
+  .panel-body {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.5s ease;
+  }
+
+  .panel:hover .panel-body { transform: translateY(-10px); }
+
+  /* Role icon */
+  .role-icon {
+    width: clamp(70px, 9vw, 120px);
+    height: auto;
+    opacity: 0.18;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    filter: brightness(1.5);
+  }
+  .panel:hover .role-icon {
+    opacity: 0.55;
+    transform: scale(1.06) translateY(-4px);
+  }
+
+  .role-label {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.6rem, 2.8vw, 3rem);
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-shadow: 0 0 50px rgba(201,168,76,0.35);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .role-sub {
+    font-size: clamp(0.7rem, 1vw, 0.9rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(240,235,224,0.35);
+    font-style: italic;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.45s 0.07s ease, transform 0.45s 0.07s ease;
+  }
+
+  .panel:hover .role-label,
+  .panel:hover .role-sub {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Enter pill button */
+  .enter-btn {
+    margin-top: 6px;
+    padding: 11px 38px;
+    border: 1px solid rgba(201,168,76,0.5);
+    background: transparent;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.45s 0.13s ease, transform 0.45s 0.13s ease,
+                background 0.3s, color 0.3s, border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enter-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+    z-index: -1;
+  }
+
+  .enter-btn:hover::before { transform: scaleX(1); }
+  .enter-btn:hover { color: var(--dark); border-color: var(--gold); }
+
+  .panel:hover .enter-btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ══════════════════════════════
+     CENTER JUSTICE
+  ══════════════════════════════ */
+  .center-wrap {
+    position: fixed;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    gap: 0;
+  }
+
+  /* Platform wordmark — above the figure */
+  .wordmark {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .wordmark-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.1rem, 2.2vw, 2rem);
+    font-weight: 900;
+    letter-spacing: 0.45em;
+    color: var(--gold);
+    text-shadow: 0 2px 40px rgba(201,168,76,0.25);
+    white-space: nowrap;
+    animation: fadeUp 1.2s 0.3s both;
+  }
+
+  .wordmark-sub {
+    font-size: clamp(0.6rem, 0.9vw, 0.75rem);
+    letter-spacing: 0.5em;
+    color: rgba(240,235,224,0.25);
+    text-transform: uppercase;
+    margin-top: 5px;
+    animation: fadeUp 1.2s 0.5s both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Divider line full height */
+  .divider-line {
+    position: fixed;
+    left: 50%; top: 0; bottom: 0;
+    width: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(201,168,76,0.08) 15%,
+      rgba(201,168,76,0.5) 45%,
+      rgba(201,168,76,0.8) 50%,
+      rgba(201,168,76,0.5) 55%,
+      rgba(201,168,76,0.08) 85%,
+      transparent 100%
+    );
+    z-index: 40;
+    pointer-events: none;
+  }
+
+  /* Animated diamond on divider */
+  .divider-diamond {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px; height: 14px;
+    background: var(--gold);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    z-index: 60;
+    pointer-events: none;
+    animation: diamond-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes diamond-pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    50% { transform: translate(-50%, -50%) scale(0.7); opacity: 0.5; }
+  }
+
+  /* Justice SVG */
+  .justice-figure {
+    width: clamp(160px, 18vw, 260px);
+    height: auto;
+    animation: float 7s ease-in-out infinite;
+    filter: drop-shadow(0 0 24px rgba(201,168,76,0.18));
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-10px); }
+  }
+
+  .scales-arm {
+    transform-origin: 120px 105px;
+    animation: sway 9s ease-in-out infinite;
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(4deg); }
+    50%       { transform: rotate(-4deg); }
+  }
+
+  .pan-left {
+    transform-origin: 42px 140px;
+    animation: pan-l 9s ease-in-out infinite;
+  }
+
+  .pan-right {
+    transform-origin: 198px 130px;
+    animation: pan-r 9s ease-in-out infinite;
+  }
+
+  @keyframes pan-l {
+    0%, 100% { transform: translateY(4px) rotate(2deg); }
+    50%       { transform: translateY(-4px) rotate(-2deg); }
+  }
+  @keyframes pan-r {
+    0%, 100% { transform: translateY(-4px) rotate(-2deg); }
+    50%       { transform: translateY(4px) rotate(2deg); }
+  }
+
+  /* Motto beneath figure */
+  .motto {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.55rem, 0.75vw, 0.68rem);
+    letter-spacing: 0.45em;
+    color: rgba(201,168,76,0.25);
+    text-transform: uppercase;
+    margin-top: 10px;
+    animation: fadeUp 1.4s 0.8s both;
+  }
+
+  /* ── INSTRUCTION HINT ── */
+  .hint {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    color: rgba(240,235,224,0.18);
+    text-transform: uppercase;
+    z-index: 100;
+    white-space: nowrap;
+    animation: blink-hint 4s ease-in-out infinite;
+  }
+
+  @keyframes blink-hint {
+    0%, 60%, 100% { opacity: 1; }
+    80% { opacity: 0.3; }
+  }
+
+  /* ── CLICK RIPPLE ── */
+  .ripple {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    border: 1px solid rgba(201,168,76,0.6);
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple-out 0.6s ease-out forwards;
+    z-index: 999;
+  }
+
+  @keyframes ripple-out {
+    to { transform: translate(-50%, -50%) scale(6); opacity: 0; }
+  }
+
+  /* ── PAGE EXIT ANIMATION ── */
+  .exit-flash {
+    position: fixed; inset: 0;
+    background: var(--gold);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+  }
+  .exit-flash.go { opacity: 1; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .stage { flex-direction: column; }
+    .panel:hover { flex: 1.25; }
+    .divider-line {
+      left: 0; right: 0; top: 50%; bottom: auto;
+      width: auto; height: 1px;
+      background: linear-gradient(to right,
+        transparent 0%, rgba(201,168,76,0.5) 40%,
+        rgba(201,168,76,0.8) 50%,
+        rgba(201,168,76,0.5) 60%, transparent 100%
+      );
+    }
+    .divider-diamond { top: 50%; left: 50%; }
+    .center-wrap { flex-direction: row; top: 50%; gap: 20px; }
+    .wordmark { display: none; }
+    .justice-figure { width: 100px; }
+    .motto { display: none; }
+    .panel { justify-content: center; padding-bottom: 0; padding-top: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Exit flash overlay -->
+<div class="exit-flash" id="exitFlash"></div>
+
+<!-- Thin divider line -->
+<div class="divider-line"></div>
+<div class="divider-diamond"></div>
+
+<!-- Split panels -->
+<div class="stage">
+
+  <!-- LAWYER -->
+  <div class="panel panel-lawyer" id="panelLawyer">
+    <div class="panel-body">
+      <!-- Briefcase / Lawyer icon -->
+      <svg class="role-icon" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="22" r="16" fill="rgba(201,168,76,0.7)"/>
+        <path d="M18 55 Q18 40 50 40 Q82 40 82 55 L84 105 Q84 115 70 115 L30 115 Q16 115 16 105Z" fill="rgba(201,168,76,0.35)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+        <rect x="32" y="36" width="36" height="12" rx="2" fill="rgba(201,168,76,0.5)"/>
+        <rect x="24" y="78" width="52" height="34" rx="3" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+        <rect x="36" y="72" width="28" height="8" rx="2" fill="none" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+        <line x1="50" y1="78" x2="50" y2="112" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+        <line x1="24" y1="95" x2="76" y2="95" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+      </svg>
+
+      <div class="role-label">LAWYER</div>
+      <div class="role-sub">Legal Professionals</div>
+      <button class="enter-btn" onclick="navigate('lawyer')">Enter Portal →</button>
+    </div>
+  </div>
+
+  <!-- CLIENT -->
+  <div class="panel panel-client" id="panelClient">
+    <div class="panel-body">
+      <!-- Person with document icon -->
+      <svg class="role-icon" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="42" cy="22" r="16" fill="rgba(201,168,76,0.7)"/>
+        <path d="M12 58 Q12 42 42 42 Q72 42 72 58 L72 115 L12 115 Z" fill="rgba(201,168,76,0.35)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+        <rect x="34" y="38" width="16" height="8" rx="2" fill="rgba(201,168,76,0.5)"/>
+        <rect x="62" y="55" width="30" height="40" rx="3" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+        <line x1="66" y1="64" x2="88" y2="64" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+        <line x1="66" y1="71" x2="88" y2="71" stroke="rgba(201,168,76,0.4)" stroke-width="1.2"/>
+        <line x1="66" y1="78" x2="82" y2="78" stroke="rgba(201,168,76,0.3)" stroke-width="1.2"/>
+        <line x1="66" y1="85" x2="80" y2="85" stroke="rgba(201,168,76,0.2)" stroke-width="1.2"/>
+      </svg>
+
+      <div class="role-label">CLIENT</div>
+      <div class="role-sub">Seeking Justice</div>
+      <button class="enter-btn" onclick="navigate('client')">Enter Portal →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CENTER: Justice figure + title -->
+<div class="center-wrap">
+  <div class="wordmark">
+    <div class="wordmark-title">JUSTICE BRIDGE</div>
+    <div class="wordmark-sub">Connecting Law · Empowering Justice</div>
+  </div>
+
+  <svg class="justice-figure" viewBox="0 0 240 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="aura" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Ambient aura -->
+    <ellipse cx="120" cy="175" rx="85" ry="155" fill="url(#aura)"/>
+
+    <!-- ─ SCALES ─ -->
+    <g class="scales-arm">
+      <!-- Horizontal beam -->
+      <line x1="35" y1="105" x2="205" y2="105" stroke="#c9a84c" stroke-width="2.2" opacity="0.85"/>
+      <!-- Vertical post -->
+      <line x1="120" y1="105" x2="120" y2="48" stroke="#c9a84c" stroke-width="2.2" opacity="0.85"/>
+      <!-- Top ornament -->
+      <polygon points="120,40 127,54 113,54" fill="#c9a84c" opacity="0.9"/>
+      <!-- Center pivot circle -->
+      <circle cx="120" cy="105" r="5" fill="#c9a84c" opacity="0.7"/>
+    </g>
+
+    <!-- Left pan group -->
+    <g class="pan-left">
+      <line x1="42" y1="105" x2="42" y2="148" stroke="#c9a84c" stroke-width="1.4" opacity="0.65"/>
+      <ellipse cx="42" cy="152" rx="24" ry="5.5" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity="0.8"/>
+      <path d="M18 152 Q42 166 66 152" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="0.8"/>
+    </g>
+
+    <!-- Right pan group -->
+    <g class="pan-right">
+      <line x1="198" y1="105" x2="198" y2="134" stroke="#c9a84c" stroke-width="1.4" opacity="0.65"/>
+      <ellipse cx="198" cy="138" rx="24" ry="5.5" fill="none" stroke="#c9a84c" stroke-width="1.4" opacity="0.8"/>
+      <path d="M174 138 Q198 152 222 138" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="0.8"/>
+    </g>
+
+    <!-- ─ FIGURE ─ -->
+
+    <!-- Robe body -->
+    <path d="M80 200 Q62 228 58 310 Q80 328 120 328 Q160 328 182 310 Q178 228 160 200 Z"
+          fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.25)" stroke-width="1.4"/>
+    <!-- Robe folds -->
+    <line x1="93" y1="215" x2="90" y2="320" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+    <line x1="120" y1="210" x2="120" y2="325" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+    <line x1="147" y1="215" x2="150" y2="320" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+
+    <!-- Torso -->
+    <path d="M86 170 Q84 192 80 200 L160 200 Q156 192 154 170 Z"
+          fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+
+    <!-- Neck -->
+    <rect x="112" y="158" width="16" height="16" rx="4" fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.3)" stroke-width="0.8"/>
+
+    <!-- Head -->
+    <ellipse cx="120" cy="143" rx="25" ry="27" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.4)" stroke-width="1.4"/>
+
+    <!-- Crown / wreath -->
+    <path d="M98 133 Q104 120 111 128 Q116 115 120 124 Q124 115 129 128 Q136 120 142 133"
+          fill="none" stroke="rgba(201,168,76,0.55)" stroke-width="1.4"/>
+
+    <!-- Blindfold -->
+    <rect x="96" y="135" width="48" height="12" rx="5" fill="rgba(201,168,76,0.22)" stroke="rgba(201,168,76,0.65)" stroke-width="1.2"/>
+    <line x1="96"  y1="141" x2="88"  y2="141" stroke="rgba(201,168,76,0.45)" stroke-width="1.4"/>
+    <line x1="144" y1="141" x2="152" y2="141" stroke="rgba(201,168,76,0.45)" stroke-width="1.4"/>
+
+    <!-- Left arm (holding scales chain) -->
+    <path d="M86 182 Q66 172 42 155" stroke="rgba(201,168,76,0.35)" stroke-width="8" stroke-linecap="round" fill="none"/>
+
+    <!-- Right arm (sword) -->
+    <path d="M154 185 Q168 195 175 240" stroke="rgba(201,168,76,0.35)" stroke-width="8" stroke-linecap="round" fill="none"/>
+    <!-- Sword blade -->
+    <line x1="174" y1="238" x2="185" y2="295" stroke="rgba(201,168,76,0.7)" stroke-width="2"/>
+    <polygon points="185,296 178,283 192,283" fill="rgba(201,168,76,0.6)"/>
+    <!-- Crossguard -->
+    <rect x="169" y="236" width="14" height="4" rx="1" fill="rgba(201,168,76,0.55)"/>
+  </svg>
+
+  <div class="motto">Fiat Justitia Ruat Caelum</div>
+</div>
+
+<!-- Bottom hint -->
+<div class="hint">Select your role to enter the platform</div>
+
+<script>
+  // Navigate with flash + ripple effect
+  function navigate(role) {
+    // The URLs your team will provide for each dashboard
+    const urls = {
+      lawyer: './lawyer-dashboard.html',   // ← replace with actual URL
+      client: './client-dashboard.html'    // ← replace with actual URL
+    };
+
+    // Flash transition
+    const flash = document.getElementById('exitFlash');
+    flash.style.background = role === 'lawyer'
+      ? 'rgba(13,31,76,0.95)'
+      : 'rgba(76,18,0,0.95)';
+    flash.classList.add('go');
+
+    setTimeout(() => {
+      window.location.href = urls[role];
+    }, 380);
+  }
+
+  // Ripple on panel click
+  document.querySelectorAll('.panel').forEach(panel => {
+    panel.addEventListener('click', e => {
+      const r = document.createElement('div');
+      r.className = 'ripple';
+      r.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:60px;height:60px;`;
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 650);
+    });
+  });
+</script>
+</body>
+</html>
