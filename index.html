@@ -68,7 +68,7 @@
     opacity: 0;
   }
 
-  .panel-lawyer::before {
+  .panel-::before {
     background:
       radial-gradient(ellipse 60% 70% at 30% 85%, rgba(30,64,160,0.5) 0%, transparent 70%),
       radial-gradient(ellipse 40% 50% at 10% 20%, rgba(10,25,70,0.4) 0%, transparent 60%);
@@ -554,9 +554,9 @@
   function navigate(role) {
     // The URLs your team will provide for each dashboard
     const urls = {
-      lawyer: './lawyer-dashboard.html',   // ← replace with actual URL
-      client: './client-dashboard.html'    // ← replace with actual URL
-    };
+  lawyer: './lawyer.html',
+  client: './client.html'
+};
 
     // Flash transition
     const flash = document.getElementById('exitFlash');
