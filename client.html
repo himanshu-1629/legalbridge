@@ -631,6 +631,29 @@
   .empty-title { font-size:18px; font-weight:700; color:var(--navy); margin-bottom:8px; }
   .empty-desc { font-size:14px; color:var(--text-muted); }
 
+  /* ─── BACK BUTTON ─── */
+  #back-btn {
+    display:none;
+    align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:rgba(255,255,255,0.75);
+    font-size:16px;
+    width:30px; height:30px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-family:inherit;
+    flex-shrink:0;
+    margin-right:10px;
+  }
+  #back-btn:hover {
+    background:rgba(201,168,76,0.2);
+    border-color:rgba(201,168,76,0.4);
+    color:var(--gold-light);
+    transform:translateX(-2px);
+  }
+
   /* scrollbar */
   ::-webkit-scrollbar { width:6px; }
   ::-webkit-scrollbar-track { background:transparent; }
@@ -667,6 +690,7 @@
 </head>
 <body>
 
+<!-- ████████████████████████████████████████ BACK BUTTON ██ -->
 <!-- ████████████████████████████████████████ WELCOME ██ -->
 <div id="screen-welcome" class="screen active">
   <div class="welcome-grid"></div>
@@ -769,7 +793,7 @@
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo">Legal<span>Bridge</span></div>
+    <div class="sidebar-logo" style="display:flex;align-items:center;"><button id="back-btn" onclick="goBack()" title="Go back">←</button>Legal<span>Bridge</span></div>
     <div class="sidebar-user" id="sidebar-user-btn" onclick="openProfileFromSidebar()" title="View Account Details">
       <div class="user-avatar" id="sidebar-avatar">RS</div>
       <div class="user-info">
@@ -1772,14 +1796,87 @@ var myCases = [
   }
 ];
 
+// ─── NAVIGATION HISTORY ──────────────────────────────────
+var navHistory = []; // stack of { type:'screen'|'page', id, navEl, label }
+
+var screenLabels = {
+  'screen-welcome': 'Home',
+  'screen-signup':  'Sign Up',
+  'screen-login':   'Sign In',
+  'screen-app':     'Dashboard'
+};
+
+var pageLabels = {
+  'page-dashboard':    'Dashboard',
+  'page-post-case':    'Post New Case',
+  'page-active-cases': 'My Cases',
+  'page-proposals':    'Find a Lawyer',
+  'page-history':      'Case History',
+  'page-notifications':'Notifications',
+  'page-profile':      'Profile',
+  'page-case-detail':  'Case Detail',
+  'page-lawyer-profile':'Lawyer Profile'
+};
+
+function _getCurrentState() {
+  var activeScreen = document.querySelector('.screen.active');
+  var screenId = activeScreen ? activeScreen.id : null;
+  if (screenId === 'screen-app') {
+    var activePage = document.querySelector('.page.active');
+    var pageId = activePage ? activePage.id : null;
+    return { type:'page', id:pageId };
+  }
+  return { type:'screen', id:screenId };
+}
+
+function updateBackButton() {
+  var btn = document.getElementById('back-btn');
+  if (!btn) return;
+
+  // Always hide on welcome screen or when no history
+  var activeScreen = document.querySelector('.screen.active');
+  var onWelcome = activeScreen && activeScreen.id === 'screen-welcome';
+
+  var activePage = document.querySelector('.page.active');
+  var onDashboard = activePage && activePage.id === 'page-dashboard';
+
+  if (navHistory.length === 0 || onWelcome || onDashboard) {
+    btn.style.display = 'none';
+    return;
+  }
+
+  btn.style.display = 'inline-flex';
+}
+
+function goBack() {
+  if (navHistory.length === 0) return;
+  var prev = navHistory.pop();
+  if (prev.type === 'screen') {
+    _doShowScreen(prev.id);
+  } else {
+    _doShowPage(prev.id, prev.navEl);
+  }
+  updateBackButton();
+}
+
 // ─── SCREEN NAV ──────────────────────────────────────────
-function showScreen(id) {
+function _doShowScreen(id) {
   var screens = document.querySelectorAll('.screen');
   for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
   document.getElementById(id).classList.add('active');
 }
 
-function showPage(id, navEl) {
+function showScreen(id) {
+  var current = _getCurrentState();
+  // Don't push if navigating to same place
+  if (!(current.type === 'screen' && current.id === id)) {
+    navHistory.push(current);
+  }
+  _doShowScreen(id);
+  updateBackButton();
+}
+
+function _doShowPage(id, navEl) {
   var pages = document.querySelectorAll('.page');
   for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
   document.getElementById(id).classList.add('active');
@@ -1791,6 +1888,16 @@ function showPage(id, navEl) {
   // Re-render dynamic pages on every navigation
   if (id === 'page-active-cases') renderMyCases();
   if (id === 'page-proposals') { switchLawyerTab('search'); }
+}
+
+function showPage(id, navEl) {
+  var current = _getCurrentState();
+  // Don't push duplicate
+  if (!(current.type === 'page' && current.id === id)) {
+    navHistory.push(current);
+  }
+  _doShowPage(id, navEl);
+  updateBackButton();
 }
 
 // ─── GREETING ────────────────────────────────────────────
@@ -1987,6 +2094,7 @@ function confirmLogout() {
       if (el) el.value = '';
     }
     signupNext(1);
+    navHistory = []; // clear history on logout
     showScreen('screen-welcome');
     showToast('You have been logged out. See you soon!');
   }, 900);
@@ -2861,6 +2969,7 @@ window.onload = function() {
   renderSearchGrid(allLawyers);
   renderMyCases();
   updateDashboardStats();
+  updateBackButton();
 };
 </script>
 </body>
