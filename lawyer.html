@@ -218,8 +218,8 @@ body{background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;ov
         <div id="f-in">
           <div class="fg" id="fg-si-email">
             <label>Gmail Address</label>
-            <input type="text" id="si-id" placeholder="yourname@gmail.com" autocomplete="off" oninput="clearSignInErr()">
-            <div class="field-err" id="si-email-err" style="display:none;">⚠️ Please enter a valid Gmail address (e.g. name@gmail.com)</div>
+            <input type="text" id="si-id" placeholder="yourname@gmail.com" autocomplete="off">
+            <div class="field-err" id="si-email-err" style="display:none;">⚠️ Please enter a valid Gmail address (e.g. <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c6a8a7aba386a1aba7afaae8a5a9ab">[email&#160;protected]</a>)</div>
           </div>
           <div class="fg"><label>Password</label><input type="password" id="si-pw" placeholder="Enter your password" autocomplete="new-password"></div>
           <div style="text-align:right;margin-bottom:14px;"><span style="font-size:0.76rem;color:var(--gold);cursor:pointer;">Forgot password?</span></div>
@@ -235,8 +235,8 @@ body{background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;ov
           <!-- EMAIL FIELD WITH VALIDATION -->
           <div class="fg" id="fg-email">
             <label>Gmail Address</label>
-            <input type="email" id="up-em" placeholder="yourname@gmail.com" oninput="clearEmailErr()">
-            <div class="field-err" id="email-err" style="display:none;">⚠️ Please enter a valid Gmail address (e.g. name@gmail.com)</div>
+            <input type="email" id="up-em" placeholder="yourname@gmail.com" autocomplete="off">
+            <div class="field-err" id="email-err" style="display:none;">⚠️ Please enter a valid Gmail address (e.g. <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7c9c6cac2e7c0cac6cecb89c4c8ca">[email&#160;protected]</a>)</div>
           </div>
           <div class="fg fg-ph">
             <label>Phone Number</label>
@@ -401,9 +401,183 @@ body{background:var(--bg);color:var(--cream);font-family:'DM Sans',sans-serif;ov
   </main>
 </div>
 
-<script>
+<!-- ─── CASE DETAIL MODAL ─── -->
+<div id="case-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);overflow-y:auto;padding:24px 16px;" onclick="if(event.target===this)closeCase()">
+  <div style="max-width:820px;margin:0 auto;background:var(--bg3);border:1px solid var(--goldborder);border-radius:20px;overflow:hidden;position:relative;">
+    <!-- Modal header -->
+    <div style="background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.02));border-bottom:1px solid var(--goldborder);padding:22px 26px;display:flex;align-items:flex-start;gap:14px;">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span id="cm-badge" style="font-size:0.65rem;letter-spacing:0.09em;text-transform:uppercase;padding:4px 10px;border-radius:8px;font-weight:600;background:var(--goldfaint);color:var(--gold);">Property</span>
+          <span id="cm-status-dot" style="display:inline-flex;align-items:center;gap:5px;font-size:0.7rem;color:var(--green);"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 6px var(--green);"></span>Active</span>
+        </div>
+        <h2 id="cm-title" style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--cream);margin-bottom:6px;line-height:1.3;"></h2>
+        <div id="cm-meta" style="font-size:0.78rem;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;"></div>
+      </div>
+      <button onclick="closeCase()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--muted);width:34px;height:34px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0;transition:all 0.18s;" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">✕</button>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--goldborder);background:var(--bg2);padding:0 26px;">
+      <button class="cm-tab on" onclick="cmTab(this,'cm-overview')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid var(--gold);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;font-weight:500;">📋 Overview</button>
+      <button class="cm-tab" onclick="cmTab(this,'cm-timeline')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;">📅 Timeline</button>
+      <button class="cm-tab" onclick="cmTab(this,'cm-docs')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;">📄 Documents</button>
+      <button class="cm-tab" onclick="cmTab(this,'cm-notes')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;">📝 Notes</button>
+    </div>
+
+    <!-- Tab content -->
+    <div style="padding:24px 26px;">
+
+      <!-- OVERVIEW TAB -->
+      <div id="cm-overview">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+          <div style="background:var(--bg4);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:14px 16px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(212,168,67,0.5);margin-bottom:10px;">Case Info</div>
+            <div id="cm-info-rows"></div>
+          </div>
+          <div style="background:var(--bg4);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:14px 16px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(212,168,67,0.5);margin-bottom:10px;">Client Details</div>
+            <div id="cm-client-rows"></div>
+          </div>
+        </div>
+        <div style="background:var(--bg4);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:16px;margin-bottom:14px;">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(212,168,67,0.5);margin-bottom:10px;">Case Summary</div>
+          <p id="cm-summary" style="font-size:0.83rem;color:var(--muted);line-height:1.65;"></p>
+        </div>
+        <div style="background:var(--bg4);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(212,168,67,0.5);">Case Progress</div>
+            <div id="cm-prog-pct" style="font-size:0.78rem;color:var(--gold);font-weight:600;"></div>
+          </div>
+          <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+            <div id="cm-prog-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold3),var(--gold));transition:width 0.8s ease;"></div>
+          </div>
+          <div id="cm-milestones" style="display:flex;justify-content:space-between;margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- TIMELINE TAB -->
+      <div id="cm-timeline" style="display:none;">
+        <div id="cm-timeline-list" style="position:relative;padding-left:24px;">
+          <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),rgba(212,168,67,0.1));border-radius:2px;"></div>
+        </div>
+      </div>
+
+      <!-- DOCUMENTS TAB -->
+      <div id="cm-docs" style="display:none;">
+        <div id="cm-docs-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+      <!-- NOTES TAB -->
+      <div id="cm-notes" style="display:none;">
+        <div id="cm-notes-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;"></div>
+        <div style="background:var(--bg4);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px;">
+          <textarea placeholder="Add a new note..." style="width:100%;background:transparent;border:none;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.82rem;resize:none;outline:none;min-height:60px;line-height:1.5;" id="cm-note-input"></textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+            <button onclick="addNote()" style="padding:7px 18px;background:var(--gold);border:none;border-radius:8px;color:var(--bg);font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;cursor:pointer;letter-spacing:0.08em;">+ ADD NOTE</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const LAWYER={fn:'',ln:'',email:'',phone:'',bar:'BAR/2008/DL/4521',exp:18,spec:'Property Law',courts:'Delhi HC, Supreme Court of India',qual:'LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008',bio:'Senior advocate with 18 years of experience specialising in property and civil litigation. Appeared in 400+ cases across Delhi HC and Supreme Court of India. Known for thorough preparation and a client-focused approach.',fee:8000,lang:'English, Hindi',ach:'Featured in Legal500 India 2024. Best Property Law Advocate – Delhi Bar Association 2022.',total:127,won:119,settled:5,lost:3,sr:94,firm:'',chips:['Property Disputes','Land Acquisition','Civil Litigation','Contract Disputes','Injunctions']};
-const ACTIVE_CASES=[{id:'LX-2026-0147',type:'tp',badge:'Property',title:'Land Ownership Dispute – Plot 47B, Noida',client:'Arjun Kumar',court:'Delhi HC',hearing:'Mar 8',prog:40,status:'on'},{id:'LX-2026-0152',type:'to',badge:'Corporate',title:'Contract Breach – TechCorp vs StartupXY Ltd.',client:'TechCorp Legal',court:'Delhi HC',hearing:'Mar 20',prog:65,status:'on'},{id:'LX-2026-0158',type:'tc',badge:'Civil',title:'Consumer Complaint – Medical Negligence Claim',client:'Priya Sharma',court:'Delhi Consumer Forum',hearing:'Mar 15',prog:25,status:'on'},{id:'LX-2026-0163',type:'td',badge:'Divorce',title:'Mutual Consent Divorce – Gupta vs Gupta',client:'Neha & Ravi Gupta',court:'Delhi Family Court',hearing:'Mar 25',prog:80,status:'on'},{id:'LX-2026-0170',type:'tp',badge:'Property',title:'Property Registration Fraud – Gurgaon Sector 14',client:'Vikram Singh',court:'Punjab & Haryana HC',hearing:'Apr 2',prog:10,status:'pend'}];
+const ACTIVE_CASES=[
+  {id:'LX-2026-0147',type:'tp',badge:'Property',title:'Land Ownership Dispute – Plot 47B, Noida',client:'Arjun Kumar',clientPhone:'+91 98110 34521',clientEmail:'arjun.kumar@gmail.com',court:'Delhi HC',hearing:'Mar 8, 2026',hearingRoom:'Court Room 4, 10:30 AM',prog:40,status:'on',filedDate:'Jan 14, 2026',retainer:'₹1,20,000',summary:'Client Arjun Kumar claims ownership of Plot 47B in Sector 12, Noida based on a registered sale deed from 2019. The opposing party, a builder consortium, disputes the title citing a prior development agreement. The matter involves examination of mutation records, registry entries, and possession history. An interim injunction restraining construction has already been obtained in the first hearing.',milestones:[{label:'Filed',done:true},{label:'Injunction',done:true},{label:'Evidence',done:false},{label:'Arguments',done:false},{label:'Judgment',done:false}],
+    timeline:[
+      {date:'Jan 14, 2026',event:'Case filed at Delhi HC. Caveat entered on behalf of client.',type:'filed'},
+      {date:'Jan 28, 2026',event:'First hearing. Interim injunction granted restraining construction on Plot 47B.',type:'hearing'},
+      {date:'Feb 10, 2026',event:'Opposing counsel filed written statement and vakalatnama.',type:'update'},
+      {date:'Feb 22, 2026',event:'Documents submitted: original sale deed, mutation certificate, possession letter.',type:'docs'},
+      {date:'Mar 8, 2026',event:'Next hearing scheduled. Evidence recording expected to begin.',type:'upcoming'},
+    ],
+    docs:[
+      {name:'Sale_Deed_Plot47B_2019.pdf',size:'2.1 MB',date:'Jan 14, 2026',type:'📜'},
+      {name:'Mutation_Certificate_Noida.pdf',size:'0.8 MB',date:'Feb 22, 2026',type:'📄'},
+      {name:'Interim_Injunction_Order.pdf',size:'1.2 MB',date:'Jan 28, 2026',type:'⚖️'},
+      {name:'Possession_Letter_Client.pdf',size:'0.5 MB',date:'Feb 22, 2026',type:'📋'},
+    ],
+    notes:[
+      {author:'Adv. Mehta',date:'Feb 10, 2026',text:'Opposing party claims a development agreement pre-dates our sale deed. Need to verify registration date at sub-registrar office. Check if the agreement was registered or just notarised.'},
+      {author:'Adv. Mehta',date:'Feb 20, 2026',text:'Arjun confirmed he has been in physical possession since 2020. Neighbour testimonies available. Schedule site visit before next hearing.'},
+    ]
+  },
+  {id:'LX-2026-0152',type:'to',badge:'Corporate',title:'Contract Breach – TechCorp vs StartupXY Ltd.',client:'TechCorp Legal',clientPhone:'+91 11 4567 8900',clientEmail:'legal@techcorp.in',court:'Delhi HC',hearing:'Mar 20, 2026',hearingRoom:'Court Room 7, 11:00 AM',prog:65,status:'on',filedDate:'Dec 5, 2025',retainer:'₹3,50,000',summary:'TechCorp engaged StartupXY for a SaaS product development contract worth ₹2.4 Cr with a 9-month delivery timeline. StartupXY failed to deliver the agreed milestones and ceased communication after receiving 60% advance payment. TechCorp seeks recovery of ₹1.44 Cr paid and consequential damages of ₹80 Lakhs for business losses caused by the delay.',milestones:[{label:'Filed',done:true},{label:'Notice',done:true},{label:'Written Stmt',done:true},{label:'Arguments',done:false},{label:'Decree',done:false}],
+    timeline:[
+      {date:'Nov 18, 2025',event:'Legal notice sent to StartupXY demanding delivery or refund within 15 days.',type:'update'},
+      {date:'Dec 5, 2025',event:'Suit filed at Delhi HC. Summons issued to defendant.',type:'filed'},
+      {date:'Dec 22, 2025',event:'StartupXY appeared through counsel. Written statement filed.',type:'hearing'},
+      {date:'Jan 15, 2026',event:'Plaintiff\'s replication filed. Counterclaim of ₹40L raised by defendant.',type:'docs'},
+      {date:'Feb 8, 2026',event:'Issues framed by the court. Case set for evidence stage.',type:'hearing'},
+      {date:'Mar 20, 2026',event:'Next hearing. Evidence recording from TechCorp side expected.',type:'upcoming'},
+    ],
+    docs:[
+      {name:'Development_Contract_TechCorp.pdf',size:'3.8 MB',date:'Dec 5, 2025',type:'📜'},
+      {name:'Payment_Receipts_60pct.pdf',size:'1.1 MB',date:'Dec 5, 2025',type:'💰'},
+      {name:'Legal_Notice_Nov2025.pdf',size:'0.4 MB',date:'Nov 18, 2025',type:'📋'},
+      {name:'Defendant_Written_Statement.pdf',size:'2.3 MB',date:'Dec 22, 2025',type:'⚖️'},
+      {name:'Counter_Claim_TechCorp.pdf',size:'3.4 MB',date:'Jan 15, 2026',type:'📄'},
+    ],
+    notes:[
+      {author:'Adv. Mehta',date:'Jan 16, 2026',text:'Counterclaim of ₹40L is frivolous — they claim IP ownership over the incomplete code. Need expert witness to testify that deliverables were not met per the technical specification document.'},
+      {author:'Adv. Mehta',date:'Feb 9, 2026',text:'Issues framed include: (1) Was there a breach? (2) Quantum of damages. (3) Validity of counterclaim. We are strong on issues 1 and 3. Issue 2 will need financial expert.'},
+    ]
+  },
+  {id:'LX-2026-0158',type:'tc',badge:'Civil',title:'Consumer Complaint – Medical Negligence Claim',client:'Priya Sharma',clientPhone:'+91 97310 88421',clientEmail:'priya.sharma@gmail.com',court:'Delhi Consumer Forum',hearing:'Mar 15, 2026',hearingRoom:'District Consumer Forum, 2:00 PM',prog:25,status:'on',filedDate:'Feb 1, 2026',retainer:'₹45,000',summary:'Priya Sharma underwent a routine laparoscopic surgery at a private hospital in South Delhi. Post-surgery complications led to a secondary emergency procedure. Medical records indicate the initial surgery was conducted without adequate pre-op testing. The complaint seeks compensation of ₹18 Lakhs for medical expenses, pain and suffering, and loss of livelihood during recovery.',milestones:[{label:'Filed',done:true},{label:'Notice',done:true},{label:'Hospital Reply',done:false},{label:'Expert Report',done:false},{label:'Order',done:false}],
+    timeline:[
+      {date:'Feb 1, 2026',event:'Consumer complaint filed against hospital and operating surgeon.',type:'filed'},
+      {date:'Feb 8, 2026',event:'Forum admitted complaint and issued notice to respondents.',type:'hearing'},
+      {date:'Feb 28, 2026',event:'Hospital acknowledged notice. Requested 30-day extension for reply.',type:'update'},
+      {date:'Mar 15, 2026',event:'Next date. Hospital reply expected. If not filed, ex-parte proceedings.',type:'upcoming'},
+    ],
+    docs:[
+      {name:'Medical_Records_Priya.pdf',size:'4.2 MB',date:'Feb 1, 2026',type:'🏥'},
+      {name:'Hospital_Bills_Total.pdf',size:'1.8 MB',date:'Feb 1, 2026',type:'💰'},
+      {name:'Doctor_Prescription_Chain.pdf',size:'0.9 MB',date:'Feb 1, 2026',type:'📋'},
+      {name:'Consumer_Complaint_Draft.pdf',size:'1.1 MB',date:'Feb 1, 2026',type:'📜'},
+    ],
+    notes:[
+      {author:'Adv. Mehta',date:'Feb 5, 2026',text:'Need AIIMS expert opinion to establish standard of care breach. Pre-op ECG and blood reports were not done for a 58-year-old diabetic patient — this is a clear protocol violation.'},
+    ]
+  },
+  {id:'LX-2026-0163',type:'td',badge:'Divorce',title:'Mutual Consent Divorce – Gupta vs Gupta',client:'Neha & Ravi Gupta',clientPhone:'+91 98200 11543',clientEmail:'neha.gupta@gmail.com',court:'Delhi Family Court',hearing:'Mar 25, 2026',hearingRoom:'Family Court Room 2, 11:30 AM',prog:80,status:'on',filedDate:'Nov 10, 2025',retainer:'₹60,000',summary:'Both parties have mutually agreed to dissolve their 9-year marriage under Section 13B of the Hindu Marriage Act. Key terms include: custody of minor daughter (age 7) with wife, visitation rights for husband on alternate weekends, one-time alimony settlement of ₹25 Lakhs, and transfer of jointly-held Dwarka flat to wife. First motion was recorded in January 2026.',milestones:[{label:'Filed',done:true},{label:'1st Motion',done:true},{label:'Cooling Period',done:true},{label:'2nd Motion',done:false},{label:'Decree',done:false}],
+    timeline:[
+      {date:'Nov 10, 2025',event:'Petition filed jointly under Section 13B HMA. Both parties present.',type:'filed'},
+      {date:'Jan 7, 2026',event:'First motion recorded. Court noted consent of both parties. 6-month cooling period waived on application.',type:'hearing'},
+      {date:'Feb 3, 2026',event:'Settlement deed executed before notary — custody, alimony, and property terms finalised.',type:'docs'},
+      {date:'Mar 25, 2026',event:'Second motion hearing scheduled. Decree expected on this date.',type:'upcoming'},
+    ],
+    docs:[
+      {name:'Divorce_Petition_13B.pdf',size:'1.3 MB',date:'Nov 10, 2025',type:'📜'},
+      {name:'Settlement_Deed_Notarised.pdf',size:'2.0 MB',date:'Feb 3, 2026',type:'⚖️'},
+      {name:'Custody_Agreement_Signed.pdf',size:'0.7 MB',date:'Feb 3, 2026',type:'👶'},
+      {name:'Property_Transfer_Draft.pdf',size:'1.5 MB',date:'Feb 3, 2026',type:'🏠'},
+    ],
+    notes:[
+      {author:'Adv. Mehta',date:'Feb 4, 2026',text:'All terms finalised and signed. Property transfer will require separate stamp duty payment — client Neha informed. Second motion should be straightforward, decree expected same day.'},
+    ]
+  },
+  {id:'LX-2026-0170',type:'tp',badge:'Property',title:'Property Registration Fraud – Gurgaon Sector 14',client:'Vikram Singh',clientPhone:'+91 99101 77832',clientEmail:'vikram.singh@gmail.com',court:'Punjab & Haryana HC',hearing:'Apr 2, 2026',hearingRoom:'Court Room 12, 10:00 AM',prog:10,status:'pend',filedDate:'Feb 20, 2026',retainer:'₹95,000',summary:'Vikram Singh discovered that his ancestral property in Gurgaon Sector 14 was fraudulently transferred to a third party using a forged power of attorney in his name. The registry was done in December 2025. An FIR has been filed with Gurgaon Cyber Crime Cell. The civil writ before Punjab & Haryana HC seeks cancellation of the fraudulent registry and restoration of title.',milestones:[{label:'FIR Filed',done:true},{label:'HC Petition',done:false},{label:'Stay Order',done:false},{label:'Trial',done:false},{label:'Judgment',done:false}],
+    timeline:[
+      {date:'Jan 28, 2026',event:'Client approached. FIR filed at Gurgaon Cyber Crime PS under IPC 420, 467, 468.',type:'filed'},
+      {date:'Feb 10, 2026',event:'Forensic handwriting report confirms signature on PoA is forged.',type:'docs'},
+      {date:'Feb 20, 2026',event:'Writ petition filed at Punjab & Haryana HC seeking cancellation of sale deed.',type:'filed'},
+      {date:'Apr 2, 2026',event:'First hearing. Application for stay on third-party transfer to be argued.',type:'upcoming'},
+    ],
+    docs:[
+      {name:'FIR_Gurgaon_CyberCrime.pdf',size:'0.6 MB',date:'Jan 28, 2026',type:'🚔'},
+      {name:'Original_Title_Deed_Vikram.pdf',size:'1.9 MB',date:'Feb 20, 2026',type:'📜'},
+      {name:'Forged_PoA_Copy.pdf',size:'1.1 MB',date:'Feb 20, 2026',type:'⚠️'},
+      {name:'Handwriting_Expert_Report.pdf',size:'2.4 MB',date:'Feb 10, 2026',type:'🔬'},
+    ],
+    notes:[
+      {author:'Adv. Mehta',date:'Feb 21, 2026',text:'Forged PoA was registered at Gurgaon SRO — need to file complaint with Inspector General of Registration as well. The third party claims to be a bona fide purchaser. We need to establish they had constructive notice. Check newspaper mutation notices for the area.'},
+    ]
+  },
+];
 const REQUESTS=[{id:'REQ-01',type:'tk',badge:'Criminal',title:'Anticipatory Bail Application – False FIR Filed',client:'Anish Verma',court:'Delhi Sessions Court',urg:'high',docs:3,desc:'Client has been falsely accused by a business partner. FIR filed under IPC 420 & 406. Anticipatory bail required urgently.'},{id:'REQ-02',type:'tp',badge:'Property',title:'Property Partition Dispute – 3 Siblings',client:'Kapoor Family',court:'Hyderabad HC',urg:'medium',docs:4,desc:'Father passed away intestate. ₹2.2Cr property in Hyderabad. One sibling refusing to participate in partition.'},{id:'REQ-03',type:'tc',badge:'Civil',title:'Wrongful Termination Without Notice – IT Sector',client:'Meena Iyer',court:'Bangalore Labour Court',urg:'low',docs:2,desc:'Client was terminated without the 30-day notice period as per appointment letter. All documents available.'}];
 const HISTORY=[{type:'tp',badge:'Property',title:'Inheritance Dispute – Kapoor Family Estate',client:'Kapoor Estate',out:'Won',date:'Dec 2025'},{type:'to',badge:'Corporate',title:'IPO Legal Documentation – StartupABC',client:'StartupABC',out:'Completed',date:'Nov 2025'},{type:'tc',badge:'Civil',title:'Defamation Case – Media Publication Co.',client:'Rakesh Jain',out:'Settlement',date:'Oct 2025'},{type:'tp',badge:'Property',title:'Land Acquisition Compensation Appeal',client:'Gram Panchayat, UP',out:'Won',date:'Sep 2025'},{type:'tk',badge:'Criminal',title:'Bail Application – Business Fraud Accusation',client:'Confidential',out:'Won',date:'Aug 2025'}];
 const EARNINGS=[{case:'Land Ownership – Arjun Kumar',date:'Mar 01, 2026',amt:'₹25,000',paid:true},{case:'TechCorp Contract Dispute',date:'Feb 22, 2026',amt:'₹80,000',paid:true},{case:'Mutual Consent Divorce – Gupta',date:'Feb 15, 2026',amt:'₹35,000',paid:true},{case:'Medical Negligence – Sharma',date:'Feb 05, 2026',amt:'₹20,000',paid:true},{case:'Property Fraud – Vikram Singh',date:'Apr 01, 2026',amt:'₹40,000',paid:false}];
@@ -503,7 +677,121 @@ function initDash(){
 }
 function renderBarChart(){const data=[{label:'Property',n:52,g:'linear-gradient(90deg,#8a6520,#f0c96a)'},{label:'Civil',n:38,g:'linear-gradient(90deg,#1e40af,#60a5fa)'},{label:'Criminal',n:18,g:'linear-gradient(90deg,#7f1d1d,#f87171)'},{label:'Corporate',n:14,g:'linear-gradient(90deg,#14532d,#4ade80)'},{label:'Divorce',n:5,g:'linear-gradient(90deg,#4c1d95,#a78bfa)'}];const max=52;document.getElementById('bar-chart').innerHTML=data.map(d=>`<div style="display:flex;align-items:center;gap:10px;"><div style="font-size:0.76rem;color:var(--muted);width:70px;flex-shrink:0;">${d.label}</div><div style="flex:1;height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div data-w="${(d.n/max*100).toFixed(0)}" data-g="${d.g}" class="bbar" style="height:100%;border-radius:4px;width:0%;transition:width 1.2s cubic-bezier(0.22,1,0.36,1);"></div></div><div style="font-size:0.76rem;color:var(--cream);width:22px;text-align:right;">${d.n}</div></div>`).join('');setTimeout(()=>document.querySelectorAll('.bbar').forEach(b=>{b.style.width=b.dataset.w+'%';b.style.background=b.dataset.g}),100)}
 function renderHearings(){const h=[{day:'08',mon:'MAR',name:'Land Ownership Dispute – Arjun Kumar',court:'Delhi HC, Room 4 • 10:30 AM',tag:'soon',tagLabel:'6 days'},{day:'15',mon:'MAR',name:'Medical Negligence – Consumer Forum',court:'Delhi Consumer Forum • 2:00 PM',tag:'normal',tagLabel:'13 days'},{day:'20',mon:'MAR',name:'Contract Breach – TechCorp',court:'Delhi HC, Room 7 • 11:00 AM',tag:'normal',tagLabel:'18 days'}];document.getElementById('hearings').innerHTML=h.map(x=>`<div class="hearing-item"><div class="hi-date"><div class="hi-day">${x.day}</div><div class="hi-mon">${x.mon}</div></div><div class="hi-info"><div class="hi-name">${x.name}</div><div class="hi-court">🏛 ${x.court}</div></div><span class="hi-tag ${x.tag}">${x.tagLabel}</span></div>`).join('')}
-function caseCardHTML(c){return`<div class="cc ${c.type}"><div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-${c.status||'on'}"></div></div><div class="cc-title">${c.title}</div><div class="cc-meta"><span>👤 ${c.client}</span><span>🏛 ${c.court}</span></div>${c.hearing?`<div class="cc-meta" style="margin-top:4px;"><span>📅 Next: ${c.hearing}</span></div>`:''}${c.prog!==undefined?`<div class="cc-prog"><div class="cp-row"><span>Progress</span><span>${c.prog}%</span></div><div class="cp-track"><div class="cp-fill" style="width:${c.prog}%"></div></div></div>`:''}</div>`}
+function caseCardHTML(c){return`<div class="cc ${c.type}" onclick="openCase('${c.id}')" style="cursor:pointer;"><div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-${c.status||'on'}"></div></div><div class="cc-title">${c.title}</div><div class="cc-meta"><span>👤 ${c.client}</span><span>🏛 ${c.court}</span></div>${c.hearing?`<div class="cc-meta" style="margin-top:4px;"><span>📅 Next: ${c.hearing}</span></div>`:''}${c.prog!==undefined?`<div class="cc-prog"><div class="cp-row"><span>Progress</span><span>${c.prog}%</span></div><div class="cp-track"><div class="cp-fill" style="width:${c.prog}%"></div></div></div>`:''}<div style="margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.72rem;color:var(--gold);display:flex;align-items:center;gap:5px;">View full details →</div></div>`}
+
+// ─── CASE DETAIL MODAL ───
+function openCase(caseId){
+  const c=ACTIVE_CASES.find(x=>x.id===caseId);
+  if(!c)return;
+
+  // Header
+  document.getElementById('cm-title').textContent=c.title;
+  document.getElementById('cm-badge').textContent=c.badge;
+
+  // Meta row
+  document.getElementById('cm-meta').innerHTML=`<span>👤 ${c.client}</span><span>🏛 ${c.court}</span><span>📅 ${c.hearing}</span><span>🆔 ${c.id}</span>`;
+
+  // Info rows
+  document.getElementById('cm-info-rows').innerHTML=[
+    {l:'Case ID',v:c.id},{l:'Court',v:c.court},{l:'Hearing Room',v:c.hearingRoom},
+    {l:'Filed On',v:c.filedDate},{l:'Retainer',v:c.retainer},{l:'Status',v:c.status==='on'?'🟢 Active':'🟡 Pending'}
+  ].map(r=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.78rem;"><span style="color:var(--muted);">${r.l}</span><span style="color:var(--cream);text-align:right;max-width:55%;">${r.v}</span></div>`).join('');
+
+  // Client rows
+  document.getElementById('cm-client-rows').innerHTML=[
+    {l:'Name',v:c.client},{l:'Phone',v:c.clientPhone},{l:'Email',v:c.clientEmail}
+  ].map(r=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.78rem;"><span style="color:var(--muted);">${r.l}</span><span style="color:var(--cream);text-align:right;max-width:60%;">${r.v}</span></div>`).join('');
+
+  // Summary
+  document.getElementById('cm-summary').textContent=c.summary;
+
+  // Progress
+  document.getElementById('cm-prog-pct').textContent=c.prog+'% Complete';
+  document.getElementById('cm-prog-bar').style.width=c.prog+'%';
+  document.getElementById('cm-milestones').innerHTML=c.milestones.map(m=>`
+    <div style="display:flex;flex-direction:column;align-items:center;gap:5px;">
+      <div style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;${m.done?'background:var(--gold);color:var(--bg);':'background:rgba(255,255,255,0.07);color:var(--muted);border:1px solid rgba(255,255,255,0.1);'}">
+        ${m.done?'✓':'○'}
+      </div>
+      <span style="font-size:0.6rem;color:${m.done?'var(--gold)':'var(--faint)'};text-align:center;max-width:60px;line-height:1.2;">${m.label}</span>
+    </div>`).join('');
+
+  // Timeline
+  const tlColors={filed:'var(--gold)',hearing:'var(--blue)',update:'var(--green)',docs:'var(--amber)',upcoming:'rgba(255,255,255,0.3)'};
+  document.getElementById('cm-timeline-list').innerHTML=c.timeline.map(t=>`
+    <div style="position:relative;margin-bottom:20px;padding-left:14px;">
+      <div style="position:absolute;left:-17px;top:3px;width:12px;height:12px;border-radius:50%;background:${tlColors[t.type]||'var(--gold)'};border:2px solid var(--bg3);"></div>
+      <div style="font-size:0.7rem;color:var(--gold);margin-bottom:3px;letter-spacing:0.05em;">${t.date}</div>
+      <div style="font-size:0.82rem;color:${t.type==='upcoming'?'var(--muted)':'var(--cream)'};line-height:1.4;${t.type==='upcoming'?'font-style:italic;':''}">${t.event}</div>
+    </div>`).join('');
+
+  // Documents
+  document.getElementById('cm-docs-list').innerHTML=c.docs.map(d=>`
+    <div style="display:flex;align-items:center;gap:13px;background:var(--bg4);border:1px solid rgba(255,255,255,0.05);border-radius:11px;padding:13px 16px;cursor:pointer;transition:border-color 0.18s;" onmouseover="this.style.borderColor='var(--goldborder)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'" onclick="toast('📄 Opening ${d.name}...')">
+      <span style="font-size:1.6rem;">${d.type}</span>
+      <div style="flex:1;">
+        <div style="font-size:0.83rem;color:var(--cream);font-weight:500;">${d.name}</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${d.size} · Added ${d.date}</div>
+      </div>
+      <span style="font-size:0.75rem;color:var(--gold);padding:5px 12px;background:var(--goldfaint);border:1px solid var(--goldborder);border-radius:7px;">↓ View</span>
+    </div>`).join('');
+
+  // Notes
+  renderCaseNotes(c);
+
+  // Reset to overview tab
+  cmTab(document.querySelector('.cm-tab'),'cm-overview');
+
+  // Show modal
+  document.getElementById('case-modal').style.display='block';
+  document.getElementById('case-modal').dataset.caseId=caseId;
+  document.body.style.overflow='hidden';
+}
+
+function renderCaseNotes(c){
+  document.getElementById('cm-notes-list').innerHTML=(c.notes||[]).map(n=>`
+    <div style="background:var(--bg4);border:1px solid rgba(255,255,255,0.05);border-left:3px solid var(--gold);border-radius:11px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px;">
+        <span style="font-size:0.72rem;color:var(--gold);font-weight:600;">${n.author}</span>
+        <span style="font-size:0.68rem;color:var(--faint);">${n.date}</span>
+      </div>
+      <p style="font-size:0.81rem;color:var(--muted);line-height:1.55;">${n.text}</p>
+    </div>`).join('');
+}
+
+function addNote(){
+  const inp=document.getElementById('cm-note-input');
+  const txt=inp.value.trim();
+  if(!txt){toast('Please write a note first','⚠️');return}
+  // Find active case (we stored it in modal's dataset)
+  const modal=document.getElementById('case-modal');
+  const caseId=modal.dataset.caseId;
+  const c=ACTIVE_CASES.find(x=>x.id===caseId);
+  if(!c)return;
+  const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  c.notes.unshift({author:'Adv. '+LAWYER.ln||'Adv. Mehta',date:today,text:txt});
+  inp.value='';
+  renderCaseNotes(c);
+  toast('Note saved ✅');
+}
+
+function closeCase(){
+  document.getElementById('case-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+function cmTab(btn,tabId){
+  document.querySelectorAll('.cm-tab').forEach(t=>{t.style.borderBottomColor='transparent';t.style.color='var(--muted)'});
+  btn.style.borderBottomColor='var(--gold)';btn.style.color='var(--gold)';
+  ['cm-overview','cm-timeline','cm-docs','cm-notes'].forEach(id=>{document.getElementById(id).style.display='none'});
+  document.getElementById(tabId).style.display='block';
+  // Store caseId when switching tabs
+  const modal=document.getElementById('case-modal');
+  if(tabId==='cm-notes'&&modal.dataset.caseId){
+    const c=ACTIVE_CASES.find(x=>x.id===modal.dataset.caseId);
+    if(c)renderCaseNotes(c);
+  }
+}
 function renderOvCases(){document.getElementById('ov-cases').innerHTML=ACTIVE_CASES.slice(0,4).map(c=>caseCardHTML(c)).join('')}
 function renderAllCases(){document.getElementById('all-cases').innerHTML=ACTIVE_CASES.map(c=>caseCardHTML(c)).join('')}
 function renderRequests(){const uc={'high':'urgent','medium':'soon','low':'normal'};const ul={'high':'🔴 Urgent','medium':'🟡 Medium','low':'🟢 Low'};document.getElementById('req-list').innerHTML=REQUESTS.map(r=>`<div class="rq-card" id="rq-${r.id}"><div class="rq-top"><span class="cc-badge ${r.type}" style="font-size:0.65rem;padding:3px 9px;border-radius:8px;">${r.badge}</span><span class="hi-tag ${uc[r.urg]}">${ul[r.urg]}</span></div><div class="rq-title">${r.title}</div><div class="cc-meta" style="margin-bottom:8px;"><span>👤 ${r.client}</span><span>🏛 ${r.court}</span><span>📎 ${r.docs} docs</span></div><div class="rq-desc">${r.desc}</div><div class="rq-actions"><button class="btn-acc" onclick="acceptCase(this,'${r.id}')">✅ Accept & Send Proposal</button><button class="btn-dec" onclick="document.getElementById('rq-${r.id}').style.opacity='0.35';document.getElementById('rq-${r.id}').style.pointerEvents='none';toast('Case declined','ℹ️')">❌ Decline</button></div></div>`).join('')}
@@ -531,13 +819,20 @@ function signOut(){
     document.getElementById('si-pw').value='';
     clearSignInErr();
     // Clear sign-up fields too
-    ['up-fn','up-ln','up-em','up-ph','up-pw','up-cp'].forEach(id=>{document.getElementById(id).value=''});
+    ['up-fn','up-ln','up-em','up-ph','up-pw','up-cp'].forEach(id=>{document.getElementById(id).value='';});
     clearEmailErr();
     authTab('in');
     goPage('p-signin');
   },700);
 }
-document.addEventListener('DOMContentLoaded',()=>{document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})});
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  // Attach input listeners safely after DOM ready
+  const siId=document.getElementById('si-id');
+  if(siId) siId.addEventListener('input',clearSignInErr);
+  const upEm=document.getElementById('up-em');
+  if(upEm) upEm.addEventListener('input',clearEmailErr);
+});
 </script>
 </body>
 </html>
