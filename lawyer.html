@@ -977,6 +977,40 @@ document.addEventListener('DOMContentLoaded',()=>{
   const siId=document.getElementById('si-id');if(siId) siId.addEventListener('input',clearSignInErr);
   const upEm=document.getElementById('up-em');if(upEm) upEm.addEventListener('input',clearEmailErr);
 });
+  window.onload = async function () {
+
+  const lawyer = JSON.parse(localStorage.getItem("lawyer"));
+
+  if (!lawyer) return;
+
+  try {
+
+    const response = await fetch(`/api/lawyer/me/${lawyer.id}`);
+    const data = await response.json();
+
+    if (response.ok) {
+
+      localStorage.setItem("lawyer", JSON.stringify(data));
+
+      document.getElementById("p-signin").classList.remove("show");
+
+      if (data.verificationStatus === "approved") {
+        document.getElementById("p-dash").classList.add("show");
+      } else {
+        document.getElementById("p-verify").classList.add("show");
+      }
+
+      document.getElementById("sb-name").innerText =
+        data.firstName + " " + data.lastName;
+
+      document.getElementById("dash-gname").innerText =
+        data.firstName;
+    }
+
+  } catch (error) {
+    console.log("Error fetching latest status");
+  }
+};
 </script>
 </body>
 </html>
