@@ -3,14 +3,22 @@ const bcrypt = require("bcryptjs");
 const Lawyer = require("../models/Lawyer");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const router = express.Router();
 
-// ================= MULTER STORAGE =================
+// ================= MULTER STORAGE (RENDER SAFE) =================
+
+// Ensure uploads folder exists
+const uploadPath = path.join(__dirname, "../uploads");
+
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // ✅ FIXED PATH (VERY IMPORTANT)
-    cb(null, path.join(__dirname, "../uploads"));
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -112,7 +120,6 @@ router.post(
         return res.status(404).json({ message: "Lawyer not found" });
       }
 
-      // ✅ Ensure files exist
       if (!req.files || !req.files.idProof || !req.files.enrollmentCert || !req.files.practiceCert) {
         return res.status(400).json({ message: "All 3 documents are required" });
       }
