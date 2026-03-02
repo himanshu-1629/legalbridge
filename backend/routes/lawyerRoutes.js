@@ -4,9 +4,13 @@ const Lawyer = require("../models/Lawyer");
 const multer = require("multer");
 const path = require("path");
 
+const router = express.Router();
+
+// ================= MULTER STORAGE =================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    // ✅ FIXED PATH (VERY IMPORTANT)
+    cb(null, path.join(__dirname, "../uploads"));
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -14,8 +18,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-const router = express.Router();
 
 
 // ================= REGISTER =================
@@ -110,6 +112,11 @@ router.post(
         return res.status(404).json({ message: "Lawyer not found" });
       }
 
+      // ✅ Ensure files exist
+      if (!req.files || !req.files.idProof || !req.files.enrollmentCert || !req.files.practiceCert) {
+        return res.status(400).json({ message: "All 3 documents are required" });
+      }
+
       lawyer.professionalDetails = {
         barId,
         experience,
@@ -122,9 +129,9 @@ router.post(
       };
 
       lawyer.documents = {
-        idProof: req.files.idProof?.[0]?.filename,
-        enrollmentCert: req.files.enrollmentCert?.[0]?.filename,
-        practiceCert: req.files.practiceCert?.[0]?.filename
+        idProof: req.files.idProof[0].filename,
+        enrollmentCert: req.files.enrollmentCert[0].filename,
+        practiceCert: req.files.practiceCert[0].filename
       };
 
       lawyer.verificationStatus = "submitted";
@@ -134,10 +141,13 @@ router.post(
       res.json({ message: "Verification submitted successfully" });
 
     } catch (error) {
+      console.log(error);
       res.status(500).json({ message: error.message });
     }
   }
 );
+
+
 // ================= ADMIN APPROVE =================
 router.put("/approve/:id", async (req, res) => {
   try {
