@@ -626,7 +626,7 @@ async function doSignIn() {
   LAWYER.fn = data.lawyer.firstName;
   LAWYER.ln = data.lawyer.lastName;
   LAWYER.email = data.lawyer.email;
-  LAWYER.verified = data.lawyer.verificationStatus === "approved";
+  LAWYER.verified = data.lawyer.verificationStatus === "verified";
 
   // Switch page
   document.getElementById("p-signin").classList.remove("show");
