@@ -549,7 +549,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
 </div>
 
 <script>
-const LAWYER={fn:'',ln:'',email:'',phone:'',address:'',bar:'BAR/2008/DL/4521',exp:18,spec:'Property Law',courts:'Delhi HC, Supreme Court of India',qual:'LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008',bio:'Senior advocate with 18 years of experience specialising in property and civil litigation. Appeared in 400+ cases across Delhi HC and Supreme Court of India. Known for thorough preparation and a client-focused approach.',fee:8000,lang:'English, Hindi',ach:'Featured in Legal500 India 2024. Best Property Law Advocate – Delhi Bar Association 2022.',total:127,won:119,settled:5,lost:3,sr:94,firm:'',chips:['Property Disputes','Land Acquisition','Civil Litigation','Contract Disputes','Injunctions'],verified:false};
+const LAWYER={fn:'',ln:'',email:'',phone:'',address:'',bar:'',exp:0,spec:'',courts:'',qual:'',bio:'',fee:0,lang:'',ach:'',total:0,won:0,settled:0,lost:0,sr:0,firm:'',chips:[],verified:false};
 
 // Track which verification docs have been uploaded
 let vDocsUploaded={1:false,2:false,3:false};
@@ -603,7 +603,8 @@ function doSignIn(){
   if(!v||!p){toast('Please fill in all fields','⚠️');return}
   const gmailRegex=/^[a-zA-Z0-9._%+\-]+@gmail\.com$/i;
   if(!gmailRegex.test(v)){document.getElementById('si-id').classList.add('invalid');document.getElementById('si-email-err').style.display='flex';document.getElementById('si-id').focus();toast('Invalid Gmail — must end in @gmail.com','❌');return;}
-  LAWYER.fn='Rahul';LAWYER.ln='Sharma';LAWYER.verified=true; // sign-in users assumed verified
+  LAWYER.fn='Rahul';LAWYER.ln='Sharma';LAWYER.verified=true;
+  LAWYER.email=v;LAWYER.bar='BAR/2008/DL/4521';LAWYER.exp=18;LAWYER.spec='Property Law';LAWYER.courts='Delhi HC, Supreme Court of India';LAWYER.qual='LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008';LAWYER.bio='Senior advocate with 18 years of experience specialising in property and civil litigation. Appeared in 400+ cases across Delhi HC and Supreme Court of India. Known for thorough preparation and a client-focused approach.';LAWYER.fee=8000;LAWYER.lang='English, Hindi';LAWYER.ach='Featured in Legal500 India 2024. Best Property Law Advocate – Delhi Bar Association 2022.';LAWYER.total=127;LAWYER.won=119;LAWYER.settled=5;LAWYER.lost=3;LAWYER.sr=94;LAWYER.chips=['Property Disputes','Land Acquisition','Civil Litigation','Contract Disputes','Injunctions'];
   toast('✅ Signed in successfully!');
   setTimeout(()=>{goPage('p-dash');initDash()},600);
 }
@@ -842,9 +843,24 @@ function dismissNotif(i){NOTIFS.splice(i,1);renderNotifs()}
 
 function renderProfile(){
   const L=LAWYER;const ab=((L.fn[0]||'')+(L.ln[0]||'')).toUpperCase()||'?';
-  document.getElementById('pp-av').textContent=ab;document.getElementById('pp-name').textContent=(L.fn+' '+L.ln).trim();document.getElementById('pp-spec').textContent=L.spec;document.getElementById('pp-exp').textContent=L.exp+' years • '+L.courts;document.getElementById('pp-bio').textContent=L.bio;document.getElementById('pp-tot').textContent=L.total;document.getElementById('pp-sr').textContent=L.sr+'%';document.getElementById('pp-won').textContent=L.won;document.getElementById('pp-srb').textContent=L.sr+'%';document.getElementById('pp-prog').style.width=L.sr+'%';document.getElementById('pp-chips').innerHTML=L.chips.map(c=>`<span class="dchip">${c}</span>`).join('');
-  document.getElementById('pp-details').innerHTML=[{l:'Bar Council ID',v:L.bar,cls:'gv'},{l:'Qualifications',v:L.qual},{l:'Courts of Practice',v:L.courts},{l:'Experience',v:L.exp+' years'},{l:'Consultation Fee',v:'₹'+L.fee.toLocaleString()+' / hour'},{l:'Languages',v:L.lang},{l:'Verification',v:L.verified?'✅ Verified':'⚠️ Not Verified',cls:L.verified?'grn':'gv'}].map(r=>`<div class="ir"><span class="ir-l">${r.l}</span><span class="ir-v ${r.cls||''}">${r.v}</span></div>`).join('');
+  document.getElementById('pp-av').textContent=ab;
+  document.getElementById('pp-name').textContent=(L.fn+' '+L.ln).trim()||'—';
+  // Contact info is always available (from sign-up)
   document.getElementById('pp-contact').innerHTML=[{ic:'📧',l:'Email',v:L.email||'—'},{ic:'📱',l:'Phone',v:L.phone||'—'},{ic:'📍',l:'Address',v:L.address||'—'}].map(r=>`<div class="ir" style="align-items:flex-start;"><span class="ir-l" style="display:flex;align-items:center;gap:6px;">${r.ic} ${r.l}</span><span class="ir-v" style="text-align:right;max-width:60%;white-space:pre-wrap;line-height:1.5;">${r.v}</span></div>`).join('');
+  if(!L.verified){
+    // Unverified: show placeholders, no fake data
+    document.getElementById('pp-spec').textContent='—';
+    document.getElementById('pp-exp').textContent='Complete verification to display';
+    document.getElementById('pp-bio').textContent='Your bio will appear here after you complete the verification process.';
+    document.getElementById('pp-tot').textContent='—';document.getElementById('pp-sr').textContent='—';document.getElementById('pp-won').textContent='—';document.getElementById('pp-srb').textContent='—';document.getElementById('pp-prog').style.width='0%';
+    document.getElementById('pp-chips').innerHTML='<span style="font-size:0.8rem;color:var(--muted);">Complete verification to display practice areas</span>';
+    document.getElementById('pp-details').innerHTML=`<div style="text-align:center;padding:20px 10px;"><div style="font-size:2rem;margin-bottom:10px;">🛡️</div><div style="font-size:0.88rem;color:var(--navy);font-weight:600;margin-bottom:6px;">Verification Pending</div><div style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.5;">Complete your verification to fill in your professional details.<br>This section will display your Bar ID, qualifications, courts, fee, etc.</div><button class="btn-g" style="width:auto;padding:10px 24px;font-size:0.78rem;" onclick="showSec('verification',null)">COMPLETE VERIFICATION →</button></div>`;
+    document.getElementById('pp-reviews').innerHTML='<div style="text-align:center;padding:16px;font-size:0.8rem;color:var(--muted);">Reviews will appear after verification.</div>';
+    return;
+  }
+  // Verified: show real data
+  document.getElementById('pp-spec').textContent=L.spec||'—';document.getElementById('pp-exp').textContent=(L.exp||0)+' years • '+(L.courts||'—');document.getElementById('pp-bio').textContent=L.bio||'—';document.getElementById('pp-tot').textContent=L.total;document.getElementById('pp-sr').textContent=L.sr+'%';document.getElementById('pp-won').textContent=L.won;document.getElementById('pp-srb').textContent=L.sr+'%';document.getElementById('pp-prog').style.width=L.sr+'%';document.getElementById('pp-chips').innerHTML=(L.chips||[]).map(c=>`<span class="dchip">${c}</span>`).join('')||'<span style="font-size:0.8rem;color:var(--muted);">No practice areas added</span>';
+  document.getElementById('pp-details').innerHTML=[{l:'Bar Council ID',v:L.bar||'—',cls:'gv'},{l:'Qualifications',v:L.qual||'—'},{l:'Courts of Practice',v:L.courts||'—'},{l:'Experience',v:(L.exp||0)+' years'},{l:'Consultation Fee',v:L.fee?'₹'+L.fee.toLocaleString()+' / hour':'—'},{l:'Languages',v:L.lang||'—'},{l:'Verification',v:'✅ Verified',cls:'grn'}].map(r=>`<div class="ir"><span class="ir-l">${r.l}</span><span class="ir-v ${r.cls||''}">${r.v}</span></div>`).join('');
   document.getElementById('pp-reviews').innerHTML=REVIEWS.map(r=>`<div style="padding:13px 0;border-bottom:1px solid var(--border);"><div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;"><div style="width:30px;height:30px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:0.78rem;color:var(--muted);">${r.name[0]}</div><div style="flex:1;font-size:0.82rem;color:var(--text);font-weight:500;">${r.name}</div><div style="color:var(--gold);font-size:0.78rem;">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div></div><div style="font-size:0.78rem;color:var(--text2);line-height:1.55;">"${r.text}"</div><div style="font-size:0.66rem;color:var(--muted);margin-top:4px;">${r.date}</div></div>`).join('');
 }
 
