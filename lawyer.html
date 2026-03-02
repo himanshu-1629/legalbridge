@@ -602,7 +602,7 @@ async function doSignIn() {
   const password = document.getElementById("si-pw").value;
 
   try {
-    const response = await fetch("http://localhost:3000/api/lawyer/login", {
+   const response = await fetch("/api/lawyer/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -649,7 +649,7 @@ async function doSignUp() {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/lawyer/register", {
+    const response = await fetch("/api/lawyer/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
