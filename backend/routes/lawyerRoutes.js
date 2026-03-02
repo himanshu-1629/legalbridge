@@ -1,6 +1,19 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const Lawyer = require("../models/Lawyer");
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const router = express.Router();
 
@@ -69,39 +82,62 @@ router.post("/login", async (req, res) => {
 
 
 // ================= SUBMIT VERIFICATION =================
-router.post("/verify", async (req, res) => {
-  try {
-    const { email, barId, experience, specialization, courts, qualifications, bio, consultationFee, languages } = req.body;
+router.post(
+  "/verify",
+  upload.fields([
+    { name: "idProof", maxCount: 1 },
+    { name: "enrollmentCert", maxCount: 1 },
+    { name: "practiceCert", maxCount: 1 }
+  ]),
+  async (req, res) => {
+    try {
 
-    const lawyer = await Lawyer.findOne({ email });
+      const {
+        email,
+        barId,
+        experience,
+        specialization,
+        courts,
+        qualifications,
+        bio,
+        consultationFee,
+        languages
+      } = req.body;
 
-    if (!lawyer) {
-      return res.status(404).json({ message: "Lawyer not found" });
+      const lawyer = await Lawyer.findOne({ email });
+
+      if (!lawyer) {
+        return res.status(404).json({ message: "Lawyer not found" });
+      }
+
+      lawyer.professionalDetails = {
+        barId,
+        experience,
+        specialization,
+        courts,
+        qualifications,
+        bio,
+        consultationFee,
+        languages
+      };
+
+      lawyer.documents = {
+        idProof: req.files.idProof?.[0]?.filename,
+        enrollmentCert: req.files.enrollmentCert?.[0]?.filename,
+        practiceCert: req.files.practiceCert?.[0]?.filename
+      };
+
+      lawyer.verificationStatus = "submitted";
+
+      await lawyer.save();
+
+      res.json({ message: "Verification submitted successfully" });
+
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-
-    lawyer.professionalDetails = {
-      barId,
-      experience,
-      specialization,
-      courts,
-      qualifications,
-      bio,
-      consultationFee,
-      languages
-    };
-
-    lawyer.verificationStatus = "submitted";
-
-    await lawyer.save();
-
-    res.json({ message: "Verification submitted successfully" });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
-});
-
-
+);
 // ================= ADMIN APPROVE =================
 router.put("/approve/:id", async (req, res) => {
   try {
