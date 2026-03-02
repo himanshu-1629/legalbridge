@@ -1,32 +1,36 @@
 const mongoose = require("mongoose");
 
 const lawyerSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String
-  },
+  firstName: String,
+  lastName: String,
   email: {
     type: String,
-    required: true,
     unique: true
   },
-  phone: {
-    type: String
-  },
-  address: {
-    type: String
-  },
-  password: {
+  phone: String,
+  address: String,
+  password: String,
+
+  // 🔹 Verification Fields
+  verificationStatus: {
     type: String,
-    required: true
+    enum: ["not_submitted", "pending", "approved", "rejected"],
+    default: "not_submitted"
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+
+  professionalDetails: {
+    barId: String,
+    experience: Number,
+    specialization: String,
+    courts: String,
+    qualifications: String,
+    bio: String,
+    consultationFee: Number,
+    languages: String
   }
-});
+
+}, { timestamps: true });
+
+module.exports = mongoose.model("Lawyer", lawyerSchema);
 
 module.exports = mongoose.model("Lawyer", lawyerSchema);
