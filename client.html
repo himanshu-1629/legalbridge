@@ -2168,44 +2168,82 @@ function validateLogin() {
 }
 
 // ─── AUTH ACTIONS ────────────────────────────────────────
-function completeSignup() {
-  var name  = document.getElementById('reg-name').value || 'New User';
-  var email = document.getElementById('reg-email').value || 'user@email.com';
-  var phone = document.getElementById('reg-phone').value || '';
-  var initials = '';
-  var parts = name.split(' ');
-  for (var i = 0; i < parts.length && initials.length < 2; i++) {
-    if (parts[i]) initials += parts[i][0].toUpperCase();
+async function completeSignup() {
+  var name  = document.getElementById('reg-name').value;
+  var email = document.getElementById('reg-email').value;
+  var phone = document.getElementById('reg-phone').value;
+  var pass  = document.getElementById('reg-pass').value;
+
+  try {
+    const res = await fetch('http://localhost:3000/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ firstName: name.split(" ")[0],
+  lastName: name.split(" ").slice(1).join(" ") || "",
+  email,
+  phone,
+  password: pass })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showErr('err-step2', data.message || 'Signup failed');
+      return;
+    }
+
+    // Save token (if using JWT)
+    localStorage.setItem('token', data.token);
+
+    state.currentUser = data.user;
+
+    updateUserUI();
+    showScreen('screen-app');
+    setGreeting();
+    showToast('Welcome to LegalBridge! Account created.', 'success');
+
+  } catch (err) {
+    showErr('err-step2', 'Server error. Try again.');
   }
-  state.currentUser.name     = name;
-  state.currentUser.email    = email;
-  state.currentUser.phone    = phone;
-  state.currentUser.initials = initials || 'U';
-  updateUserUI();
-  showScreen('screen-app');
-  setGreeting();
-  showToast('Welcome to LegalBridge! Account created.', 'success');
 }
 
-function doLogin() {
+async function doLogin() {
   var loginId = document.getElementById('login-id').value.trim();
-  // Reset to clean state — only keep what was entered
-  state.currentUser = { name: 'User', email: '', initials: 'U', phone: '' };
-  if (isValidEmail(loginId)) {
-    state.currentUser.email = loginId;
-    // Derive a display name from email prefix
-    var namePart = loginId.split('@')[0].replace(/[._\-]/g, ' ');
-    namePart = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-    state.currentUser.name = namePart;
-    state.currentUser.initials = namePart.charAt(0).toUpperCase();
-  } else {
-    // Phone login
-    state.currentUser.phone = loginId;
+  var pass    = document.getElementById('login-pass').value;
+
+  try {
+    const res = await fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+       body: JSON.stringify({
+  email: loginId,
+  password: pass
+})
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showErr('err-login-pass', data.message || 'Login failed');
+      return;
+    }
+
+    localStorage.setItem('token', data.token);
+
+    state.currentUser = data.user;
+
+    updateUserUI();
+    showScreen('screen-app');
+    setGreeting();
+    showToast('Welcome back, ' + data.user.name.split(' ')[0] + '!', 'success');
+
+  } catch (err) {
+    showErr('err-login-pass', 'Server error. Try again.');
   }
-  updateUserUI();
-  showScreen('screen-app');
-  setGreeting();
-  showToast('Welcome back, ' + state.currentUser.name.split(' ')[0] + '!', 'success');
 }
 
 function doLogout() { showLogoutModal(); }
@@ -2218,30 +2256,46 @@ function showLogoutModal() {
 }
 
 function confirmLogout() {
+  // 🔐 Remove authentication tokens
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken'); // if using
+
   document.getElementById('modal-logout').style.display = 'none';
   showToast('Logging you out securely…');
+
   setTimeout(function() {
-    // Reset user state to defaults
-    state.currentUser = { name: 'Rahul Sharma', email: '', initials: 'RS', phone: '' };
+
+    // 🧹 Reset user state completely
+    state.currentUser = {
+      name: '',
+      email: '',
+      initials: '',
+      phone: ''
+    };
+
     state.signupStep = 1;
-    // Clear login form fields
+
+    // 🧹 Clear login form
     var loginId = document.getElementById('login-id');
     var loginPass = document.getElementById('login-pass');
     if (loginId) loginId.value = '';
     if (loginPass) loginPass.value = '';
-    // Clear signup form fields
+
+    // 🧹 Clear signup form
     var fields = ['reg-name','reg-email','reg-phone','reg-pass','reg-confirm'];
     for (var i = 0; i < fields.length; i++) {
       var el = document.getElementById(fields[i]);
       if (el) el.value = '';
     }
+
     signupNext(1);
-    navHistory = []; // clear history on logout
+    navHistory = [];
+
     showScreen('screen-welcome');
     showToast('You have been logged out. See you soon!');
+
   }, 900);
 }
-
 function openProfileFromSidebar() {
   document.getElementById('acct-modal-avatar').textContent = state.currentUser.initials;
   document.getElementById('acct-modal-name').textContent   = state.currentUser.name;
