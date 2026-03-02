@@ -1031,7 +1031,7 @@ window.onload = async function () {
     LAWYER.email = data.email;
 
     // THIS IS IMPORTANT
-    LAWYER.verified = data.verificationStatus === "approved";
+    LAWYER.verified = data.verificationStatus === "verified";
 
     // Show dashboard
     document.getElementById("p-signin").classList.remove("show");
