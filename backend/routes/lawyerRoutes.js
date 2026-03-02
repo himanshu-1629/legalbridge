@@ -10,16 +10,13 @@ router.post("/register", async (req, res) => {
   try {
     const { firstName, lastName, email, phone, address, password } = req.body;
 
-    // Check if email already exists
     const existingLawyer = await Lawyer.findOne({ email });
     if (existingLawyer) {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create new lawyer
     const lawyer = new Lawyer({
       firstName,
       lastName,
@@ -55,20 +52,22 @@ router.post("/login", async (req, res) => {
     }
 
     res.json({
-  message: "Login successful",
-  lawyer: {
-    id: lawyer._id,
-    firstName: lawyer.firstName,
-    lastName: lawyer.lastName,
-    email: lawyer.email,
-    verificationStatus: lawyer.verificationStatus
-  }
-});
+      message: "Login successful",
+      lawyer: {
+        id: lawyer._id,
+        firstName: lawyer.firstName,
+        lastName: lawyer.lastName,
+        email: lawyer.email,
+        verificationStatus: lawyer.verificationStatus
+      }
+    });
 
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+
 // ================= SUBMIT VERIFICATION =================
 router.post("/verify", async (req, res) => {
   try {
@@ -101,6 +100,8 @@ router.post("/verify", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
 // ================= ADMIN APPROVE =================
 router.put("/approve/:id", async (req, res) => {
   try {
@@ -121,6 +122,30 @@ router.put("/approve/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+// ================= ADMIN REJECT =================
+router.put("/reject/:id", async (req, res) => {
+  try {
+
+    const lawyer = await Lawyer.findById(req.params.id);
+
+    if (!lawyer) {
+      return res.status(404).json({ message: "Lawyer not found" });
+    }
+
+    lawyer.verificationStatus = "rejected";
+
+    await lawyer.save();
+
+    res.json({ message: "Lawyer rejected successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 // ================= GET LAWYER BY ID =================
 router.get("/me/:id", async (req, res) => {
   try {
@@ -143,6 +168,8 @@ router.get("/me/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
 // ================= ADMIN - GET ALL LAWYERS =================
 router.get("/all", async (req, res) => {
   try {
