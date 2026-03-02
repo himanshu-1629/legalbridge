@@ -12,6 +12,9 @@ connectDB();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("LegalBridge API is running 🚀");
+});
 
 // Routes
 const lawyerRoutes = require("./routes/lawyerRoutes");
