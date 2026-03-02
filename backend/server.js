@@ -7,22 +7,15 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// Connect to MongoDB
 connectDB();
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from backend folder
-app.use(express.static(path.join(__dirname)));
+// Serve static files (from current folder)
+app.use(express.static(__dirname));
 
-// Default route
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-// API routes
+// API Routes
 const lawyerRoutes = require("./routes/lawyerRoutes");
 app.use("/api/lawyer", lawyerRoutes);
 
