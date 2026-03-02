@@ -659,18 +659,121 @@
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.12); border-radius:3px; }
 
-  /* responsive */
+  /* ─── MOBILE TOP BAR ─── */
+  .mobile-topbar {
+    display:none;
+    position:fixed; top:0; left:0; right:0;
+    height:56px;
+    background:var(--navy);
+    z-index:150;
+    align-items:center;
+    padding:0 16px;
+    gap:12px;
+    border-bottom:1px solid rgba(255,255,255,0.07);
+    box-shadow:0 2px 12px rgba(0,0,0,0.3);
+  }
+  .hamburger-btn {
+    width:36px; height:36px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:8px;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:5px; cursor:pointer; flex-shrink:0;
+  }
+  .hamburger-btn span {
+    display:block; width:18px; height:2px;
+    background:rgba(255,255,255,0.8); border-radius:2px;
+    transition:all 0.25s;
+  }
+  .hamburger-btn.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .hamburger-btn.open span:nth-child(2) { opacity:0; }
+  .hamburger-btn.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+  .mobile-topbar-logo {
+    font-family:'Playfair Display',serif;
+    font-size:20px; color:var(--white); flex:1;
+  }
+  .mobile-topbar-logo span { color:var(--gold); }
+  .mobile-topbar-avatar {
+    width:32px; height:32px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold),var(--gold-light));
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; color:var(--navy); cursor:pointer;
+    flex-shrink:0;
+  }
+  .sidebar-overlay {
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(10,22,40,0.6);
+    z-index:110;
+    backdrop-filter:blur(2px);
+  }
+  .sidebar-overlay.active { display:block; }
+
+  /* ─── RESPONSIVE ─── */
   @media(max-width:900px) {
     .stat-grid { grid-template-columns:repeat(2,1fr); }
     .case-detail-grid { grid-template-columns:1fr; }
     .profile-form-grid { grid-template-columns:1fr; }
+    .lawyer-grid { grid-template-columns:repeat(2,1fr); }
   }
   @media(max-width:640px) {
-    .sidebar { transform:translateX(-100%); transition:transform 0.3s; }
+    .mobile-topbar { display:flex; }
+    .sidebar {
+      transform:translateX(-100%);
+      transition:transform 0.28s cubic-bezier(0.4,0,0.2,1);
+      z-index:120;
+    }
     .sidebar.open { transform:translateX(0); }
-    .main-content { margin-left:0; padding:20px; }
+    .main-content { margin-left:0; padding:16px; padding-top:72px; }
+
+    .welcome-logo { font-size:44px; }
+    .welcome-content { padding:32px 20px; }
+    .welcome-tagline { font-size:14px; margin-bottom:32px; }
+    .welcome-divider { margin:0 auto 32px; }
+    .welcome-desc { font-size:14px; margin-bottom:32px; }
+    .welcome-trust { gap:14px; font-size:11px; flex-wrap:wrap; justify-content:center; }
+    .welcome-badge { font-size:10px; letter-spacing:1px; margin-bottom:20px; }
+
+    .auth-card { padding:28px 20px; margin:12px; border-radius:16px; }
+    .auth-title { font-size:18px; }
+    .form-row { grid-template-columns:1fr; gap:0; }
+
+    .stat-grid { grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
+    .stat-value { font-size:24px; }
+    .stat-card { padding:16px; }
+    .stat-icon { font-size:22px; margin-bottom:8px; }
+
+    .page-title { font-size:22px; }
+    .header-row { flex-wrap:wrap; gap:12px; }
+    .header-row > .btn { width:100%; justify-content:center; }
+
+    .case-card { padding:16px; }
+    .lawyer-grid { grid-template-columns:1fr !important; }
     .category-grid { grid-template-columns:repeat(2,1fr); }
-    .lawyer-grid { grid-template-columns:1fr; }
+
+    .modal-box { padding:24px 18px; margin:8px; border-radius:16px; max-height:92vh; }
+
+    .profile-header-card { flex-direction:column; text-align:center; padding:24px; }
+    .profile-form-grid { grid-template-columns:1fr; }
+
+    .chat-container { height:400px; }
+    .case-detail-grid { grid-template-columns:1fr; gap:16px; }
+
+    #back-btn { display:none !important; }
+
+    .btn { min-height:40px; }
+    .btn-primary, .btn-outline { padding:14px 24px; font-size:15px; }
+
+    .notif-item { padding:12px; }
+
+    #dash-two-col { grid-template-columns:1fr !important; }
+  }
+  @media(max-width:380px) {
+    .stat-grid { grid-template-columns:1fr 1fr; gap:10px; }
+    .welcome-logo { font-size:36px; }
+    .auth-card { padding:22px 16px; }
+    .main-content { padding:12px; padding-top:68px; }
   }
 
   /* Success screen */
@@ -791,6 +894,18 @@
 <!-- ████████████████████████████████████████ APP ██ -->
 <div id="screen-app" class="screen">
 
+  <!-- MOBILE TOPBAR -->
+  <div class="mobile-topbar" id="mobile-topbar">
+    <div class="hamburger-btn" id="hamburger-btn" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="mobile-topbar-logo">Legal<span>Bridge</span></div>
+    <div class="mobile-topbar-avatar" id="mobile-avatar" onclick="openProfileFromSidebar()">RS</div>
+  </div>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo" style="display:flex;align-items:center;"><button id="back-btn" onclick="goBack()" title="Go back">←</button>Legal<span>Bridge</span></div>
@@ -882,7 +997,7 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div id="dash-two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
         <div class="card">
           <div class="card-title">Recent Activity</div>
           <div class="timeline">
@@ -1796,6 +1911,32 @@ var myCases = [
   }
 ];
 
+// ─── MOBILE SIDEBAR TOGGLE ──────────────────────────────
+function toggleSidebar() {
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  var btn     = document.getElementById('hamburger-btn');
+  var isOpen  = sidebar.classList.contains('open');
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+    btn.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeSidebar() {
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  var btn     = document.getElementById('hamburger-btn');
+  if (sidebar) sidebar.classList.remove('open');
+  if (overlay) overlay.classList.remove('active');
+  if (btn) btn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // ─── NAVIGATION HISTORY ──────────────────────────────────
 var navHistory = []; // stack of { type:'screen'|'page', id, navEl, label }
 
@@ -1898,6 +2039,7 @@ function showPage(id, navEl) {
   }
   _doShowPage(id, navEl);
   updateBackButton();
+  closeSidebar(); // close on mobile when nav item tapped
 }
 
 // ─── GREETING ────────────────────────────────────────────
@@ -1910,38 +2052,7 @@ function setGreeting() {
 
 // ─── VALIDATION HELPERS ──────────────────────────────────
 function isValidEmail(v) {
-  v = v.trim().toLowerCase();
-  var parts = v.split('@');
-  if (parts.length !== 2) return false;
-  var local = parts[0], domain = parts[1];
-  if (!local || local.length < 1) return false;
-  if (domain.indexOf('.') === -1) return false;
-
-  var allowedDomains = [
-    'gmail.com','googlemail.com',
-    'yahoo.com','yahoo.in','yahoo.co.in','yahoo.co.uk','yahoo.com.au','ymail.com','rocketmail.com',
-    'outlook.com','outlook.in','hotmail.com','hotmail.in','hotmail.co.uk','live.com','live.in','msn.com',
-    'icloud.com','me.com','mac.com',
-    'rediffmail.com','sify.com','indiatimes.com','in.com','dataone.in','bsnl.in','bsnl.co.in','mtnl.net.in',
-    'protonmail.com','proton.me','tutanota.com','tutamail.com',
-    'zoho.com','zohomail.com',
-    'aol.com','aim.com',
-    'mail.com','email.com','inbox.com','usa.com',
-    'gmx.com','gmx.net','gmx.de',
-    'fastmail.com','fastmail.fm',
-    'hey.com','pm.me'
-  ];
-
-  var allowedSuffixes = [
-    '.edu','.ac.in','.edu.in','.gov.in','.gov','.nic.in',
-    '.org','.net','.co.in','.co.uk','.co.au','.com.au','.com.sg','.com.br'
-  ];
-
-  if (allowedDomains.indexOf(domain) !== -1) return true;
-  for (var i = 0; i < allowedSuffixes.length; i++) {
-    if (domain.slice(-allowedSuffixes[i].length) === allowedSuffixes[i]) return true;
-  }
-  return false;
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 }
 
 function isValidPhone(v) {
@@ -2143,10 +2254,12 @@ function updateUserUI() {
   var avEl      = document.getElementById('sidebar-avatar');
   var profName  = document.getElementById('profile-name-lg');
   var profAv    = document.getElementById('profile-avatar-lg');
+  var mobileAv  = document.getElementById('mobile-avatar');
   if (nameEl)   nameEl.textContent  = state.currentUser.name;
   if (avEl)     avEl.textContent    = state.currentUser.initials;
   if (profName) profName.textContent = state.currentUser.name;
   if (profAv)   profAv.textContent  = state.currentUser.initials;
+  if (mobileAv) mobileAv.textContent = state.currentUser.initials;
 }
 
 // ─── POST CASE ───────────────────────────────────────────
