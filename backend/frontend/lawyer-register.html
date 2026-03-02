@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LegalBridge — Lawyer Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f6f8;--bg2:#ffffff;--bg3:#ffffff;--bg4:#f0f2f5;--bg5:#e8eaed;
+  --navy:#1a2744;--navy2:#243055;--navy3:#0f1a30;
+  --gold:#b8860b;--gold2:#d4a017;--gold3:#8b6508;
+  --goldfaint:rgba(184,134,11,0.08);--goldborder:rgba(184,134,11,0.2);--goldbright:rgba(184,134,11,0.45);
+  --text:#1a2744;--text2:#4a5568;--muted:#8896aa;--faint:#c5cdd8;
+  --green:#0f9b58;--red:#dc2626;--blue:#1e5fb3;--amber:#b45309;
+  --border:#e2e8f0;--border2:#d1d9e6;
+  --shadow:0 1px 3px rgba(26,39,68,0.08),0 4px 16px rgba(26,39,68,0.06);
+  --shadow-md:0 4px 12px rgba(26,39,68,0.1),0 12px 32px rgba(26,39,68,0.08);
+  --shadow-lg:0 8px 24px rgba(26,39,68,0.12),0 24px 56px rgba(26,39,68,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh}
+.pg{display:none;min-height:100vh}.pg.show{display:flex}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--faint);border-radius:4px}::-webkit-scrollbar-track{background:transparent}
+
+/* ── SIGN IN PAGE ── */
+#p-signin{flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,#f0f4ff 0%,#fafbff 40%,#fff8f0 100%);padding:24px 16px;position:relative;overflow:hidden;min-height:100vh;}
+#p-signin::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 80%,rgba(184,134,11,0.06) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(26,39,68,0.04) 0%,transparent 50%);pointer-events:none;}
+#p-signin::after{content:'';position:absolute;top:-120px;right:-120px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(26,39,68,0.04),transparent 70%);pointer-events:none;}
+.si-wrap{width:100%;max-width:440px;position:relative;z-index:2}
+.logo-row{display:flex;align-items:center;gap:13px;margin-bottom:32px;justify-content:center}
+.logo-box{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,var(--navy3),var(--navy));display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 20px rgba(26,39,68,0.25),inset 0 1px 0 rgba(255,255,255,0.1);}
+.logo-text{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:900;color:var(--navy);letter-spacing:0.1em}
+.si-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:36px 32px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg);}
+.si-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy3),var(--navy),var(--gold2));}
+.si-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(26,39,68,0.06);border:1px solid rgba(26,39,68,0.1);border-radius:20px;padding:4px 13px;font-size:0.69rem;color:var(--navy);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;}
+.si-h{font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--navy);margin-bottom:4px}
+.si-sub{font-size:0.82rem;color:var(--muted);margin-bottom:24px}
+.tabs{display:flex;background:var(--bg4);border-radius:11px;padding:4px;margin-bottom:22px;border:1px solid var(--border);}
+.t{flex:1;padding:9px;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.83rem;cursor:pointer;border-radius:8px;transition:all 0.22s;font-weight:500;}
+.t.on{background:#fff;color:var(--navy);font-weight:600;box-shadow:0 1px 4px rgba(26,39,68,0.12);}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--navy);font-weight:600;margin-bottom:7px;opacity:0.7;}
+.fg input,.fg select,.fg textarea{width:100%;background:#fff;border:1.5px solid var(--border2);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;transition:all 0.2s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--navy);background:#fff;box-shadow:0 0 0 3px rgba(26,39,68,0.08);}
+.fg input.invalid{border-color:var(--red) !important;box-shadow:0 0 0 3px rgba(220,38,38,0.1) !important;}
+.field-err{font-size:0.72rem;color:var(--red);margin-top:6px;display:flex;align-items:center;gap:5px;animation:fadeUp 0.2s ease both;}
+.fg select option{background:#fff;color:var(--text)}
+.fg textarea{resize:vertical;min-height:80px;line-height:1.5}
+.fg-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg-ph{position:relative}.fg-ph .pfx{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--navy);font-size:0.84rem;font-weight:600;padding-right:10px;border-right:1.5px solid var(--border2);opacity:0.6;}.fg-ph input{padding-left:56px}
+.btn-g{width:100%;padding:13px;margin-top:6px;background:linear-gradient(135deg,var(--navy3) 0%,var(--navy) 60%,var(--navy2) 100%);border:none;border-radius:11px;color:#fff;font-family:'Cinzel',serif;font-size:0.82rem;font-weight:600;letter-spacing:0.1em;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(26,39,68,0.25);}
+.btn-g::after{content:'';position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,0.08),transparent);border-radius:11px}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,39,68,0.35)}.btn-g:active{transform:none}
+.btn-o{background:transparent;border:1.5px solid var(--border2);color:var(--navy);border-radius:10px;padding:10px 22px;font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;transition:all 0.2s;font-weight:500;}
+.btn-o:hover{border-color:var(--navy);background:rgba(26,39,68,0.04)}
+
+/* ── PROFILE SETUP PAGE ── */
+#p-profile{flex-direction:column;align-items:center;justify-content:flex-start;background:var(--bg);padding:32px 16px 60px;overflow-y:auto;}
+.prof-wrap{width:100%;max-width:580px}.setup-head{margin-bottom:28px}
+.setup-eyebrow{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--navy);font-weight:600;margin-bottom:8px;opacity:0.5;}
+.setup-h{font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--navy)}
+.setup-sub{font-size:0.82rem;color:var(--muted);margin-top:5px}
+.step-dots{display:flex;gap:7px;margin-bottom:28px}
+.sdot{height:4px;border-radius:2px;flex:1;background:var(--border);transition:background 0.4s}
+.sdot.done{background:var(--navy)}.sdot.now{background:rgba(26,39,68,0.4)}
+.setup-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:30px 28px;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.setup-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--navy3),var(--navy),var(--gold2))}
+.card-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.upzone{border:2px dashed var(--border2);border-radius:12px;padding:28px 18px;text-align:center;cursor:pointer;transition:all 0.22s;position:relative;margin-bottom:12px;background:var(--bg4);}
+.upzone:hover{border-color:var(--navy);background:rgba(26,39,68,0.02)}
+.upzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upz-icon{font-size:2rem;margin-bottom:8px}.upz-t{font-size:0.86rem;color:var(--text);margin-bottom:3px}.upz-s{font-size:0.73rem;color:var(--muted)}
+.file-done{display:flex;align-items:center;gap:10px;background:rgba(15,155,88,0.06);border:1px solid rgba(15,155,88,0.2);border-radius:10px;padding:11px 14px;margin-bottom:10px;animation:popIn 0.3s ease both;}
+.file-done .fd-name{flex:1;font-size:0.82rem;color:var(--text)}.file-done .fd-sz{font-size:0.7rem;color:var(--muted)}
+.opt-banner{background:linear-gradient(135deg,rgba(26,39,68,0.04),rgba(26,39,68,0.02));border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;cursor:pointer;transition:all 0.2s;}
+.opt-banner:hover{border-color:var(--navy);box-shadow:var(--shadow)}.opt-banner-icon{font-size:1.8rem;flex-shrink:0}
+.opt-toggle{margin-left:auto;width:44px;height:24px;border-radius:12px;background:var(--border);border:1px solid var(--border2);position:relative;transition:background 0.25s;cursor:pointer;flex-shrink:0;}
+.opt-toggle.on{background:var(--navy)}.opt-toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.2);}.opt-toggle.on::after{transform:translateX(20px)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border2);background:transparent;color:var(--muted);font-size:0.76rem;cursor:pointer;transition:all 0.2s;}
+.chip.sel{border-color:var(--navy);color:var(--navy);background:rgba(26,39,68,0.06)}
+.prog-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--gold2));transition:width 0.6s ease}
+
+/* ── DASHBOARD ── */
+#p-dash{flex-direction:row;background:var(--bg);min-height:100vh}
+.sb{width:248px;min-height:100vh;position:fixed;top:0;left:0;bottom:0;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;transition:transform 0.3s;box-shadow:2px 0 12px rgba(26,39,68,0.06);}
+.sb-brand{padding:22px 20px 18px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--navy3),var(--navy));}
+.sb-logo{font-family:'Cinzel',serif;font-size:1.05rem;font-weight:900;color:#fff;letter-spacing:0.08em}
+.sb-role{font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:3px}
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
+.nl{font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);padding:10px 12px 4px;font-weight:600;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:0.83rem;transition:all 0.18s;position:relative;margin-bottom:2px;font-weight:500;}
+.ni:hover{background:var(--bg4);color:var(--text)}.ni.on{background:rgba(26,39,68,0.07);color:var(--navy);font-weight:600;}
+.ni.on::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:3px;background:var(--navy);border-radius:0 3px 3px 0}
+.ni-ic{font-size:1rem;width:20px;text-align:center}
+.ni-badge{margin-left:auto;background:var(--red);color:#fff;font-size:0.58rem;padding:2px 6px;border-radius:8px;font-weight:700}
+.ni-lock{margin-left:auto;font-size:0.85rem;opacity:0.5;}
+.sb-user{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;transition:background 0.2s;}
+.sb-user:hover{background:var(--bg4)}
+.u-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--navy3),var(--navy));display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.82rem;color:#fff;font-weight:700;}
+.u-n{font-size:0.8rem;color:var(--text);font-weight:600}.u-s{font-size:0.66rem;color:var(--muted);display:flex;align-items:center;gap:4px;margin-top:1px}
+.u-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+.dm{margin-left:248px;flex:1;padding:28px 30px;min-height:100vh;overflow-y:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.tb-l h1{font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--navy)}.tb-l h1 em{color:var(--gold2);font-style:normal}
+.tb-sub{font-size:0.76rem;color:var(--muted);margin-top:3px}.tb-r{display:flex;align-items:center;gap:9px}
+.ib{width:38px;height:38px;background:#fff;border:1.5px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;transition:all 0.18s;position:relative;box-shadow:var(--shadow);}
+.ib:hover{border-color:var(--navy);box-shadow:var(--shadow-md)}.ib .dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:2px solid #fff}
+.sec{display:none}.sec.on{display:block;animation:fadeUp 0.3s ease both}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.sc{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px 18px;transition:all 0.2s;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.sc:hover{border-color:var(--navy);box-shadow:var(--shadow-md);transform:translateY(-1px)}.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px}
+.sc.sg::after{background:linear-gradient(90deg,transparent,var(--gold2),transparent)}.sc.sv::after{background:linear-gradient(90deg,transparent,var(--green),transparent)}.sc.sb::after{background:linear-gradient(90deg,transparent,var(--blue),transparent)}.sc.sr::after{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.sc-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.sg .sc-ico{background:rgba(184,134,11,0.1)}.sv .sc-ico{background:rgba(15,155,88,0.1)}.sb .sc-ico{background:rgba(30,95,179,0.1)}.sr .sc-ico{background:rgba(180,83,9,0.1)}
+.sc-trend{font-size:0.68rem;padding:3px 8px;border-radius:8px;font-weight:500}.t-up{background:rgba(15,155,88,0.1);color:var(--green)}.t-nu{background:var(--goldfaint);color:var(--gold)}
+.sc-val{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--navy);line-height:1}.sc-lbl{font-size:0.71rem;color:var(--text2);margin-top:5px;font-weight:500;}
+.panel{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:16px;box-shadow:var(--shadow);}
+.panel-title{font-family:'Playfair Display',serif;font-size:1rem;color:var(--navy);margin-bottom:18px;display:flex;align-items:center;gap:9px}
+.panel-title::before{content:'';display:block;width:3px;height:17px;background:linear-gradient(180deg,var(--navy),var(--gold2));border-radius:2px}
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:13px}
+.cc{background:#fff;border:1px solid var(--border);border-radius:13px;padding:18px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.cc:hover{border-color:var(--navy);transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.cc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cc.tp::before{background:linear-gradient(90deg,#e67e22,#f39c12)}.cc.tc::before{background:linear-gradient(90deg,var(--blue),#60a5fa)}.cc.tk::before{background:linear-gradient(90deg,var(--red),#f87171)}.cc.td::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}.cc.to::before{background:linear-gradient(90deg,var(--navy),var(--gold2))}
+.cc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cc-badge{font-size:0.62rem;letter-spacing:0.09em;text-transform:uppercase;padding:3px 9px;border-radius:8px;font-weight:700}
+.tp .cc-badge{background:rgba(230,126,34,0.1);color:#d35400}.tc .cc-badge{background:rgba(30,95,179,0.1);color:var(--blue)}.tk .cc-badge{background:rgba(220,38,38,0.1);color:var(--red)}.td .cc-badge{background:rgba(124,58,237,0.1);color:#7c3aed}.to .cc-badge{background:rgba(26,39,68,0.08);color:var(--navy)}
+.cc-dot{width:8px;height:8px;border-radius:50%}.st-on{background:var(--green);box-shadow:0 0 6px rgba(15,155,88,0.5)}.st-pend{background:var(--amber)}.st-done{background:var(--faint)}
+.cc-title{font-size:0.87rem;color:var(--text);font-weight:600;margin-bottom:8px;line-height:1.38}
+.cc-meta{font-size:0.71rem;color:var(--text2);display:flex;flex-wrap:wrap;gap:8px}
+.cc-prog{margin-top:12px}.cp-row{font-size:0.68rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px;font-weight:500;}
+.cp-track{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.cp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--navy),var(--gold2))}
+.rq-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;transition:all 0.2s;box-shadow:var(--shadow);}
+.rq-card:hover{border-color:var(--navy);box-shadow:var(--shadow-md)}.rq-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.rq-title{font-size:0.9rem;color:var(--text);font-weight:600;margin-bottom:7px;line-height:1.35}
+.rq-desc{font-size:0.79rem;color:var(--text2);line-height:1.55;margin-bottom:12px;background:var(--bg4);border-radius:9px;padding:10px 13px;border:1px solid var(--border);}
+.rq-actions{display:flex;gap:8px}
+.btn-acc{flex:1;padding:10px;background:rgba(15,155,88,0.08);border:1.5px solid rgba(15,155,88,0.25);border-radius:9px;color:var(--green);font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;font-weight:600;}
+.btn-acc:hover{background:rgba(15,155,88,0.15);border-color:var(--green)}
+.btn-dec{padding:10px 16px;background:rgba(220,38,38,0.06);border:1.5px solid rgba(220,38,38,0.2);border-radius:9px;color:var(--red);font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.2s;font-weight:600;}
+.btn-dec:hover{background:rgba(220,38,38,0.12);border-color:var(--red)}
+.ir{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}.ir:last-child{border-bottom:none}
+.ir-l{font-size:0.72rem;color:var(--muted);flex-shrink:0;font-weight:500}.ir-v{font-size:0.82rem;color:var(--text);text-align:right;max-width:65%;line-height:1.4;font-weight:500}.ir-v.gv{color:var(--gold)}.ir-v.grn{color:var(--green)}
+.ring-wrap{position:relative;width:130px;height:130px;flex-shrink:0}.ring-svg{width:100%;height:100%;transform:rotate(-90deg)}
+.r-bg{fill:none;stroke:var(--border);stroke-width:9}.r-fg{fill:none;stroke:url(#rg);stroke-width:9;stroke-linecap:round;stroke-dasharray:339.3;stroke-dashoffset:339.3;transition:stroke-dashoffset 1.4s cubic-bezier(0.22,1,0.36,1)}
+.ring-mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-family:'Playfair Display',serif;font-size:1.75rem;color:var(--navy);line-height:1}
+.ring-lbl{font-size:0.62rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;font-weight:600;}
+.dchip{display:inline-block;padding:4px 13px;border-radius:20px;background:rgba(26,39,68,0.07);border:1px solid rgba(26,39,68,0.12);font-size:0.74rem;color:var(--navy);margin:3px;font-weight:500;}
+.hearing-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);}.hearing-item:last-child{border-bottom:none}
+.hi-date{width:46px;height:46px;background:rgba(26,39,68,0.06);border:1px solid rgba(26,39,68,0.12);border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.hi-day{font-family:'Cinzel',serif;font-size:1.05rem;color:var(--navy);line-height:1;font-weight:700}.hi-mon{font-size:0.54rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:1px}
+.hi-info{flex:1}.hi-name{font-size:0.86rem;color:var(--text);font-weight:600}.hi-court{font-size:0.72rem;color:var(--muted);margin-top:2px}
+.hi-tag{font-size:0.68rem;padding:3px 10px;border-radius:8px;white-space:nowrap;font-weight:600;}
+.urgent{background:rgba(220,38,38,0.08);color:var(--red)}.soon{background:rgba(184,134,11,0.1);color:var(--gold)}.normal{background:rgba(15,155,88,0.08);color:var(--green)}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);border:1px solid rgba(255,255,255,0.1);border-radius:13px;padding:12px 22px;display:flex;align-items:center;gap:10px;font-size:0.83rem;color:#fff;z-index:9999;white-space:nowrap;box-shadow:0 16px 48px rgba(26,39,68,0.3);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.mob-toggle{display:none;position:fixed;top:14px;left:14px;z-index:300;width:40px;height:40px;background:#fff;border:1.5px solid var(--border);border-radius:9px;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;color:var(--navy);box-shadow:var(--shadow);}
+
+/* Verification banner */
+.verify-banner{background:linear-gradient(135deg,rgba(184,134,11,0.08),rgba(184,134,11,0.03));border:1.5px solid var(--goldborder);border-radius:16px;padding:22px 24px;margin-bottom:22px;display:flex;align-items:center;gap:18px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
+.verify-banner:hover{border-color:var(--gold);box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.verify-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold3),var(--gold2),var(--gold3));}
+.verify-banner .vb-icon{font-size:2.4rem;flex-shrink:0;}
+.verify-banner .vb-content{flex:1}
+.verify-banner .vb-title{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--navy);margin-bottom:4px;}
+.verify-banner .vb-sub{font-size:0.78rem;color:var(--text2);line-height:1.45;}
+.verify-banner .vb-btn{padding:10px 22px;background:linear-gradient(135deg,var(--gold3),var(--gold));border:none;border-radius:10px;color:#fff;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;cursor:pointer;white-space:nowrap;box-shadow:0 4px 12px rgba(184,134,11,0.3);}
+.verified-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(15,155,88,0.08);border:1px solid rgba(15,155,88,0.2);border-radius:20px;padding:4px 12px;font-size:0.72rem;color:var(--green);font-weight:600;}
+
+/* Locked section overlay */
+.locked-overlay{position:relative;}
+.locked-overlay::after{content:'';position:absolute;inset:0;background:rgba(245,246,248,0.7);backdrop-filter:blur(2px);border-radius:14px;z-index:10;}
+.lock-msg{text-align:center;padding:50px 20px;position:relative;z-index:11;}
+.lock-msg .lock-icon{font-size:3rem;margin-bottom:14px;opacity:0.6;}
+.lock-msg .lock-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:8px;}
+.lock-msg .lock-sub{font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.5;}
+.lock-msg .lock-btn{display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--gold3),var(--gold));border:none;border-radius:10px;color:#fff;font-family:'Cinzel',serif;font-size:0.75rem;font-weight:600;letter-spacing:0.08em;cursor:pointer;box-shadow:0 4px 12px rgba(184,134,11,0.3);transition:all 0.2s;}
+.lock-msg .lock-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(184,134,11,0.4);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+@media(max-width:900px){.stat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.sb{transform:translateX(-100%)}.sb.open{transform:none}.dm{margin-left:0;padding:18px 16px}.mob-toggle{display:flex}.topbar{margin-top:44px}.fg-2{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span id="toast-ic">✅</span><span id="toast-tx">Done</span></div>
+
+<!-- PAGE 1 — SIGN IN -->
+<div class="pg show" id="p-signin" style="flex-direction:column;align-items:center;justify-content:center;min-height:100vh;position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -5%,rgba(212,168,67,0.07),transparent 65%);pointer-events:none;"></div>
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(212,168,67,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,168,67,0.03) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%);pointer-events:none;"></div>
+  <div class="si-wrap">
+    <div class="logo-row"><div class="logo-box">⚖</div><div class="logo-text">LEGALBRIDGE</div></div>
+    <div class="si-card" id="si-card">
+      <div id="v-main">
+        <div class="si-eyebrow">👨‍⚖️ Lawyer Portal</div>
+        <h2 class="si-h" id="auth-title">Welcome Back</h2>
+        <p class="si-sub" id="auth-sub">Sign in to access your dashboard</p>
+        <div class="tabs">
+          <button class="t on" id="tab-in" onclick="authTab('in')">Sign In</button>
+          <button class="t" id="tab-up" onclick="authTab('up')">Sign Up</button>
+        </div>
+        <!-- SIGN IN -->
+        <div id="f-in">
+          <div class="fg" id="fg-si-email">
+            <label>Gmail Address</label>
+            <input type="text" id="si-id" placeholder="yourname@gmail.com" autocomplete="off">
+            <div class="field-err" id="si-email-err" style="display:none;">⚠️ Please enter a valid Gmail address (e.g. name@gmail.com)</div>
+          </div>
+          <div class="fg"><label>Password</label><input type="password" id="si-pw" placeholder="Enter your password" autocomplete="new-password"></div>
+          <div style="text-align:right;margin-bottom:14px;"><span style="font-size:0.76rem;color:var(--gold);cursor:pointer;">Forgot password?</span></div>
+          <button class="btn-g" onclick="doSignIn()">SIGN IN</button>
+          <p style="text-align:center;margin-top:14px;font-size:0.77rem;color:var(--muted);">No account? <span style="color:var(--gold);cursor:pointer;" onclick="authTab('up')">Create one →</span></p>
+        </div>
+        <!-- SIGN UP -->
+        <div id="f-up" style="display:none;">
+          <div class="fg-2">
+            <div class="fg"><label>First Name</label><input type="text" id="up-fn" placeholder="First name"></div>
+            <div class="fg"><label>Last Name</label><input type="text" id="up-ln" placeholder="Last name"></div>
+          </div>
+          <div class="fg" id="fg-email">
+            <label>Gmail Address</label>
+            <input type="email" id="up-em" placeholder="yourname@gmail.com" autocomplete="off">
+            <div class="field-err" id="email-err" style="display:none;">⚠️ Please enter a valid Gmail address (e.g. name@gmail.com)</div>
+          </div>
+          <div class="fg fg-ph">
+            <label>Phone Number</label>
+            <div class="fg-ph"><span class="pfx">+91</span><input type="tel" id="up-ph" placeholder="98765 43210" maxlength="10"></div>
+          </div>
+          <div class="fg">
+            <label>Office / Residential Address</label>
+            <textarea id="up-addr" placeholder="e.g. Chamber 12, Delhi HC, New Delhi – 110001" rows="2" style="resize:none;"></textarea>
+          </div>
+          <div class="fg-2">
+            <div class="fg"><label>Password</label><input type="password" id="up-pw" placeholder="Min 8 characters"></div>
+            <div class="fg"><label>Confirm Password</label><input type="password" id="up-cp" placeholder="Repeat password"></div>
+          </div>
+          <button class="btn-g" onclick="doSignUp()">CONTINUE →</button>
+          <p style="text-align:center;margin-top:14px;font-size:0.77rem;color:var(--muted);">Already registered? <span style="color:var(--gold);cursor:pointer;" onclick="authTab('in')">Sign in</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2 — DASHBOARD -->
+<div class="pg" id="p-dash" style="flex-direction:row;min-height:100vh;">
+  <div class="mob-toggle" onclick="document.getElementById('main-sb').classList.toggle('open')">☰</div>
+  <nav class="sb" id="main-sb">
+    <div class="sb-brand"><div class="sb-logo">⚖ LEGALBRIDGE</div><div class="sb-role">Lawyer Portal</div></div>
+    <div class="sb-nav">
+      <div class="nl">Main</div>
+      <div class="ni on" onclick="showSec('overview',this)"><span class="ni-ic">🏠</span>Dashboard</div>
+      <div class="ni" onclick="showSec('profile',this)"><span class="ni-ic">👤</span>My Profile</div>
+      <div class="ni" id="nav-verification" onclick="showSec('verification',this)"><span class="ni-ic">🛡️</span>Verification<span class="ni-lock" id="nav-verify-status">⚠️</span></div>
+      <div class="ni" id="nav-cases" onclick="navCasesClick(this)"><span class="ni-ic">📂</span>Active Cases<span class="ni-lock" id="lock-cases">🔒</span></div>
+      <div class="ni" id="nav-requests" onclick="navRequestsClick(this)"><span class="ni-ic">📥</span>Case Requests<span class="ni-badge" id="badge-requests" style="display:none;">3</span><span class="ni-lock" id="lock-requests">🔒</span></div>
+      <div class="nl">Finance & Records</div>
+      <div class="ni" onclick="showSec('history',this)"><span class="ni-ic">🕒</span>Case History</div>
+      <div class="ni" onclick="showSec('earnings',this)"><span class="ni-ic">💰</span>Earnings</div>
+      <div class="ni" onclick="showSec('notifs',this)"><span class="ni-ic">🔔</span>Notifications<span class="ni-badge" id="badge-notifs">4</span></div>
+    </div>
+    <div class="sb-user" onclick="signOut()"><div class="u-av" id="sb-av"></div><div><div class="u-n" id="sb-name"></div><div class="u-s"><span class="u-dot"></span>Active · Sign Out</div></div></div>
+  </nav>
+  <main class="dm" id="dm">
+    <!-- BACK BUTTON -->
+    <div id="back-btn" onclick="goBack()" style="display:none;align-items:center;gap:7px;margin-bottom:16px;cursor:pointer;width:fit-content;padding:7px 14px 7px 10px;border-radius:9px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:0.8rem;font-weight:600;box-shadow:var(--shadow);transition:all 0.18s;" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'">
+      <span style="font-size:1rem;">←</span> Back
+    </div>
+
+    <!-- OVERVIEW -->
+    <div class="sec on" id="sec-overview">
+      <div class="topbar"><div class="tb-l"><h1>Good Morning, <em id="dash-gname"></em> 👋</h1><div class="tb-sub" id="dash-date">Monday, March 02, 2026</div></div><div class="tb-r"><div class="ib" onclick="showSec('notifs',null)">🔔<div class="dot"></div></div><button class="btn-g" id="btn-new-req" style="width:auto;padding:9px 18px;font-size:0.78rem;" onclick="showSec('requests',null)">+ New Requests</button></div></div>
+
+      <!-- Verification Banner (shown when not verified) -->
+      <div class="verify-banner" id="verify-banner" onclick="showSec('verification',null)">
+        <div class="vb-icon">🛡️</div>
+        <div class="vb-content">
+          <div class="vb-title">Complete Your Verification</div>
+          <div class="vb-sub">Complete your professional details and upload documents to unlock Active Cases and Case Requests. Verified lawyers get more client trust and visibility.</div>
+        </div>
+        <button class="vb-btn" onclick="event.stopPropagation();showSec('verification',null)">VERIFY NOW →</button>
+      </div>
+
+      <div class="stat-grid">
+        <div class="sc sg"><div class="sc-top"><div class="sc-ico">📂</div><span class="sc-trend t-up">+2 this wk</span></div><div class="sc-val" id="stat-active">8</div><div class="sc-lbl">Active Cases</div></div>
+        <div class="sc sv"><div class="sc-top"><div class="sc-ico">🏆</div><span class="sc-trend t-up">↑ 2%</span></div><div class="sc-val" id="stat-sr">94%</div><div class="sc-lbl">Success Rate</div></div>
+        <div class="sc" style="border:1px solid var(--goldborder);"><div class="sc-top"><div class="sc-ico" style="background:rgba(59,130,246,0.1);">📚</div><span class="sc-trend t-nu">All time</span></div><div class="sc-val">127</div><div class="sc-lbl">Total Cases</div></div>
+        <div class="sc sr"><div class="sc-top"><div class="sc-ico">💰</div><span class="sc-trend t-up">+₹40K</span></div><div class="sc-val">₹3.2L</div><div class="sc-lbl">Earnings (Mar)</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:260px 1fr;gap:14px;margin-bottom:20px;">
+        <div class="panel" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;">
+          <div class="ring-wrap"><svg class="ring-svg" viewBox="0 0 120 120"><defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a2744"/><stop offset="100%" stop-color="#d4a017"/></linearGradient></defs><circle class="r-bg" cx="60" cy="60" r="54"/><circle class="r-fg" id="ring" cx="60" cy="60" r="54"/></svg><div class="ring-mid"><div class="ring-pct" id="ring-n">94%</div><div class="ring-lbl">Success</div></div></div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.92rem;color:var(--navy);font-weight:600;">Overall Success Rate</div>
+          <div style="display:flex;gap:14px;"><div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--green);" id="rn-won">119</div><div style="font-size:0.65rem;color:var(--muted);">Won</div></div><div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold2);font-weight:700;">5</div><div style="font-size:0.65rem;color:var(--muted);">Settled</div></div><div style="text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--red);font-weight:700;">3</div><div style="font-size:0.65rem;color:var(--muted);">Lost</div></div></div>
+        </div>
+        <div class="panel"><div class="panel-title">Cases by Type</div><div id="bar-chart" style="display:flex;flex-direction:column;gap:12px;"></div></div>
+      </div>
+      <div class="panel"><div class="panel-title">📅 Upcoming Hearings</div><div id="hearings"></div></div>
+      <div style="margin-top:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="panel-title" style="margin:0;">Recent Active Cases</div><span style="font-size:0.75rem;color:var(--navy);font-weight:600;cursor:pointer;" onclick="showSec('cases',null)">View all →</span></div><div class="cc-grid" id="ov-cases"></div></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="sec" id="sec-profile">
+      <div class="topbar"><div class="tb-l"><h1>👤 My <em>Profile</em></h1><div class="tb-sub">Your public profile visible to clients</div></div></div>
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;">
+        <div>
+          <div class="panel" style="text-align:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(135deg,rgba(26,39,68,0.04),rgba(26,39,68,0.01));"></div>
+            <div style="position:relative;z-index:1;">
+              <div style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px;background:linear-gradient(135deg,var(--navy3),var(--navy));display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:1.8rem;color:#fff;font-weight:800;border:3px solid var(--bg3);box-shadow:0 0 0 3px var(--gold3);" id="pp-av">RM</div>
+              <div id="pp-verify-badge" style="display:inline-flex;align-items:center;gap:5px;background:rgba(184,134,11,0.08);border:1px solid var(--goldborder);border-radius:20px;padding:3px 10px;font-size:0.68rem;color:var(--gold);margin-bottom:9px;">⚠ Not Verified</div>
+              <div style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:3px;" id="pp-name">Adv. Rohit Mehta</div>
+              <div style="font-size:0.78rem;color:var(--navy);font-weight:600;margin-bottom:5px;" id="pp-spec">Property Law</div>
+              <div style="font-size:0.73rem;color:var(--muted);margin-bottom:14px;" id="pp-exp">18 years • Delhi HC, Supreme Court</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:14px;"><span style="color:var(--gold);font-size:1rem;">★★★★</span><span style="color:var(--gold);font-size:1rem;opacity:0.5;">★</span><span style="font-size:0.78rem;color:var(--muted);margin-left:5px;">4.8 (64 reviews)</span></div>
+              <div style="display:flex;gap:8px;margin-bottom:14px;"><div style="flex:1;background:var(--bg4);border-radius:9px;padding:10px 6px;text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);" id="pp-tot">127</div><div style="font-size:0.62rem;color:var(--muted);margin-top:3px;font-weight:500;">Cases</div></div><div style="flex:1;background:var(--bg4);border-radius:9px;padding:10px 6px;text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);" id="pp-sr">94%</div><div style="font-size:0.62rem;color:var(--muted);margin-top:3px;font-weight:500;">Success</div></div><div style="flex:1;background:var(--bg4);border-radius:9px;padding:10px 6px;text-align:center;"><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--text);">₹8K</div><div style="font-size:0.62rem;color:var(--muted);margin-top:3px;font-weight:500;">/hr</div></div></div>
+              <button class="btn-o" style="width:100%;margin-bottom:8px;">💬 Message</button>
+              <button class="btn-o" style="width:100%;">📅 Book Consultation</button>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:14px;"><div class="panel-title">⚖️ Practice Areas</div><div id="pp-chips"></div></div>
+        </div>
+        <div>
+          <div class="panel"><div class="panel-title">📋 About</div><p style="font-size:0.83rem;color:var(--text2);line-height:1.65;" id="pp-bio"></p></div>
+          <div class="panel"><div class="panel-title">🎓 Professional Details</div><div id="pp-details"></div></div>
+          <div class="panel"><div class="panel-title">📞 Contact Information</div><div id="pp-contact"></div></div>
+          <div class="panel"><div class="panel-title">📊 Performance Stats</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;"><div style="text-align:center;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.15);border-radius:10px;padding:13px 8px;"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--green);font-weight:700;" id="pp-won">119</div><div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Won</div></div><div style="text-align:center;background:rgba(26,39,68,0.06);border:1px solid var(--border);border-radius:10px;padding:13px 8px;"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--gold);">5</div><div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Settled</div></div><div style="text-align:center;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.12);border-radius:10px;padding:13px 8px;"><div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#ef4444;">3</div><div style="font-size:0.65rem;color:var(--muted);margin-top:2px;">Lost</div></div></div><div style="font-size:0.72rem;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:5px;"><span>Success Rate</span><span style="color:var(--gold);" id="pp-srb">94%</span></div><div class="prog-bar"><div class="prog-fill" id="pp-prog" style="width:94%"></div></div></div>
+          <div class="panel"><div class="panel-title">⭐ Client Reviews</div><div id="pp-reviews"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERIFICATION SECTION -->
+    <div class="sec" id="sec-verification">
+      <div class="topbar"><div class="tb-l"><h1>🛡️ Account <em>Verification</em></h1><div class="tb-sub">Complete your professional details and upload documents to get verified</div></div></div>
+
+      <!-- Already verified state -->
+      <div id="verified-state" style="display:none;">
+        <div class="panel" style="text-align:center;padding:50px 30px;">
+          <div style="font-size:4rem;margin-bottom:16px;">✅</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:8px;">You're Verified!</div>
+          <div style="font-size:0.85rem;color:var(--muted);margin-bottom:20px;line-height:1.5;">Your details and documents have been verified. You have full access to Active Cases and Case Requests.</div>
+          <div class="verified-badge" style="display:inline-flex;margin:0 auto;">✓ Verified Lawyer</div>
+        </div>
+      </div>
+
+      <!-- Not verified state -->
+      <div id="unverified-state">
+        <div class="step-dots" id="v-sdots" style="max-width:600px;"><div class="sdot now" id="vsd1"></div><div class="sdot" id="vsd2"></div><div class="sdot" id="vsd3"></div></div>
+
+        <!-- STEP 1: Professional Details -->
+        <div id="vstep-1">
+          <div class="setup-card" style="max-width:600px;">
+            <div class="card-title">🎓 Professional Details</div>
+            <div class="fg-2"><div class="fg"><label>Bar Council ID</label><input type="text" id="ps-bar" placeholder="e.g. BAR/2008/DL/4521"></div><div class="fg"><label>Years of Experience</label><input type="number" id="ps-exp" placeholder="e.g. 18" min="0"></div></div>
+            <div class="fg"><label>Primary Specialization</label><select id="ps-spec"><option value="">— Select —</option><option>Property Law</option><option>Civil Law</option><option>Criminal Law</option><option>Corporate & Commercial Law</option><option>Family & Divorce Law</option><option>Constitutional Law</option><option>Intellectual Property</option><option>Labour & Employment Law</option></select></div>
+            <div class="fg"><label>Courts of Practice</label><input type="text" id="ps-courts" placeholder="e.g. Delhi HC, Supreme Court of India"></div>
+            <div class="fg"><label>Qualifications</label><input type="text" id="ps-qual" placeholder="e.g. LLB – Delhi University, 2006 | LLM – NLS Bangalore, 2008"></div>
+            <div class="fg"><label>Bio / About Yourself</label><textarea id="ps-bio" rows="3" placeholder="Tell clients about your experience and expertise..."></textarea></div>
+            <div class="fg-2"><div class="fg"><label>Consultation Fee (₹/hr)</label><input type="number" id="ps-fee" placeholder="e.g. 8000"></div><div class="fg"><label>Language(s)</label><input type="text" id="ps-lang" placeholder="e.g. English, Hindi"></div></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;max-width:600px;"><button class="btn-g" style="width:auto;padding:12px 32px;" onclick="vStep(2)">Next: Upload Documents →</button></div>
+        </div>
+
+        <!-- STEP 2: Document Uploads -->
+        <div id="vstep-2" style="display:none;">
+          <div class="panel" style="max-width:600px;border:1.5px solid var(--goldborder);background:linear-gradient(135deg,rgba(184,134,11,0.04),rgba(184,134,11,0.01));">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+              <span style="font-size:1.6rem;">📎</span>
+              <div>
+                <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--navy);">Upload Required Documents</div>
+                <div style="font-size:0.78rem;color:var(--text2);margin-top:3px;">Upload the following 3 documents to complete verification.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span id="vdoc-check-1" style="font-size:0.72rem;padding:4px 10px;border-radius:8px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);">❌ Government ID</span>
+              <span id="vdoc-check-2" style="font-size:0.72rem;padding:4px 10px;border-radius:8px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);">❌ Bar Council Certificate</span>
+              <span id="vdoc-check-3" style="font-size:0.72rem;padding:4px 10px;border-radius:8px;background:var(--bg4);border:1px solid var(--border);color:var(--muted);">❌ Practice License</span>
+            </div>
+          </div>
+
+          <!-- Document 1: Government ID -->
+          <div class="panel" style="max-width:600px;">
+            <div class="card-title">🪪 Government ID</div>
+            <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">Select ID Type</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="v-id-chips">
+              <span class="chip sel" onclick="pickVId(this)">🪪 Aadhaar</span>
+              <span class="chip" onclick="pickVId(this)">🗃 PAN Card</span>
+              <span class="chip" onclick="pickVId(this)">📕 Passport</span>
+              <span class="chip" onclick="pickVId(this)">🚗 Driving Licence</span>
+            </div>
+            <div class="upzone" id="vuz1" onclick="verifyUpload('vuz1','vdoc1','Aadhaar_Card.pdf','1.2 MB',1)">
+              <div class="upz-icon">🪪</div><div class="upz-t">Click to upload Government ID</div><div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+            </div>
+            <div id="vdoc1"></div>
+          </div>
+
+          <!-- Document 2: Bar Council Certificate -->
+          <div class="panel" style="max-width:600px;">
+            <div class="card-title">📜 Bar Council Certificate</div>
+            <div class="upzone" id="vuz2" onclick="verifyUpload('vuz2','vdoc2','Bar_Council_Certificate.pdf','0.9 MB',2)">
+              <div class="upz-icon">📜</div><div class="upz-t">Click to upload Bar Certificate</div><div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+            </div>
+            <div id="vdoc2"></div>
+          </div>
+
+          <!-- Document 3: Practice License -->
+          <div class="panel" style="max-width:600px;">
+            <div class="card-title">📋 Practice License</div>
+            <div class="upzone" id="vuz3" onclick="verifyUpload('vuz3','vdoc3','Practice_License_2025.pdf','0.7 MB',3)">
+              <div class="upz-icon">📋</div><div class="upz-t">Click to upload Practice License</div><div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+            </div>
+            <div id="vdoc3"></div>
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:flex-end;max-width:600px;">
+            <button class="btn-o" onclick="vStep(1)">← Back</button>
+            <button class="btn-g" style="width:auto;padding:12px 32px;" onclick="vStep(3)">Next: Optional Info →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Optional Info + Submit -->
+        <div id="vstep-3" style="display:none;">
+          <div class="opt-banner" id="opt-banner" onclick="toggleOpt()" style="max-width:600px;"><div class="opt-banner-icon">✨</div><div><div style="font-size:0.88rem;color:var(--text);font-weight:500;margin-bottom:3px;">Optional: Enhance Your Profile</div><div style="font-size:0.77rem;color:var(--muted);line-height:1.4;">Add extra details like achievements, success rate, and specialization chips to stand out to clients.</div></div><div class="opt-toggle" id="opt-tog"></div></div>
+          <div id="opt-fields" style="display:none;">
+            <div class="setup-card" style="max-width:600px;">
+              <div class="card-title">🏆 Achievements & Track Record</div>
+              <div class="fg"><label>Notable Achievements / Awards</label><textarea id="op-ach" rows="2" placeholder="e.g. Featured in Legal500 India 2024"></textarea></div>
+              <div class="fg-2"><div class="fg"><label>Total Cases Handled</label><input type="number" id="op-tot" placeholder="e.g. 127"></div><div class="fg"><label>Cases Won</label><input type="number" id="op-won" placeholder="e.g. 119"></div></div>
+              <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(184,134,11,0.65);display:block;margin-bottom:8px;">Self-Assessed Success Rate</label>
+              <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;"><input type="range" id="op-rate" min="0" max="100" value="50" style="flex:1;accent-color:var(--gold);" oninput="document.getElementById('rate-disp').textContent=this.value+'%'"><span style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);width:48px;" id="rate-disp">50%</span></div>
+              <label style="font-size:0.69rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(184,134,11,0.65);display:block;margin-bottom:8px;">Areas of Expertise</label>
+              <div class="chip-row" id="exp-chips"><span class="chip" onclick="toggleChip(this)">Property Disputes</span><span class="chip" onclick="toggleChip(this)">Land Acquisition</span><span class="chip" onclick="toggleChip(this)">Contract Disputes</span><span class="chip" onclick="toggleChip(this)">Civil Litigation</span><span class="chip" onclick="toggleChip(this)">Corporate Governance</span><span class="chip" onclick="toggleChip(this)">Bail Applications</span><span class="chip" onclick="toggleChip(this)">Consumer Cases</span><span class="chip" onclick="toggleChip(this)">Family Disputes</span><span class="chip" onclick="toggleChip(this)">Arbitration</span><span class="chip" onclick="toggleChip(this)">Mediation</span></div>
+              <div class="fg" style="margin-top:16px;"><label>LinkedIn / Website (optional)</label><input type="url" id="op-link" placeholder="https://linkedin.com/in/yourname"></div>
+              <div class="fg"><label>Law Firm Name (if applicable)</label><input type="text" id="op-firm" placeholder="e.g. Singh & Associates"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;max-width:600px;margin-top:4px;">
+            <button class="btn-o" onclick="vStep(2)">← Back</button>
+            <button class="btn-g" style="width:auto;padding:13px 36px;" id="verify-submit-btn" onclick="submitVerification()">
+              SUBMIT FOR VERIFICATION
+            </button>
+          </div>
+          <p style="font-size:0.72rem;color:var(--muted);text-align:right;max-width:600px;margin-top:8px;">Professional details and all 3 documents are required</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE CASES -->
+    <div class="sec" id="sec-cases">
+      <div class="topbar"><div class="tb-l"><h1>📂 Active <em>Cases</em></h1><div class="tb-sub">All ongoing cases assigned to you</div></div></div>
+      <div id="cases-locked-msg"></div>
+      <div class="cc-grid" id="all-cases"></div>
+    </div>
+
+    <!-- REQUESTS -->
+    <div class="sec" id="sec-requests">
+      <div class="topbar"><div class="tb-l"><h1>📥 Case <em>Requests</em></h1><div class="tb-sub">New cases awaiting your acceptance</div></div></div>
+      <div id="requests-locked-msg"></div>
+      <div id="req-list"></div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="sec" id="sec-history"><div class="topbar"><div class="tb-l"><h1>🕒 Case <em>History</em></h1><div class="tb-sub">Completed and closed cases</div></div></div><div class="cc-grid" id="hist-cases"></div></div>
+
+    <!-- EARNINGS -->
+    <div class="sec" id="sec-earnings"><div class="topbar"><div class="tb-l"><h1>💰 <em>Earnings</em></h1><div class="tb-sub">Fees and payment tracking</div></div></div><div class="stat-grid" style="grid-template-columns:repeat(3,1fr);max-width:680px;margin-bottom:20px;"><div class="sc sg"><div class="sc-top"><div class="sc-ico" style="background:rgba(184,134,11,0.1);">📅</div></div><div class="sc-val">₹3.2L</div><div class="sc-lbl">This Month</div></div><div class="sc sv"><div class="sc-top"><div class="sc-ico">📊</div></div><div class="sc-val">₹28L</div><div class="sc-lbl">This Year</div></div><div class="sc sr"><div class="sc-top"><div class="sc-ico">⏳</div></div><div class="sc-val">₹45K</div><div class="sc-lbl">Pending</div></div></div><div class="panel" style="max-width:680px;"><div class="panel-title">Transaction History</div><div id="earn-list"></div></div></div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="sec" id="sec-notifs"><div class="topbar"><div class="tb-l"><h1>🔔 <em>Notifications</em></h1></div></div><div id="notif-list" style="max-width:640px;display:flex;flex-direction:column;gap:10px;"></div></div>
+  </main>
+</div>
+
+<!-- ─── CASE DETAIL MODAL ─── -->
+<div id="case-modal" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);overflow-y:auto;padding:24px 16px;" onclick="if(event.target===this)closeCase()">
+  <div style="max-width:820px;margin:0 auto;background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 24px 64px rgba(26,39,68,0.15);position:relative;">
+    <div style="background:linear-gradient(135deg,rgba(26,39,68,0.04),rgba(26,39,68,0.01));border-bottom:1px solid var(--border);padding:22px 26px;display:flex;align-items:flex-start;gap:14px;">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <span id="cm-badge" style="font-size:0.65rem;letter-spacing:0.09em;text-transform:uppercase;padding:4px 10px;border-radius:8px;font-weight:600;background:var(--goldfaint);color:var(--gold);">Property</span>
+          <span id="cm-status-dot" style="display:inline-flex;align-items:center;gap:5px;font-size:0.7rem;color:var(--green);font-weight:600;"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 6px var(--green);"></span>Active</span>
+        </div>
+        <h2 id="cm-title" style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--text);margin-bottom:6px;line-height:1.3;"></h2>
+        <div id="cm-meta" style="font-size:0.78rem;color:var(--text2);display:flex;gap:16px;flex-wrap:wrap;"></div>
+      </div>
+      <button onclick="closeCase()" style="background:var(--bg4);border:1px solid var(--border);color:var(--muted);width:34px;height:34px;border-radius:8px;font-size:1rem;cursor:pointer;flex-shrink:0;transition:all 0.18s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='var(--bg4)'">✕</button>
+    </div>
+    <div style="display:flex;border-bottom:1px solid var(--border);background:var(--bg4);padding:0 26px;">
+      <button class="cm-tab on" onclick="cmTab(this,'cm-overview')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid var(--navy);color:var(--navy);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;font-weight:500;">📋 Overview</button>
+      <button class="cm-tab" onclick="cmTab(this,'cm-timeline')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;">📅 Timeline</button>
+      <button class="cm-tab" onclick="cmTab(this,'cm-docs')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;">📄 Documents</button>
+      <button class="cm-tab" onclick="cmTab(this,'cm-notes')" style="padding:13px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:0.82rem;cursor:pointer;">📝 Notes</button>
+    </div>
+    <div style="padding:24px 26px;background:#fff;">
+      <div id="cm-overview">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
+          <div style="background:var(--bg4);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);font-weight:600;margin-bottom:10px;">Case Info</div>
+            <div id="cm-info-rows"></div>
+          </div>
+          <div style="background:var(--bg4);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);font-weight:600;margin-bottom:10px;">Client Details</div>
+            <div id="cm-client-rows"></div>
+          </div>
+        </div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;">
+          <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);font-weight:600;margin-bottom:10px;">Case Summary</div>
+          <p id="cm-summary" style="font-size:0.83rem;color:var(--muted);line-height:1.65;"></p>
+        </div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:12px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);font-weight:600;">Case Progress</div>
+            <div id="cm-prog-pct" style="font-size:0.78rem;color:var(--navy);font-weight:700;"></div>
+          </div>
+          <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+            <div id="cm-prog-bar" style="height:100%;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--gold2));transition:width 0.8s ease;"></div>
+          </div>
+          <div id="cm-milestones" style="display:flex;justify-content:space-between;margin-top:12px;"></div>
+        </div>
+      </div>
+      <div id="cm-timeline" style="display:none;">
+        <div id="cm-timeline-list" style="position:relative;padding-left:24px;">
+          <div style="position:absolute;left:7px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--gold),rgba(212,168,67,0.1));border-radius:2px;"></div>
+        </div>
+      </div>
+      <div id="cm-docs" style="display:none;">
+        <div id="cm-docs-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+      <div id="cm-notes" style="display:none;">
+        <div id="cm-notes-list" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;"></div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:12px;padding:14px;">
+          <textarea placeholder="Add a new note..." style="width:100%;background:transparent;border:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:0.82rem;resize:none;outline:none;min-height:60px;line-height:1.5;" id="cm-note-input"></textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+            <button onclick="addNote()" style="padding:7px 18px;background:var(--gold);border:none;border-radius:8px;color:#fff;font-family:'Cinzel',serif;font-size:0.72rem;font-weight:600;cursor:pointer;letter-spacing:0.08em;">+ ADD NOTE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LAWYER={fn:'',ln:'',email:'',phone:'',address:'',bar:'',exp:0,spec:'',courts:'',qual:'',bio:'',fee:0,lang:'',ach:'',total:0,won:0,settled:0,lost:0,sr:0,firm:'',chips:[],verified:false};
+
+// Track which verification docs have been uploaded
+let vDocsUploaded={1:false,2:false,3:false};
+
+const ACTIVE_CASES=[
+  {id:'LX-2026-0147',type:'tp',badge:'Property',title:'Land Ownership Dispute – Plot 47B, Noida',client:'Arjun Kumar',clientPhone:'+91 98110 34521',clientEmail:'arjun.kumar@gmail.com',court:'Delhi HC',hearing:'Mar 8, 2026',hearingRoom:'Court Room 4, 10:30 AM',prog:40,status:'on',filedDate:'Jan 14, 2026',retainer:'₹1,20,000',summary:'Client Arjun Kumar claims ownership of Plot 47B in Sector 12, Noida based on a registered sale deed from 2019. The opposing party, a builder consortium, disputes the title citing a prior development agreement. The matter involves examination of mutation records, registry entries, and possession history. An interim injunction restraining construction has already been obtained in the first hearing.',milestones:[{label:'Filed',done:true},{label:'Injunction',done:true},{label:'Evidence',done:false},{label:'Arguments',done:false},{label:'Judgment',done:false}],
+    timeline:[{date:'Jan 14, 2026',event:'Case filed at Delhi HC. Caveat entered on behalf of client.',type:'filed'},{date:'Jan 28, 2026',event:'First hearing. Interim injunction granted restraining construction on Plot 47B.',type:'hearing'},{date:'Feb 10, 2026',event:'Opposing counsel filed written statement and vakalatnama.',type:'update'},{date:'Feb 22, 2026',event:'Documents submitted: original sale deed, mutation certificate, possession letter.',type:'docs'},{date:'Mar 8, 2026',event:'Next hearing scheduled. Evidence recording expected to begin.',type:'upcoming'}],
+    docs:[{name:'Sale_Deed_Plot47B_2019.pdf',size:'2.1 MB',date:'Jan 14, 2026',type:'📜'},{name:'Mutation_Certificate_Noida.pdf',size:'0.8 MB',date:'Feb 22, 2026',type:'📄'},{name:'Interim_Injunction_Order.pdf',size:'1.2 MB',date:'Jan 28, 2026',type:'⚖️'},{name:'Possession_Letter_Client.pdf',size:'0.5 MB',date:'Feb 22, 2026',type:'📋'}],
+    notes:[{author:'Adv. Mehta',date:'Feb 10, 2026',text:'Opposing party claims a development agreement pre-dates our sale deed. Need to verify registration date at sub-registrar office. Check if the agreement was registered or just notarised.'},{author:'Adv. Mehta',date:'Feb 20, 2026',text:'Arjun confirmed he has been in physical possession since 2020. Neighbour testimonies available. Schedule site visit before next hearing.'}]
+  },
+  {id:'LX-2026-0152',type:'to',badge:'Corporate',title:'Contract Breach – TechCorp vs StartupXY Ltd.',client:'TechCorp Legal',clientPhone:'+91 11 4567 8900',clientEmail:'legal@techcorp.in',court:'Delhi HC',hearing:'Mar 20, 2026',hearingRoom:'Court Room 7, 11:00 AM',prog:65,status:'on',filedDate:'Dec 5, 2025',retainer:'₹3,50,000',summary:'TechCorp engaged StartupXY for a SaaS product development contract worth ₹2.4 Cr with a 9-month delivery timeline. StartupXY failed to deliver the agreed milestones and ceased communication after receiving 60% advance payment. TechCorp seeks recovery of ₹1.44 Cr paid and consequential damages of ₹80 Lakhs for business losses caused by the delay.',milestones:[{label:'Filed',done:true},{label:'Notice',done:true},{label:'Written Stmt',done:true},{label:'Arguments',done:false},{label:'Decree',done:false}],
+    timeline:[{date:'Nov 18, 2025',event:'Legal notice sent to StartupXY demanding delivery or refund within 15 days.',type:'update'},{date:'Dec 5, 2025',event:'Suit filed at Delhi HC. Summons issued to defendant.',type:'filed'},{date:'Dec 22, 2025',event:'StartupXY appeared through counsel. Written statement filed.',type:'hearing'},{date:'Jan 15, 2026',event:'Plaintiff\'s replication filed. Counterclaim of ₹40L raised by defendant.',type:'docs'},{date:'Feb 8, 2026',event:'Issues framed by the court. Case set for evidence stage.',type:'hearing'},{date:'Mar 20, 2026',event:'Next hearing. Evidence recording from TechCorp side expected.',type:'upcoming'}],
+    docs:[{name:'Development_Contract_TechCorp.pdf',size:'3.8 MB',date:'Dec 5, 2025',type:'📜'},{name:'Payment_Receipts_60pct.pdf',size:'1.1 MB',date:'Dec 5, 2025',type:'💰'},{name:'Legal_Notice_Nov2025.pdf',size:'0.4 MB',date:'Nov 18, 2025',type:'📋'},{name:'Defendant_Written_Statement.pdf',size:'2.3 MB',date:'Dec 22, 2025',type:'⚖️'},{name:'Counter_Claim_TechCorp.pdf',size:'3.4 MB',date:'Jan 15, 2026',type:'📄'}],
+    notes:[{author:'Adv. Mehta',date:'Jan 16, 2026',text:'Counterclaim of ₹40L is frivolous — they claim IP ownership over the incomplete code. Need expert witness to testify that deliverables were not met per the technical specification document.'},{author:'Adv. Mehta',date:'Feb 9, 2026',text:'Issues framed include: (1) Was there a breach? (2) Quantum of damages. (3) Validity of counterclaim. We are strong on issues 1 and 3. Issue 2 will need financial expert.'}]
+  },
+  {id:'LX-2026-0158',type:'tc',badge:'Civil',title:'Consumer Complaint – Medical Negligence Claim',client:'Priya Sharma',clientPhone:'+91 97310 88421',clientEmail:'priya.sharma@gmail.com',court:'Delhi Consumer Forum',hearing:'Mar 15, 2026',hearingRoom:'District Consumer Forum, 2:00 PM',prog:25,status:'on',filedDate:'Feb 1, 2026',retainer:'₹45,000',summary:'Priya Sharma underwent a routine laparoscopic surgery at a private hospital in South Delhi. Post-surgery complications led to a secondary emergency procedure. Medical records indicate the initial surgery was conducted without adequate pre-op testing. The complaint seeks compensation of ₹18 Lakhs for medical expenses, pain and suffering, and loss of livelihood during recovery.',milestones:[{label:'Filed',done:true},{label:'Notice',done:true},{label:'Hospital Reply',done:false},{label:'Expert Report',done:false},{label:'Order',done:false}],
+    timeline:[{date:'Feb 1, 2026',event:'Consumer complaint filed against hospital and operating surgeon.',type:'filed'},{date:'Feb 8, 2026',event:'Forum admitted complaint and issued notice to respondents.',type:'hearing'},{date:'Feb 28, 2026',event:'Hospital acknowledged notice. Requested 30-day extension for reply.',type:'update'},{date:'Mar 15, 2026',event:'Next date. Hospital reply expected. If not filed, ex-parte proceedings.',type:'upcoming'}],
+    docs:[{name:'Medical_Records_Priya.pdf',size:'4.2 MB',date:'Feb 1, 2026',type:'🏥'},{name:'Hospital_Bills_Total.pdf',size:'1.8 MB',date:'Feb 1, 2026',type:'💰'},{name:'Doctor_Prescription_Chain.pdf',size:'0.9 MB',date:'Feb 1, 2026',type:'📋'},{name:'Consumer_Complaint_Draft.pdf',size:'1.1 MB',date:'Feb 1, 2026',type:'📜'}],
+    notes:[{author:'Adv. Mehta',date:'Feb 5, 2026',text:'Need AIIMS expert opinion to establish standard of care breach. Pre-op ECG and blood reports were not done for a 58-year-old diabetic patient — this is a clear protocol violation.'}]
+  },
+  {id:'LX-2026-0163',type:'td',badge:'Divorce',title:'Mutual Consent Divorce – Gupta vs Gupta',client:'Neha & Ravi Gupta',clientPhone:'+91 98200 11543',clientEmail:'neha.gupta@gmail.com',court:'Delhi Family Court',hearing:'Mar 25, 2026',hearingRoom:'Family Court Room 2, 11:30 AM',prog:80,status:'on',filedDate:'Nov 10, 2025',retainer:'₹60,000',summary:'Both parties have mutually agreed to dissolve their 9-year marriage under Section 13B of the Hindu Marriage Act. Key terms include: custody of minor daughter (age 7) with wife, visitation rights for husband on alternate weekends, one-time alimony settlement of ₹25 Lakhs, and transfer of jointly-held Dwarka flat to wife. First motion was recorded in January 2026.',milestones:[{label:'Filed',done:true},{label:'1st Motion',done:true},{label:'Cooling Period',done:true},{label:'2nd Motion',done:false},{label:'Decree',done:false}],
+    timeline:[{date:'Nov 10, 2025',event:'Petition filed jointly under Section 13B HMA. Both parties present.',type:'filed'},{date:'Jan 7, 2026',event:'First motion recorded. Court noted consent of both parties. 6-month cooling period waived on application.',type:'hearing'},{date:'Feb 3, 2026',event:'Settlement deed executed before notary — custody, alimony, and property terms finalised.',type:'docs'},{date:'Mar 25, 2026',event:'Second motion hearing scheduled. Decree expected on this date.',type:'upcoming'}],
+    docs:[{name:'Divorce_Petition_13B.pdf',size:'1.3 MB',date:'Nov 10, 2025',type:'📜'},{name:'Settlement_Deed_Notarised.pdf',size:'2.0 MB',date:'Feb 3, 2026',type:'⚖️'},{name:'Custody_Agreement_Signed.pdf',size:'0.7 MB',date:'Feb 3, 2026',type:'👶'},{name:'Property_Transfer_Draft.pdf',size:'1.5 MB',date:'Feb 3, 2026',type:'🏠'}],
+    notes:[{author:'Adv. Mehta',date:'Feb 4, 2026',text:'All terms finalised and signed. Property transfer will require separate stamp duty payment — client Neha informed. Second motion should be straightforward, decree expected same day.'}]
+  },
+  {id:'LX-2026-0170',type:'tp',badge:'Property',title:'Property Registration Fraud – Gurgaon Sector 14',client:'Vikram Singh',clientPhone:'+91 99101 77832',clientEmail:'vikram.singh@gmail.com',court:'Punjab & Haryana HC',hearing:'Apr 2, 2026',hearingRoom:'Court Room 12, 10:00 AM',prog:10,status:'pend',filedDate:'Feb 20, 2026',retainer:'₹95,000',summary:'Vikram Singh discovered that his ancestral property in Gurgaon Sector 14 was fraudulently transferred to a third party using a forged power of attorney in his name. The registry was done in December 2025. An FIR has been filed with Gurgaon Cyber Crime Cell. The civil writ before Punjab & Haryana HC seeks cancellation of the fraudulent registry and restoration of title.',milestones:[{label:'FIR Filed',done:true},{label:'HC Petition',done:false},{label:'Stay Order',done:false},{label:'Trial',done:false},{label:'Judgment',done:false}],
+    timeline:[{date:'Jan 28, 2026',event:'Client approached. FIR filed at Gurgaon Cyber Crime PS under IPC 420, 467, 468.',type:'filed'},{date:'Feb 10, 2026',event:'Forensic handwriting report confirms signature on PoA is forged.',type:'docs'},{date:'Feb 20, 2026',event:'Writ petition filed at Punjab & Haryana HC seeking cancellation of sale deed.',type:'filed'},{date:'Apr 2, 2026',event:'First hearing. Application for stay on third-party transfer to be argued.',type:'upcoming'}],
+    docs:[{name:'FIR_Gurgaon_CyberCrime.pdf',size:'0.6 MB',date:'Jan 28, 2026',type:'🚔'},{name:'Original_Title_Deed_Vikram.pdf',size:'1.9 MB',date:'Feb 20, 2026',type:'📜'},{name:'Forged_PoA_Copy.pdf',size:'1.1 MB',date:'Feb 20, 2026',type:'⚠️'},{name:'Handwriting_Expert_Report.pdf',size:'2.4 MB',date:'Feb 10, 2026',type:'🔬'}],
+    notes:[{author:'Adv. Mehta',date:'Feb 21, 2026',text:'Forged PoA was registered at Gurgaon SRO — need to file complaint with Inspector General of Registration as well. The third party claims to be a bona fide purchaser. We need to establish they had constructive notice. Check newspaper mutation notices for the area.'}]
+  },
+];
+const REQUESTS=[
+  {id:'REQ-01',type:'tk',badge:'Criminal',title:'Anticipatory Bail Application – False FIR Filed',client:'Anish Verma',clientPhone:'+91 98001 54321',clientEmail:'anish.verma@gmail.com',court:'Delhi Sessions Court',urg:'high',docs:3,desc:'Client has been falsely accused by a business partner. FIR filed under IPC 420 & 406. Anticipatory bail required urgently.',summary:'Anish Verma, a Delhi-based entrepreneur, has been falsely implicated in a cheating and criminal breach of trust case filed by his former business partner. The FIR was filed under IPC Sections 420 and 406 at Lajpat Nagar PS. Anticipatory bail needs to be filed at Delhi Sessions Court before the client is arrested. All documents including partnership deed, bank statements, and WhatsApp correspondence proving innocence are available.',hearingRoom:'Sessions Court Room 3, TBD',retainer:'₹75,000',filedDate:null,milestones:[{label:'Filed',done:false},{label:'Bail Hearing',done:false},{label:'Evidence',done:false},{label:'Arguments',done:false},{label:'Order',done:false}],timeline:[{date:'Today',event:'New case request received. Anticipatory bail required urgently.',type:'upcoming'}],docs:[{name:'FIR_Copy_Lajpat_Nagar.pdf',size:'0.5 MB',date:'Today',type:'🚔'},{name:'Partnership_Deed.pdf',size:'1.2 MB',date:'Today',type:'📜'},{name:'Bank_Statements_6months.pdf',size:'2.1 MB',date:'Today',type:'💰'}],notes:[]},
+  {id:'REQ-02',type:'tp',badge:'Property',title:'Property Partition Dispute – 3 Siblings',client:'Kapoor Family',clientPhone:'+91 99200 87654',clientEmail:'kapoor.family@gmail.com',court:'Hyderabad HC',urg:'medium',docs:4,desc:'Father passed away intestate. ₹2.2Cr property in Hyderabad. One sibling refusing to participate in partition.',summary:'Mr. Ramesh Kapoor passed away intestate in October 2025 leaving behind a residential property worth ₹2.2 Crore in Banjara Hills, Hyderabad. Of his three children, two wish to sell the property and divide the proceeds equally. The third sibling, currently residing in the property, is refusing to vacate or agree to partition. A civil partition suit needs to be filed at Hyderabad HC.',hearingRoom:'Hyderabad HC Civil Division, TBD',retainer:'₹90,000',filedDate:null,milestones:[{label:'Filed',done:false},{label:'Notice',done:false},{label:'Written Stmt',done:false},{label:'Arguments',done:false},{label:'Decree',done:false}],timeline:[{date:'Today',event:'New case request received. Partition suit to be filed at Hyderabad HC.',type:'upcoming'}],docs:[{name:'Property_Title_Deed.pdf',size:'1.8 MB',date:'Today',type:'📜'},{name:'Death_Certificate_Father.pdf',size:'0.3 MB',date:'Today',type:'📋'},{name:'Legal_Heir_Certificate.pdf',size:'0.4 MB',date:'Today',type:'⚖️'},{name:'Property_Valuation_Report.pdf',size:'0.9 MB',date:'Today',type:'💰'}],notes:[]},
+  {id:'REQ-03',type:'tc',badge:'Civil',title:'Wrongful Termination Without Notice – IT Sector',client:'Meena Iyer',clientPhone:'+91 97400 22133',clientEmail:'meena.iyer@gmail.com',court:'Bangalore Labour Court',urg:'low',docs:2,desc:'Client was terminated without the 30-day notice period as per appointment letter. All documents available.',summary:'Meena Iyer, a senior software engineer, was abruptly terminated by her employer without the 30-day notice period mandated in her appointment letter. She is entitled to 30 days salary in lieu of notice (₹1.4L) plus full and final settlement dues. The Labour Court complaint under the Industrial Disputes Act will seek reinstatement or compensation. All employment documents, termination letter, and payslips are available.',hearingRoom:'Bangalore Labour Court, TBD',retainer:'₹35,000',filedDate:null,milestones:[{label:'Filed',done:false},{label:'Notice',done:false},{label:'Reply',done:false},{label:'Hearing',done:false},{label:'Award',done:false}],timeline:[{date:'Today',event:'New case request received. Labour complaint to be filed at Bangalore Labour Court.',type:'upcoming'}],docs:[{name:'Appointment_Letter.pdf',size:'0.6 MB',date:'Today',type:'📋'},{name:'Termination_Letter.pdf',size:'0.4 MB',date:'Today',type:'⚠️'}],notes:[]}
+];
+const HISTORY=[{type:'tp',badge:'Property',title:'Inheritance Dispute – Kapoor Family Estate',client:'Kapoor Estate',out:'Won',date:'Dec 2025'},{type:'to',badge:'Corporate',title:'IPO Legal Documentation – StartupABC',client:'StartupABC',out:'Completed',date:'Nov 2025'},{type:'tc',badge:'Civil',title:'Defamation Case – Media Publication Co.',client:'Rakesh Jain',out:'Settlement',date:'Oct 2025'},{type:'tp',badge:'Property',title:'Land Acquisition Compensation Appeal',client:'Gram Panchayat, UP',out:'Won',date:'Sep 2025'},{type:'tk',badge:'Criminal',title:'Bail Application – Business Fraud Accusation',client:'Confidential',out:'Won',date:'Aug 2025'}];
+const EARNINGS=[{case:'Land Ownership – Arjun Kumar',date:'Mar 01, 2026',amt:'₹25,000',paid:true},{case:'TechCorp Contract Dispute',date:'Feb 22, 2026',amt:'₹80,000',paid:true},{case:'Mutual Consent Divorce – Gupta',date:'Feb 15, 2026',amt:'₹35,000',paid:true},{case:'Medical Negligence – Sharma',date:'Feb 05, 2026',amt:'₹20,000',paid:true},{case:'Property Fraud – Vikram Singh',date:'Apr 01, 2026',amt:'₹40,000',paid:false}];
+const NOTIFS=[{ic:'📥',title:'New Case Request',body:'A new urgent Criminal case matching your specialization was posted 1 hour ago.',time:'1 hour ago',c:'var(--gold)'},{ic:'💰',title:'Payment Received',body:'₹25,000 received from Arjun Kumar for Land Ownership Case retainer. Ref: TXN-98712.',time:'Yesterday',c:'var(--green)'},{ic:'📅',title:'Hearing Reminder',body:'Land Ownership Dispute hearing on March 8, 2026 at Delhi HC, Room 4 – 10:30 AM.',time:'2 days ago',c:'var(--blue)'},{ic:'⭐',title:'New Client Review',body:'Priya Sharma left a 5-star review. Your rating is now 4.8.',time:'3 days ago',c:'var(--amber)'}];
+const REVIEWS=[{name:'Arjun Kumar',stars:5,text:'Adv. Mehta handled our property dispute brilliantly. Always available, very clear in communication.',date:'Feb 2026'},{name:'Priya Sharma',stars:5,text:'Extremely professional and thorough. Got us an excellent outcome in the consumer complaint.',date:'Jan 2026'},{name:'Vikram Singh',stars:4,text:'Very knowledgeable, especially in property matters. Would definitely recommend.',date:'Dec 2025'}];
+
+// ─── AUTH ───
+function authTab(t){document.getElementById('tab-in').classList.toggle('on',t==='in');document.getElementById('tab-up').classList.toggle('on',t==='up');document.getElementById('f-in').style.display=t==='in'?'block':'none';document.getElementById('f-up').style.display=t==='up'?'block':'none';document.getElementById('auth-title').textContent=t==='in'?'Welcome Back':'Create Account';document.getElementById('auth-sub').textContent=t==='in'?'Sign in to access your dashboard':'Register as a verified lawyer';}
+
+function clearEmailErr(){document.getElementById('up-em').classList.remove('invalid');document.getElementById('email-err').style.display='none';}
+function clearSignInErr(){document.getElementById('si-id').classList.remove('invalid');document.getElementById('si-email-err').style.display='none';}
+
+async function doSignIn() {
+  const email = document.getElementById("si-id").value;
+  const password = document.getElementById("si-pw").value;
+
+  try {
+    const response = await fetch("http://localhost:3000/api/lawyer/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    if (response.ok) {
+      localStorage.setItem("lawyer", JSON.stringify(data.lawyer));
+
+      // Switch to dashboard page
+      document.getElementById("p-signin").classList.remove("show");
+      document.getElementById("p-dash").classList.add("show");
+
+      // Set lawyer name in sidebar + dashboard
+      document.getElementById("sb-name").innerText =
+        data.lawyer.firstName + " " + data.lawyer.lastName;
+
+      document.getElementById("dash-gname").innerText =
+        data.lawyer.firstName;
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
+}
+
+async function doSignUp() {
+  const firstName = document.getElementById("up-fn").value;
+  const lastName = document.getElementById("up-ln").value;
+  const email = document.getElementById("up-em").value;
+  const phone = document.getElementById("up-ph").value;
+  const address = document.getElementById("up-addr").value;
+  const password = document.getElementById("up-pw").value;
+  const confirmPassword = document.getElementById("up-cp").value;
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3000/api/lawyer/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        password
+      })
+    });
+
+    const data = await response.json();
+    alert(data.message);
+
+    if (response.ok) {
+      authTab("in"); // Switch to Sign In tab
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Server error");
+  }
+}
+
+// ─── VERIFICATION STEPS ───
+let vCur=1;
+function vStep(n){
+  document.getElementById('vstep-'+vCur).style.display='none';
+  vCur=n;
+  document.getElementById('vstep-'+n).style.display='block';
+  for(let i=1;i<=3;i++){const d=document.getElementById('vsd'+i);d.className='sdot'+(i<n?' done':i===n?' now':'')}
+  document.querySelector('#sec-verification .topbar').scrollIntoView({behavior:'smooth',block:'start'});
+}
+let optOn=false;
+function toggleOpt(){optOn=!optOn;document.getElementById('opt-tog').classList.toggle('on',optOn);document.getElementById('opt-fields').style.display=optOn?'block':'none'}
+function toggleChip(el){el.classList.toggle('sel')}
+
+// ─── VERIFICATION ───
+function pickVId(el){document.querySelectorAll('#v-id-chips .chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
+
+function verifyUpload(zone,out,fname,fsize,docNum){
+  document.getElementById(zone).style.display='none';
+  document.getElementById(out).innerHTML=`<div class="file-done"><span style="font-size:1.2rem;">📄</span><div class="fd-name">${fname}</div><div class="fd-sz">${fsize}</div><span style="color:var(--green);font-size:1rem;">✅</span></div>`;
+  toast('📎 '+fname+' uploaded');
+  vDocsUploaded[docNum]=true;
+  // Update checklist
+  const checkEl=document.getElementById('vdoc-check-'+docNum);
+  if(checkEl){
+    const labels={1:'Government ID',2:'Bar Council Certificate',3:'Practice License'};
+    checkEl.textContent='✅ '+labels[docNum];
+    checkEl.style.background='rgba(15,155,88,0.08)';
+    checkEl.style.borderColor='rgba(15,155,88,0.2)';
+    checkEl.style.color='var(--green)';
+  }
+}
+
+function submitVerification(){
+  // Validate professional details
+  const bar=document.getElementById('ps-bar').value.trim();
+  const exp=document.getElementById('ps-exp').value.trim();
+  const spec=document.getElementById('ps-spec').value;
+  const courts=document.getElementById('ps-courts').value.trim();
+  const qual=document.getElementById('ps-qual').value.trim();
+  const bio=document.getElementById('ps-bio').value.trim();
+  const fee=document.getElementById('ps-fee').value.trim();
+  if(!bar||!exp||!spec||!courts||!qual||!bio||!fee){toast('Please fill all professional details in Step 1','⚠️');vStep(1);return;}
+  // Validate documents
+  if(!vDocsUploaded[1]||!vDocsUploaded[2]||!vDocsUploaded[3]){toast('Please upload all 3 documents in Step 2','⚠️');vStep(2);return;}
+  // Save professional details to LAWYER object
+  LAWYER.bar=bar;LAWYER.exp=parseInt(exp)||LAWYER.exp;LAWYER.spec=spec;LAWYER.courts=courts;LAWYER.qual=qual;LAWYER.bio=bio;LAWYER.fee=parseInt(fee)||LAWYER.fee;LAWYER.lang=document.getElementById('ps-lang').value.trim()||LAWYER.lang;
+  // Save optional info if toggled
+  if(optOn){LAWYER.ach=document.getElementById('op-ach').value||LAWYER.ach;LAWYER.total=parseInt(document.getElementById('op-tot').value)||LAWYER.total;LAWYER.won=parseInt(document.getElementById('op-won').value)||LAWYER.won;LAWYER.sr=parseInt(document.getElementById('op-rate').value)||LAWYER.sr;LAWYER.chips=Array.from(document.querySelectorAll('#exp-chips .chip.sel')).map(c=>c.textContent)}
+  LAWYER.verified=true;
+  toast('✅ Verification complete! Cases & Requests unlocked.');
+  updateVerificationUI();renderProfile();
+  // Show verified state
+  document.getElementById('unverified-state').style.display='none';
+  document.getElementById('verified-state').style.display='block';
+}
+
+function updateVerificationUI(){
+  const isVerified=LAWYER.verified;
+
+  // Verification banner on dashboard
+  const vBanner=document.getElementById('verify-banner');
+  if(vBanner) vBanner.style.display=isVerified?'none':'flex';
+
+  // Sidebar locks
+  const lockCases=document.getElementById('lock-cases');
+  const lockReq=document.getElementById('lock-requests');
+  const badgeReq=document.getElementById('badge-requests');
+  const navVerifyStatus=document.getElementById('nav-verify-status');
+
+  if(lockCases) lockCases.style.display=isVerified?'none':'';
+  if(lockReq) lockReq.style.display=isVerified?'none':'';
+  if(badgeReq&&isVerified) {badgeReq.style.display=REQUESTS.length>0?'':'none';}
+  if(navVerifyStatus) navVerifyStatus.textContent=isVerified?'✅':'⚠️';
+
+  // Profile verify badge
+  const ppBadge=document.getElementById('pp-verify-badge');
+  if(ppBadge){
+    if(isVerified){
+      ppBadge.innerHTML='✓ Verified Lawyer';
+      ppBadge.style.background='rgba(15,155,88,0.08)';
+      ppBadge.style.borderColor='rgba(15,155,88,0.2)';
+      ppBadge.style.color='var(--green)';
+    } else {
+      ppBadge.innerHTML='⚠ Not Verified';
+      ppBadge.style.background='rgba(184,134,11,0.08)';
+      ppBadge.style.borderColor='var(--goldborder)';
+      ppBadge.style.color='var(--gold)';
+    }
+  }
+
+  // Cases section
+  renderLockedOrCases();
+  renderLockedOrRequests();
+
+  // Verification section states
+  if(isVerified){
+    const us=document.getElementById('unverified-state');
+    const vs=document.getElementById('verified-state');
+    if(us) us.style.display='none';
+    if(vs) vs.style.display='block';
+  }
+}
+
+function renderLockedOrCases(){
+  const lockedMsg=document.getElementById('cases-locked-msg');
+  const casesGrid=document.getElementById('all-cases');
+  if(!LAWYER.verified){
+    if(lockedMsg) lockedMsg.innerHTML=`<div class="lock-msg"><div class="lock-icon">🔒</div><div class="lock-title">Verification Required</div><div class="lock-sub">Complete your verification by filling in your professional details and uploading documents to access Active Cases.</div><button class="lock-btn" onclick="showSec('verification',null)">🛡️ COMPLETE VERIFICATION</button></div>`;
+    if(casesGrid) casesGrid.style.display='none';
+  } else {
+    if(lockedMsg) lockedMsg.innerHTML='';
+    if(casesGrid) casesGrid.style.display='';
+    renderAllCases();
+  }
+}
+
+function renderLockedOrRequests(){
+  const lockedMsg=document.getElementById('requests-locked-msg');
+  const reqList=document.getElementById('req-list');
+  if(!LAWYER.verified){
+    if(lockedMsg) lockedMsg.innerHTML=`<div class="lock-msg"><div class="lock-icon">🔒</div><div class="lock-title">Verification Required</div><div class="lock-sub">Complete your verification by filling in your professional details and uploading documents to access Case Requests.</div><button class="lock-btn" onclick="showSec('verification',null)">🛡️ COMPLETE VERIFICATION</button></div>`;
+    if(reqList) reqList.style.display='none';
+  } else {
+    if(lockedMsg) lockedMsg.innerHTML='';
+    if(reqList) reqList.style.display='';
+    renderRequests();
+  }
+}
+
+function navCasesClick(el){
+  if(!LAWYER.verified){showSec('cases',el);return;}
+  showSec('cases',el);
+}
+function navRequestsClick(el){
+  if(!LAWYER.verified){showSec('requests',el);return;}
+  showSec('requests',el);
+}
+
+// ─── DASHBOARD ───
+function initDash(){
+  const name=(LAWYER.fn+' '+LAWYER.ln).trim()||'Lawyer';const ab=((LAWYER.fn[0]||'')+(LAWYER.ln[0]||'')).toUpperCase()||'?';
+  document.getElementById('sb-name').textContent=name;document.getElementById('sb-av').textContent=ab;document.getElementById('dash-gname').textContent=LAWYER.fn||name;
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('stat-sr').textContent=LAWYER.sr+'%';document.getElementById('ring-n').textContent=LAWYER.sr+'%';document.getElementById('rn-won').textContent=LAWYER.won;
+  const circ=2*Math.PI*54;setTimeout(()=>{const r=document.getElementById('ring');if(r)r.style.strokeDashoffset=circ-(LAWYER.sr/100)*circ},300);
+  renderBarChart();renderHearings();renderOvCases();renderAllCases();renderRequests();renderHistory();renderEarnings();renderNotifs();renderProfile();updateBadges();updateVerificationUI();
+}
+
+function renderBarChart(){const data=[{label:'Property',n:52,g:'linear-gradient(90deg,#8a6520,#f0c96a)'},{label:'Civil',n:38,g:'linear-gradient(90deg,#1e40af,#60a5fa)'},{label:'Criminal',n:18,g:'linear-gradient(90deg,#7f1d1d,#f87171)'},{label:'Corporate',n:14,g:'linear-gradient(90deg,#14532d,#4ade80)'},{label:'Divorce',n:5,g:'linear-gradient(90deg,#4c1d95,#a78bfa)'}];const max=52;document.getElementById('bar-chart').innerHTML=data.map(d=>`<div style="display:flex;align-items:center;gap:10px;"><div style="font-size:0.76rem;color:var(--text2);width:70px;flex-shrink:0;">${d.label}</div><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div data-w="${(d.n/max*100).toFixed(0)}" data-g="${d.g}" class="bbar" style="height:100%;border-radius:4px;width:0%;transition:width 1.2s cubic-bezier(0.22,1,0.36,1);"></div></div><div style="font-size:0.76rem;color:var(--text);font-weight:600;width:22px;text-align:right;">${d.n}</div></div>`).join('');setTimeout(()=>document.querySelectorAll('.bbar').forEach(b=>{b.style.width=b.dataset.w+'%';b.style.background=b.dataset.g}),100)}
+
+function renderHearings(){const h=[{day:'08',mon:'MAR',name:'Land Ownership Dispute – Arjun Kumar',court:'Delhi HC, Room 4 • 10:30 AM',tag:'soon',tagLabel:'6 days'},{day:'15',mon:'MAR',name:'Medical Negligence – Consumer Forum',court:'Delhi Consumer Forum • 2:00 PM',tag:'normal',tagLabel:'13 days'},{day:'20',mon:'MAR',name:'Contract Breach – TechCorp',court:'Delhi HC, Room 7 • 11:00 AM',tag:'normal',tagLabel:'18 days'}];document.getElementById('hearings').innerHTML=h.map(x=>`<div class="hearing-item"><div class="hi-date"><div class="hi-day">${x.day}</div><div class="hi-mon">${x.mon}</div></div><div class="hi-info"><div class="hi-name">${x.name}</div><div class="hi-court">🏛 ${x.court}</div></div><span class="hi-tag ${x.tag}">${x.tagLabel}</span></div>`).join('')}
+
+function caseCardHTML(c){return`<div class="cc ${c.type}" onclick="openCase('${c.id}')" style="cursor:pointer;"><div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-${c.status||'on'}"></div></div><div class="cc-title">${c.title}</div><div class="cc-meta"><span>👤 ${c.client}</span><span>🏛 ${c.court}</span></div>${c.hearing?`<div class="cc-meta" style="margin-top:4px;"><span>📅 Next: ${c.hearing}</span></div>`:''}${c.prog!==undefined?`<div class="cc-prog"><div class="cp-row"><span>Progress</span><span>${c.prog}%</span></div><div class="cp-track"><div class="cp-fill" style="width:${c.prog}%"></div></div></div>`:''}<div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--gold);display:flex;align-items:center;gap:5px;">View full details →</div></div>`}
+
+function openCase(caseId){
+  if(!LAWYER.verified){toast('Complete verification to view case details','⚠️');showSec('verification',null);return;}
+  const c=ACTIVE_CASES.find(x=>x.id===caseId);if(!c)return;
+  document.getElementById('cm-title').textContent=c.title;document.getElementById('cm-badge').textContent=c.badge;
+  document.getElementById('cm-meta').innerHTML=`<span>👤 ${c.client}</span><span>🏛 ${c.court}</span><span>📅 ${c.hearing}</span><span>🆔 ${c.id}</span>`;
+  document.getElementById('cm-info-rows').innerHTML=[{l:'Case ID',v:c.id},{l:'Court',v:c.court},{l:'Hearing Room',v:c.hearingRoom},{l:'Filed On',v:c.filedDate},{l:'Retainer',v:c.retainer},{l:'Status',v:c.status==='on'?'🟢 Active':'🟡 Pending'}].map(r=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.78rem;"><span style="color:var(--muted);">${r.l}</span><span style="color:var(--text);text-align:right;max-width:55%;">${r.v}</span></div>`).join('');
+  document.getElementById('cm-client-rows').innerHTML=[{l:'Name',v:c.client},{l:'Phone',v:c.clientPhone},{l:'Email',v:c.clientEmail}].map(r=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.78rem;"><span style="color:var(--muted);">${r.l}</span><span style="color:var(--text);text-align:right;max-width:60%;">${r.v}</span></div>`).join('');
+  document.getElementById('cm-summary').textContent=c.summary;
+  document.getElementById('cm-prog-pct').textContent=c.prog+'% Complete';document.getElementById('cm-prog-bar').style.width=c.prog+'%';
+  document.getElementById('cm-milestones').innerHTML=c.milestones.map(m=>`<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;${m.done?'background:var(--navy);color:#fff;':'background:var(--bg4);color:var(--muted);border:1px solid var(--border);'}">${m.done?'✓':'○'}</div><span style="font-size:0.6rem;color:${m.done?'var(--gold)':'var(--faint)'};text-align:center;max-width:60px;line-height:1.2;">${m.label}</span></div>`).join('');
+  const tlColors={filed:'var(--navy)',hearing:'var(--blue)',update:'var(--green)',docs:'var(--amber)',upcoming:'var(--faint)'};
+  document.getElementById('cm-timeline-list').innerHTML=c.timeline.map(t=>`<div style="position:relative;margin-bottom:20px;padding-left:14px;"><div style="position:absolute;left:-17px;top:3px;width:12px;height:12px;border-radius:50%;background:${tlColors[t.type]||'var(--gold)'};border:2px solid var(--bg3);"></div><div style="font-size:0.7rem;color:var(--navy);font-weight:700;margin-bottom:3px;letter-spacing:0.04em;">${t.date}</div><div style="font-size:0.82rem;color:${t.type==='upcoming'?'var(--muted)':'var(--text)'};line-height:1.4;${t.type==='upcoming'?'font-style:italic;':''}">${t.event}</div></div>`).join('');
+  document.getElementById('cm-docs-list').innerHTML=c.docs.map(d=>`<div style="display:flex;align-items:center;gap:13px;background:var(--bg4);border:1px solid var(--border);border-radius:11px;padding:13px 16px;cursor:pointer;transition:border-color 0.18s;" onmouseover="this.style.borderColor='var(--navy)'" onmouseout="this.style.borderColor='var(--border)'" onclick="toast('📄 Opening ${d.name}...')"><span style="font-size:1.6rem;">${d.type}</span><div style="flex:1;"><div style="font-size:0.83rem;color:var(--text);font-weight:500;">${d.name}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${d.size} · Added ${d.date}</div></div><span style="font-size:0.75rem;color:var(--navy);padding:5px 12px;background:rgba(26,39,68,0.07);border:1px solid var(--border);border-radius:7px;">↓ View</span></div>`).join('');
+  renderCaseNotes(c);cmTab(document.querySelector('.cm-tab'),'cm-overview');
+  document.getElementById('case-modal').style.display='block';document.getElementById('case-modal').dataset.caseId=caseId;document.body.style.overflow='hidden';
+}
+
+function renderCaseNotes(c){document.getElementById('cm-notes-list').innerHTML=(c.notes||[]).map(n=>`<div style="background:var(--bg4);border:1px solid var(--border);border-left:3px solid var(--navy);border-radius:11px;padding:14px 16px;"><div style="display:flex;justify-content:space-between;margin-bottom:7px;"><span style="font-size:0.72rem;color:var(--navy);font-weight:600;">${n.author}</span><span style="font-size:0.68rem;color:var(--faint);">${n.date}</span></div><p style="font-size:0.81rem;color:var(--muted);line-height:1.55;">${n.text}</p></div>`).join('')}
+
+function addNote(){const inp=document.getElementById('cm-note-input');const txt=inp.value.trim();if(!txt){toast('Please write a note first','⚠️');return}const modal=document.getElementById('case-modal');const caseId=modal.dataset.caseId;const c=ACTIVE_CASES.find(x=>x.id===caseId);if(!c)return;const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});c.notes.unshift({author:'Adv. '+(LAWYER.ln||'Mehta'),date:today,text:txt});inp.value='';renderCaseNotes(c);toast('Note saved ✅')}
+function closeCase(){document.getElementById('case-modal').style.display='none';document.body.style.overflow=''}
+function cmTab(btn,tabId){document.querySelectorAll('.cm-tab').forEach(t=>{t.style.borderBottomColor='transparent';t.style.color='var(--muted)'});btn.style.borderBottomColor='var(--navy)';btn.style.color='var(--navy)';['cm-overview','cm-timeline','cm-docs','cm-notes'].forEach(id=>{document.getElementById(id).style.display='none'});document.getElementById(tabId).style.display='block';const modal=document.getElementById('case-modal');if(tabId==='cm-notes'&&modal.dataset.caseId){const c=ACTIVE_CASES.find(x=>x.id===modal.dataset.caseId);if(c)renderCaseNotes(c)}}
+
+function renderOvCases(){document.getElementById('ov-cases').innerHTML=ACTIVE_CASES.slice(0,4).map(c=>caseCardHTML(c)).join('')}
+function renderAllCases(){document.getElementById('all-cases').innerHTML=ACTIVE_CASES.map(c=>caseCardHTML(c)).join('')}
+
+function updateBadges(){
+  const rb=document.getElementById('badge-requests');
+  if(rb){rb.textContent=REQUESTS.length;rb.style.display=(REQUESTS.length>0&&LAWYER.verified)?'':'none';}
+  const nb=document.getElementById('badge-notifs');
+  if(nb){nb.textContent=NOTIFS.length;nb.style.display=NOTIFS.length>0?'':'none';}
+}
+
+function renderRequests(){
+  const uc={'high':'urgent','medium':'soon','low':'normal'};const ul={'high':'🔴 Urgent','medium':'🟡 Medium','low':'🟢 Low'};
+  if(REQUESTS.length===0){document.getElementById('req-list').innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--muted);"><div style="font-size:3rem;margin-bottom:14px;">📭</div><div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--navy);margin-bottom:8px;">No Pending Requests</div><div style="font-size:0.82rem;">All case requests have been accepted or declined.</div></div>`;return;}
+  document.getElementById('req-list').innerHTML=REQUESTS.map(r=>`<div class="rq-card" id="rq-${r.id}"><div class="rq-top"><span class="cc-badge ${r.type}" style="font-size:0.65rem;padding:3px 9px;border-radius:8px;">${r.badge}</span><span class="hi-tag ${uc[r.urg]}">${ul[r.urg]}</span></div><div class="rq-title">${r.title}</div><div class="cc-meta" style="margin-bottom:8px;"><span>👤 ${r.client}</span><span>🏛 ${r.court}</span><span>📎 ${r.docs} docs</span></div><div class="rq-desc">${r.desc}</div><div class="rq-actions"><button class="btn-acc" onclick="acceptCase(this,'${r.id}')">✅ Accept & Send Proposal</button><button class="btn-dec" onclick="declineCase('${r.id}')">❌ Decline</button></div></div>`).join('');updateBadges();
+}
+
+function declineCase(id){const idx=REQUESTS.findIndex(r=>r.id===id);if(idx===-1)return;REQUESTS.splice(idx,1);renderRequests();updateBadges();toast('Case declined','ℹ️')}
+
+function acceptCase(btn,id){
+  const idx=REQUESTS.findIndex(r=>r.id===id);if(idx===-1)return;const req=REQUESTS[idx];
+  const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  const newCase={id:'LX-2026-0'+Math.floor(180+Math.random()*20),type:req.type,badge:req.badge,title:req.title,client:req.client,clientPhone:req.clientPhone,clientEmail:req.clientEmail,court:req.court,hearing:'TBD',hearingRoom:req.hearingRoom,prog:0,status:'on',filedDate:today,retainer:req.retainer,summary:req.summary,milestones:req.milestones,timeline:[{date:today,event:'Case accepted. Proposal sent to client. Case registered.',type:'filed'},...req.timeline.filter(t=>t.type!=='upcoming')],docs:req.docs,notes:req.notes};
+  ACTIVE_CASES.push(newCase);REQUESTS.splice(idx,1);renderRequests();renderAllCases();renderOvCases();
+  const statEl=document.getElementById('stat-active');if(statEl) statEl.textContent=ACTIVE_CASES.length;
+  toast('✅ Case accepted! Moving to Active Cases...');
+  setTimeout(()=>{showSec('cases',null);const cards=document.querySelectorAll('#all-cases .cc');const last=cards[cards.length-1];if(last){last.style.transition='box-shadow 0.4s';last.style.boxShadow='0 0 0 2px var(--gold), 0 8px 32px rgba(212,168,67,0.3)';setTimeout(()=>{last.style.boxShadow=''},2500);last.scrollIntoView({behavior:'smooth',block:'center'})}},800);
+}
+
+function renderHistory(){const oc={'Won':'var(--green)','Completed':'var(--gold)','Settlement':'var(--blue)'};const oe={'Won':'🏆','Completed':'✅','Settlement':'🤝'};document.getElementById('hist-cases').innerHTML=HISTORY.map(c=>`<div class="cc ${c.type}"><div class="cc-top"><span class="cc-badge">${c.badge}</span><div class="cc-dot st-done"></div></div><div class="cc-title">${c.title}</div><div class="cc-meta"><span>👤 ${c.client}</span><span>📅 ${c.date}</span></div><div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;"><span style="font-size:0.71rem;color:var(--text2);">Outcome</span><span style="font-size:0.78rem;font-weight:600;color:${oc[c.out]||'var(--gold)'};">${oe[c.out]} ${c.out}</span></div></div>`).join('')}
+
+function renderEarnings(){document.getElementById('earn-list').innerHTML=EARNINGS.map(e=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:0.82rem;color:var(--text);font-weight:500;">${e.case}</div><div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">${e.date}</div></div><div style="font-family:'Playfair Display',serif;font-size:0.98rem;color:${e.paid?'var(--green)':'var(--gold)'};">${e.amt}${e.paid?' ✓':' (pending)'}</div></div>`).join('')}
+
+function renderNotifs(){
+  if(NOTIFS.length===0){document.getElementById('notif-list').innerHTML=`<div style="text-align:center;padding:50px 20px;"><div style="font-size:2.5rem;margin-bottom:12px;">🔔</div><div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--navy);margin-bottom:6px;">All caught up!</div><div style="font-size:0.82rem;color:var(--muted);">No new notifications.</div></div>`;updateBadges();return;}
+  document.getElementById('notif-list').innerHTML=NOTIFS.map((n,i)=>`<div style="background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);border-left:3px solid ${n.c};border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;"><span style="font-size:1.3rem;flex-shrink:0;">${n.ic}</span><div style="flex:1;"><div style="font-size:0.85rem;color:var(--text);font-weight:600;margin-bottom:3px;">${n.title}</div><div style="font-size:0.77rem;color:var(--muted);line-height:1.45;">${n.body}</div><div style="font-size:0.66rem;color:var(--faint);margin-top:5px;">${n.time}</div></div><button onclick="dismissNotif(${i})" style="background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0;" onmouseover="this.style.background='var(--bg4)'" onmouseout="this.style.background='transparent'" title="Dismiss">✕</button></div>`).join('');updateBadges();
+}
+function dismissNotif(i){NOTIFS.splice(i,1);renderNotifs()}
+
+function renderProfile(){
+  const L=LAWYER;const ab=((L.fn[0]||'')+(L.ln[0]||'')).toUpperCase()||'?';
+  document.getElementById('pp-av').textContent=ab;
+  document.getElementById('pp-name').textContent=(L.fn+' '+L.ln).trim()||'—';
+  // Contact info is always available (from sign-up)
+  document.getElementById('pp-contact').innerHTML=[{ic:'📧',l:'Email',v:L.email||'—'},{ic:'📱',l:'Phone',v:L.phone||'—'},{ic:'📍',l:'Address',v:L.address||'—'}].map(r=>`<div class="ir" style="align-items:flex-start;"><span class="ir-l" style="display:flex;align-items:center;gap:6px;">${r.ic} ${r.l}</span><span class="ir-v" style="text-align:right;max-width:60%;white-space:pre-wrap;line-height:1.5;">${r.v}</span></div>`).join('');
+  if(!L.verified){
+    // Unverified: show placeholders, no fake data
+    document.getElementById('pp-spec').textContent='—';
+    document.getElementById('pp-exp').textContent='Complete verification to display';
+    document.getElementById('pp-bio').textContent='Your bio will appear here after you complete the verification process.';
+    document.getElementById('pp-tot').textContent='—';document.getElementById('pp-sr').textContent='—';document.getElementById('pp-won').textContent='—';document.getElementById('pp-srb').textContent='—';document.getElementById('pp-prog').style.width='0%';
+    document.getElementById('pp-chips').innerHTML='<span style="font-size:0.8rem;color:var(--muted);">Complete verification to display practice areas</span>';
+    document.getElementById('pp-details').innerHTML=`<div style="text-align:center;padding:20px 10px;"><div style="font-size:2rem;margin-bottom:10px;">🛡️</div><div style="font-size:0.88rem;color:var(--navy);font-weight:600;margin-bottom:6px;">Verification Pending</div><div style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.5;">Complete your verification to fill in your professional details.<br>This section will display your Bar ID, qualifications, courts, fee, etc.</div><button class="btn-g" style="width:auto;padding:10px 24px;font-size:0.78rem;" onclick="showSec('verification',null)">COMPLETE VERIFICATION →</button></div>`;
+    document.getElementById('pp-reviews').innerHTML='<div style="text-align:center;padding:16px;font-size:0.8rem;color:var(--muted);">Reviews will appear after verification.</div>';
+    return;
+  }
+  // Verified: show real data
+  document.getElementById('pp-spec').textContent=L.spec||'—';document.getElementById('pp-exp').textContent=(L.exp||0)+' years • '+(L.courts||'—');document.getElementById('pp-bio').textContent=L.bio||'—';document.getElementById('pp-tot').textContent=L.total;document.getElementById('pp-sr').textContent=L.sr+'%';document.getElementById('pp-won').textContent=L.won;document.getElementById('pp-srb').textContent=L.sr+'%';document.getElementById('pp-prog').style.width=L.sr+'%';document.getElementById('pp-chips').innerHTML=(L.chips||[]).map(c=>`<span class="dchip">${c}</span>`).join('')||'<span style="font-size:0.8rem;color:var(--muted);">No practice areas added</span>';
+  document.getElementById('pp-details').innerHTML=[{l:'Bar Council ID',v:L.bar||'—',cls:'gv'},{l:'Qualifications',v:L.qual||'—'},{l:'Courts of Practice',v:L.courts||'—'},{l:'Experience',v:(L.exp||0)+' years'},{l:'Consultation Fee',v:L.fee?'₹'+L.fee.toLocaleString()+' / hour':'—'},{l:'Languages',v:L.lang||'—'},{l:'Verification',v:'✅ Verified',cls:'grn'}].map(r=>`<div class="ir"><span class="ir-l">${r.l}</span><span class="ir-v ${r.cls||''}">${r.v}</span></div>`).join('');
+  document.getElementById('pp-reviews').innerHTML=REVIEWS.map(r=>`<div style="padding:13px 0;border-bottom:1px solid var(--border);"><div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;"><div style="width:30px;height:30px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:0.78rem;color:var(--muted);">${r.name[0]}</div><div style="flex:1;font-size:0.82rem;color:var(--text);font-weight:500;">${r.name}</div><div style="color:var(--gold);font-size:0.78rem;">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div></div><div style="font-size:0.78rem;color:var(--text2);line-height:1.55;">"${r.text}"</div><div style="font-size:0.66rem;color:var(--muted);margin-top:4px;">${r.date}</div></div>`).join('');
+}
+
+// ─── UTILS ───
+let _navHistory=[];
+function showSec(id,navEl){
+  const cur=document.querySelector('.sec.on');
+  if(cur){const curId=cur.id.replace('sec-','');if(curId!==id){_navHistory.push(curId);if(_navHistory.length>20)_navHistory.shift()}}
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.getElementById('sec-'+id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  if(navEl){navEl.classList.add('on')}else{document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('on')})}
+  if(window.innerWidth<=768)document.getElementById('main-sb').classList.remove('open');
+  updateBackBtn();
+  // Re-check locked state when navigating
+  if(id==='cases') renderLockedOrCases();
+  if(id==='requests') renderLockedOrRequests();
+}
+function goBack(){if(_navHistory.length===0)return;const prev=_navHistory.pop();document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.getElementById('sec-'+prev).classList.add('on');document.querySelectorAll('.ni').forEach(n=>{n.classList.remove('on');if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+prev+"'"))n.classList.add('on')});updateBackBtn()}
+function updateBackBtn(){const btn=document.getElementById('back-btn');if(btn)btn.style.display=_navHistory.length>0?'flex':'none'}
+function goPage(id){document.querySelectorAll('.pg').forEach(p=>p.classList.remove('show'));document.getElementById(id).classList.add('show');window.scrollTo(0,0)}
+function toast(msg,ic='✅'){document.getElementById('toast-tx').textContent=msg;document.getElementById('toast-ic').textContent=ic;const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2700)}
+function signOut(){
+  toast('Signed out successfully','👋');_navHistory=[];
+  setTimeout(()=>{
+    document.getElementById('si-id').value='';document.getElementById('si-pw').value='';clearSignInErr();
+    ['up-fn','up-ln','up-em','up-ph','up-pw','up-cp','up-addr'].forEach(id=>{document.getElementById(id).value=''});clearEmailErr();
+    // Reset verification state
+    vDocsUploaded={1:false,2:false,3:false};
+    vCur=1;optOn=false;
+    ['vuz1','vuz2','vuz3'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=''});
+    ['vdoc1','vdoc2','vdoc3'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});
+    // Reset verification steps
+    const vs1=document.getElementById('vstep-1');if(vs1)vs1.style.display='block';
+    const vs2=document.getElementById('vstep-2');if(vs2)vs2.style.display='none';
+    const vs3=document.getElementById('vstep-3');if(vs3)vs3.style.display='none';
+    for(let i=1;i<=3;i++){const d=document.getElementById('vsd'+i);if(d)d.className='sdot'+(i===1?' now':'');}
+    // Reset professional details fields in verification
+    ['ps-bar','ps-courts','ps-qual','ps-bio','ps-lang'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+    const psExp=document.getElementById('ps-exp');if(psExp)psExp.value='';
+    const psFee=document.getElementById('ps-fee');if(psFee)psFee.value='';
+    const psSpec=document.getElementById('ps-spec');if(psSpec)psSpec.selectedIndex=0;
+    // Reset optional fields
+    const opAch=document.getElementById('op-ach');if(opAch)opAch.value='';
+    const opTot=document.getElementById('op-tot');if(opTot)opTot.value='';
+    const opWon=document.getElementById('op-won');if(opWon)opWon.value='';
+    const opRate=document.getElementById('op-rate');if(opRate){opRate.value=50;}
+    const rateDisp=document.getElementById('rate-disp');if(rateDisp)rateDisp.textContent='50%';
+    const opLink=document.getElementById('op-link');if(opLink)opLink.value='';
+    const opFirm=document.getElementById('op-firm');if(opFirm)opFirm.value='';
+    document.querySelectorAll('#exp-chips .chip').forEach(c=>c.classList.remove('sel'));
+    const optTog=document.getElementById('opt-tog');if(optTog)optTog.classList.remove('on');
+    const optFields=document.getElementById('opt-fields');if(optFields)optFields.style.display='none';
+    const vBtn=document.getElementById('verify-submit-btn');if(vBtn){vBtn.disabled=false;}
+    const us=document.getElementById('unverified-state');if(us)us.style.display='';
+    const vsState=document.getElementById('verified-state');if(vsState)vsState.style.display='none';
+    // Reset doc checks
+    [1,2,3].forEach(i=>{const el=document.getElementById('vdoc-check-'+i);if(el){const labels={1:'Government ID',2:'Bar Council Certificate',3:'Practice License'};el.textContent='❌ '+labels[i];el.style.background='var(--bg4)';el.style.borderColor='var(--border)';el.style.color='var(--muted)'}});
+    authTab('in');goPage('p-signin');
+  },700);
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const siId=document.getElementById('si-id');if(siId) siId.addEventListener('input',clearSignInErr);
+  const upEm=document.getElementById('up-em');if(upEm) upEm.addEventListener('input',clearEmailErr);
+});
+</script>
+</body>
+</html>
