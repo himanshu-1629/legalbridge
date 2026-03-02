@@ -398,29 +398,33 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
               <span class="chip" onclick="pickVId(this)">📕 Passport</span>
               <span class="chip" onclick="pickVId(this)">🚗 Driving Licence</span>
             </div>
-            <div class="upzone" id="vuz1" onclick="verifyUpload('vuz1','vdoc1','Aadhaar_Card.pdf','1.2 MB',1)">
-              <div class="upz-icon">🪪</div><div class="upz-t">Click to upload Government ID</div><div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
-            </div>
-            <div id="vdoc1"></div>
-          </div>
+           <div class="vdocs">
 
-          <!-- Document 2: Bar Council Certificate -->
-          <div class="panel" style="max-width:600px;">
-            <div class="card-title">📜 Bar Council Certificate</div>
-            <div class="upzone" id="vuz2" onclick="verifyUpload('vuz2','vdoc2','Bar_Council_Certificate.pdf','0.9 MB',2)">
-              <div class="upz-icon">📜</div><div class="upz-t">Click to upload Bar Certificate</div><div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
-            </div>
-            <div id="vdoc2"></div>
-          </div>
+  <!-- Document 1 -->
+  <div class="upzone">
+    <input type="file" id="file1" accept=".pdf,.jpg,.png">
+    <div class="upz-icon">🪪</div>
+    <div class="upz-t">Upload Government ID</div>
+    <div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+  </div>
 
-          <!-- Document 3: Practice License -->
-          <div class="panel" style="max-width:600px;">
-            <div class="card-title">📋 Practice License</div>
-            <div class="upzone" id="vuz3" onclick="verifyUpload('vuz3','vdoc3','Practice_License_2025.pdf','0.7 MB',3)">
-              <div class="upz-icon">📋</div><div class="upz-t">Click to upload Practice License</div><div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
-            </div>
-            <div id="vdoc3"></div>
-          </div>
+  <!-- Document 2 -->
+  <div class="upzone">
+    <input type="file" id="file2" accept=".pdf,.jpg,.png">
+    <div class="upz-icon">📜</div>
+    <div class="upz-t">Upload Bar Certificate</div>
+    <div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+  </div>
+
+  <!-- Document 3 -->
+  <div class="upzone">
+    <input type="file" id="file3" accept=".pdf,.jpg,.png">
+    <div class="upz-icon">🏛</div>
+    <div class="upz-t">Upload Practice License</div>
+    <div class="upz-s">PDF, JPG or PNG • Max 5 MB</div>
+  </div>
+
+</div>
 
           <div style="display:flex;gap:10px;justify-content:flex-end;max-width:600px;">
             <button class="btn-o" onclick="vStep(1)">← Back</button>
@@ -695,22 +699,9 @@ function toggleOpt(){optOn=!optOn;document.getElementById('opt-tog').classList.t
 function toggleChip(el){el.classList.toggle('sel')}
 
 // ─── VERIFICATION ───
-function pickVId(el){document.querySelectorAll('#v-id-chips .chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel')}
-
-function verifyUpload(zone,out,fname,fsize,docNum){
-  document.getElementById(zone).style.display='none';
-  document.getElementById(out).innerHTML=`<div class="file-done"><span style="font-size:1.2rem;">📄</span><div class="fd-name">${fname}</div><div class="fd-sz">${fsize}</div><span style="color:var(--green);font-size:1rem;">✅</span></div>`;
-  toast('📎 '+fname+' uploaded');
-  vDocsUploaded[docNum]=true;
-  // Update checklist
-  const checkEl=document.getElementById('vdoc-check-'+docNum);
-  if(checkEl){
-    const labels={1:'Government ID',2:'Bar Council Certificate',3:'Practice License'};
-    checkEl.textContent='✅ '+labels[docNum];
-    checkEl.style.background='rgba(15,155,88,0.08)';
-    checkEl.style.borderColor='rgba(15,155,88,0.2)';
-    checkEl.style.color='var(--green)';
-  }
+function pickVId(el){
+  document.querySelectorAll('#v-id-chips .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
 }
 
 async function submitVerification(){
@@ -729,10 +720,14 @@ async function submitVerification(){
     return;
   }
 
-  if(!vDocsUploaded[1]||!vDocsUploaded[2]||!vDocsUploaded[3]){
-    toast('Please upload all 3 documents','⚠️');
-    return;
-  }
+  if (
+  !document.getElementById("file1").files.length ||
+  !document.getElementById("file2").files.length ||
+  !document.getElementById("file3").files.length
+) {
+  toast('Please upload all 3 documents','⚠️');
+  return;
+}
 
   try {
 
