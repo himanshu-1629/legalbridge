@@ -12,11 +12,11 @@ const lawyerSchema = new mongoose.Schema({
   password: String,
 
   // 🔹 Verification Fields
-  verificationStatus: {
-    type: String,
-    enum: ["not_submitted", "pending", "approved", "rejected"],
-    default: "not_submitted"
-  },
+verificationStatus: {
+  type: String,
+  enum: ["not_submitted", "submitted", "approved", "rejected"],
+  default: "not_submitted"
+}
 
   professionalDetails: {
     barId: String,
