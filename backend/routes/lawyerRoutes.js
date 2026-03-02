@@ -143,5 +143,17 @@ router.get("/me/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+// ================= ADMIN - GET ALL LAWYERS =================
+router.get("/all", async (req, res) => {
+  try {
+
+    const lawyers = await Lawyer.find().select("-password");
+
+    res.json(lawyers);
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 module.exports = router;
