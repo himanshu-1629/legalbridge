@@ -1044,6 +1044,29 @@ window.onload = async function () {
   }
 };
 </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  function handleUpload(inputId, checkId) {
+    const input = document.getElementById(inputId);
+    const check = document.getElementById(checkId);
+
+    input.addEventListener("change", function () {
+      if (input.files.length > 0) {
+        check.textContent = "✅ " + check.textContent.replace("❌ ", "");
+        check.style.background = "rgba(15,155,88,0.1)";
+        check.style.border = "1px solid rgba(15,155,88,0.3)";
+        check.style.color = "green";
+      }
+    });
+  }
+
+  handleUpload("idProof", "vdoc-check-1");
+  handleUpload("enrollmentCert", "vdoc-check-2");
+  handleUpload("practiceCert", "vdoc-check-3");
+
+});
+</script>
   
 </body>
 </html>
