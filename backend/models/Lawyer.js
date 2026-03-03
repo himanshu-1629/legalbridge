@@ -1,22 +1,18 @@
 const mongoose = require("mongoose");
 
 const lawyerSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  email: {
-    type: String,
-    unique: true
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String, required: true },
+  address: { type: String, required: true },
+  password: { type: String, required: true },
+  verificationStatus: { 
+    type: String, 
+    enum: ["pending", "verified", "rejected"], 
+    default: "pending" 
   },
-  phone: String,
-  address: String,
-  password: String,
-
-verificationStatus: {
-  type: String,
-  enum: ["not_verified", "verified"],
-  default: "not_verified"
-},  // ✅ IMPORTANT COMMA HERE
-
+  // This must match your lawyerRoutes.js structure
   professionalDetails: {
     barId: String,
     experience: Number,
@@ -27,12 +23,12 @@ verificationStatus: {
     consultationFee: Number,
     languages: String
   },
+  // This must match the file keys in lawyerRoutes.js
   documents: {
-  idProof: String,
-  enrollmentCert: String,
-  practiceCert: String
-},
-
+    idProof: String,
+    enrollmentCert: String,
+    practiceCert: String
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Lawyer", lawyerSchema);
