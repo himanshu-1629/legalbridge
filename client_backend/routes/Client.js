@@ -11,7 +11,7 @@ function auth(req, res, next) {
   if (!token) return res.status(401).json({ message: "No token" });
 
   try {
-    const decoded = jwt.verify(token, "secretkey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
     next();
   } catch {
@@ -43,7 +43,7 @@ router.post("/register", async (req, res) => {
 
     const token = jwt.sign(
   { id: newClient._id },
-  "secretkey",
+  process.env.JWT_SECRET,
   { expiresIn: "1d" }
 );
 
@@ -78,10 +78,10 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id },
-      "secretkey",
-      { expiresIn: "1d" }
-    );
+  { id: user._id },
+  process.env.JWT_SECRET,
+  { expiresIn: "1d" }
+);
 
     res.json({
   token,
