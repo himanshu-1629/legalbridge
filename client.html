@@ -2175,7 +2175,7 @@ async function completeSignup() {
   var pass  = document.getElementById('reg-pass').value;
 
   try {
-    const res = await fetch('http://localhost:3000/client/register', {
+    const res = await fetch('var BASE_URL = https://legalbridge-2plp.onrender.com/client/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -2215,7 +2215,7 @@ async function doLogin() {
   var pass    = document.getElementById('login-pass').value;
 
   try {
-    const res = await fetch('http://localhost:3000/client/login', {
+    const res = await fetch('https://legalbridge-2plp.onrender.com/client/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
