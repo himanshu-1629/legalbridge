@@ -719,14 +719,14 @@ async function submitVerification() {
     return;
   }
 
-  if (
-    !document.getElementById("file1").files.length ||
-    !document.getElementById("file2").files.length ||
-    !document.getElementById("file3").files.length
-  ) {
-    toast('Please upload all 3 documents','⚠️');
-    return;
-  }
+ if (
+  !document.getElementById("idProof").files.length ||
+  !document.getElementById("enrollmentCert").files.length ||
+  !document.getElementById("practiceCert").files.length
+) {
+  toast('Please upload all 3 documents', '⚠️');
+  return;
+}
 
   try {
 
@@ -743,9 +743,10 @@ async function submitVerification() {
     formData.append("consultationFee", fee);
     formData.append("languages", languages);
 
-    formData.append("idProof", document.getElementById("file1").files[0]);
-    formData.append("enrollmentCert", document.getElementById("file2").files[0]);
-    formData.append("practiceCert", document.getElementById("file3").files[0]);
+   // Correct IDs matching your <input> tags
+formData.append("idProof", document.getElementById("idProof").files[0]);
+formData.append("enrollmentCert", document.getElementById("enrollmentCert").files[0]);
+formData.append("practiceCert", document.getElementById("practiceCert").files[0]);
 
     const response = await fetch("https://legalbridge-sytn.onrender.com/api/lawyer/verify", {
       method: "POST",
