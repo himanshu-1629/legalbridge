@@ -187,6 +187,27 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
 @keyframes popIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
 @media(max-width:900px){.stat-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:768px){.sb{transform:translateX(-100%)}.sb.open{transform:none}.dm{margin-left:0;padding:18px 16px}.mob-toggle{display:flex}.topbar{margin-top:44px}.fg-2{grid-template-columns:1fr}.stat-grid{grid-template-columns:1fr 1fr}}
+/* 1. Add these for the loading and success looks */
+.upzone.up-loading {
+  background: rgba(26, 39, 68, 0.05) !important;
+  border: 2px solid var(--navy) !important;
+  pointer-events: none; /* Stops user from clicking while uploading */
+}
+
+.upzone.up-loading .upz-icon {
+  animation: up-pulse 1.5s infinite;
+}
+
+@keyframes up-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.upzone.up-success {
+  background: rgba(15, 155, 88, 0.08) !important;
+  border: 2px solid var(--green) !important;
+}
 </style>
 </head>
 <body>
@@ -427,7 +448,9 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
 </div>
           <div style="display:flex;gap:10px;justify-content:flex-end;max-width:600px;">
             <button class="btn-o" onclick="vStep(1)">← Back</button>
-            <button class="btn-g" style="width:auto;padding:12px 32px;" onclick="vStep(3)">Next: Optional Info →</button>
+           <button class="btn-g" style="width:auto;padding:12px 32px;" onclick="validateDocsAndGoNext()">
+  Next: Optional Info →
+</button>
           </div>
         </div>
 
@@ -552,6 +575,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;ove
 </div>
 
 <script>
+  function validateDocsAndGoNext() {
+  // Check if all three inputs have files
+  const idOk = document.getElementById("idProof").files.length > 0;
+  const barOk = document.getElementById("enrollmentCert").files.length > 0;
+  const practiceOk = document.getElementById("practiceCert").files.length > 0;
+
+  if (idOk && barOk && practiceOk) {
+    vStep(3); // Go to Step 3
+  } else {
+    toast('Please upload all 3 documents first', '⚠️');
+  }
+}
 const LAWYER={fn:'',ln:'',email:'',phone:'',address:'',bar:'',exp:0,spec:'',courts:'',qual:'',bio:'',fee:0,lang:'',ach:'',total:0,won:0,settled:0,lost:0,sr:0,firm:'',chips:[],verified:false};
 
 // Track which verification docs have been uploaded
@@ -702,51 +737,34 @@ function pickVId(el){
   document.querySelectorAll('#v-id-chips .chip').forEach(c=>c.classList.remove('sel'));
   el.classList.add('sel');
 }
-
 async function submitVerification() {
-
-  const bar = document.getElementById('ps-bar').value.trim();
-  const exp = document.getElementById('ps-exp').value.trim();
-  const spec = document.getElementById('ps-spec').value;
-  const courts = document.getElementById('ps-courts').value.trim();
-  const qual = document.getElementById('ps-qual').value.trim();
-  const bio = document.getElementById('ps-bio').value.trim();
-  const fee = document.getElementById('ps-fee').value.trim();
-  const languages = document.getElementById('ps-lang').value.trim();
-
-  if(!bar || !exp || !spec || !courts || !qual || !bio || !fee){
-    toast('Please fill all professional details','⚠️');
-    return;
-  }
-
- if (
-  !document.getElementById("idProof").files.length ||
-  !document.getElementById("enrollmentCert").files.length ||
-  !document.getElementById("practiceCert").files.length
-) {
-  toast('Please upload all 3 documents', '⚠️');
-  return;
-}
+  const btn = document.getElementById('verify-submit-btn');
+  const zones = document.querySelectorAll('.upzone'); // These are your upload boxes
 
   try {
+    // 1. Show the "Uploading" animation
+    btn.disabled = true;
+    btn.textContent = "UPLOADING...";
+    zones.forEach(z => z.classList.add('up-loading'));
 
     const storedLawyer = JSON.parse(localStorage.getItem("lawyer"));
-
     const formData = new FormData();
+    
+    // Add your text data
     formData.append("email", storedLawyer.email);
-    formData.append("barId", bar);
-    formData.append("experience", exp);
-    formData.append("specialization", spec);
-    formData.append("courts", courts);
-    formData.append("qualifications", qual);
-    formData.append("bio", bio);
-    formData.append("consultationFee", fee);
-    formData.append("languages", languages);
+    formData.append("barId", document.getElementById('ps-bar').value);
+    formData.append("experience", document.getElementById('ps-exp').value);
+    formData.append("specialization", document.getElementById('ps-spec').value);
+    formData.append("courts", document.getElementById('ps-courts').value);
+    formData.append("qualifications", document.getElementById('ps-qual').value);
+    formData.append("bio", document.getElementById('ps-bio').value);
+    formData.append("consultationFee", document.getElementById('ps-fee').value);
+    formData.append("languages", document.getElementById('ps-lang').value);
 
-   // Correct IDs matching your <input> tags
-formData.append("idProof", document.getElementById("idProof").files[0]);
-formData.append("enrollmentCert", document.getElementById("enrollmentCert").files[0]);
-formData.append("practiceCert", document.getElementById("practiceCert").files[0]);
+    // Add the files using the correct IDs
+    formData.append("idProof", document.getElementById("idProof").files[0]);
+    formData.append("enrollmentCert", document.getElementById("enrollmentCert").files[0]);
+    formData.append("practiceCert", document.getElementById("practiceCert").files[0]);
 
     const response = await fetch("https://legalbridge-sytn.onrender.com/api/lawyer/verify", {
       method: "POST",
@@ -754,15 +772,28 @@ formData.append("practiceCert", document.getElementById("practiceCert").files[0]
     });
 
     const data = await response.json();
-    alert(data.message);
 
-    if(response.ok){
-      toast("Verification submitted. Waiting for admin approval ⏳");
+    if (response.ok) {
+      // 2. Show the "Success" tick
+      zones.forEach(z => {
+        z.classList.remove('up-loading');
+        z.classList.add('up-success');
+        z.querySelector('.upz-icon').textContent = "✅";
+      });
+      btn.textContent = "SUBMITTED ✓";
+      toast("Sent for verification!");
+      
+      setTimeout(() => { showSec('overview', null); }, 2000);
+    } else {
+      throw new Error(data.message);
     }
 
-  } catch(error){
-    console.log(error);
-    alert("Server error");
+  } catch (error) {
+    // Reset if it fails
+    btn.disabled = false;
+    btn.textContent = "SUBMIT FOR VERIFICATION";
+    zones.forEach(z => z.classList.remove('up-loading'));
+    alert("Upload failed: " + error.message);
   }
 }
 
