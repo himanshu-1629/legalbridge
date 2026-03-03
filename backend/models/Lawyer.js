@@ -9,8 +9,8 @@ const lawyerSchema = new mongoose.Schema({
   password: { type: String, required: true },
   verificationStatus: { 
     type: String, 
-    enum: ["pending", "verified", "rejected"], 
-    default: "pending" 
+    enum: ["not_verified", "verified", "rejected"], 
+    default: "not_verified" 
   },
   // This must match your lawyerRoutes.js structure
   professionalDetails: {
